@@ -1,13 +1,21 @@
 clear
+
+
+
 %% Set folders
 masterFolder='/Users/santiago/Dropbox (Biophotonics)/Projects/Bruno/Images/ToTest/Anonymous/';
+
+% Change folder for Javier
+[~,user] = system('whoami');
+if strcmp(strtrim(user),'javimazzaf'), masterFolder='../Anonymous/';end
+
 warning('Off')
 mkdir(masterFolder, 'Masks')
 mkdir(masterFolder, 'Results')
 mkdir(masterFolder, 'Vasculature')
 
-doTufts=0;
-doVasculature=1;
+doTufts=1;
+doVasculature=0;
 
 %% Get file names
 myFiles=dir([masterFolder filesep '*.jpg']);
