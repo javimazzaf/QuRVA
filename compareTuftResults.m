@@ -6,7 +6,7 @@ mkdir(masterFolder, 'Results/Global')
 %% Get file names
 myFiles=dir([masterFolder filesep 'Results' filesep '*.mat']);
 
-distancesStats={[0], [0], [0], [0], [0], [0], [0], [0], [0], [0]};
+distancesStats={[0], [0], [0], [0], [0], [0], [0], [0], [0], [0], [0]};
 
 %% Load results
 
@@ -30,7 +30,13 @@ for it=1:numel(myFiles)
     
     for itSwift=1:size(swiftMasks,3)
         distanceImage(:,:,itUsers+1+itSwift)=swiftMasks(:,:,itSwift).*bwdist(consensusMask);
-        offPixelsImage(:,:,itUsers+1+itSwift)=abs(swiftMasks(:,:,itSwift)-consensusMask);
+        
+        %% Check if I got zeros because the user did not analyze this image
+        if max(max(swiftMasks(:,:,itSwift)))==0
+            offPixelsImage(:,:,itUsers+1+itSwift)=NaN(size(consensusMask));
+        else
+            offPixelsImage(:,:,itUsers+1+itSwift)=abs(swiftMasks(:,:,itSwift)-consensusMask);
+        end
         
         distancesStats{itUsers+1+itSwift}=[distancesStats{itUsers+1+itSwift}; nonzeros(distanceImage(:,:,itSwift))];
     end
@@ -56,7 +62,7 @@ print(gcf,'-dpng',[masterFolder filesep 'Results' filesep 'Global' filesep 'Barp
 
 dataToPlot=[distancesStats{1} ones(numel(distancesStats{1}),1)];
 
-for itUsers=1:size(allMasks,3)+size(swiftMasks,3)+1
+for itUsers=1:size(allMasks,3)+size(swiftMasks,3)
     dataToPlot=[dataToPlot; distancesStats{1+itUsers} ones(numel(distancesStats{1+itUsers}),1)*(itUsers+1)];
 end
 
