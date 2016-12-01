@@ -3,10 +3,13 @@ clear
 masterFolder='/Users/santiago/Dropbox (Biophotonics)/Projects/Bruno/Images/ToTest/Anonymous/';
 warning('Off')
 mkdir(masterFolder, 'Masks')
-mkdir(masterFolder, 'Results')
-mkdir(masterFolder, 'Vasculature')
+mkdir(masterFolder, 'TuftImages')
+mkdir(masterFolder, 'TuftNumbers')
+mkdir(masterFolder, 'VasculatureImages')
+mkdir(masterFolder, 'VasculatureNumbers')
 
-doTufts=0;
+
+doTufts=1;
 doVasculature=1;
 
 %% Get file names
@@ -75,9 +78,9 @@ for it=1:numel(myFiles)
         quadSE=votesImage;
 
         imwrite([quadNW quadNE; quadSW quadSE], ...
-            [masterFolder filesep 'Results' filesep myFiles(it).name 'Consensus' '.jpg'], 'JPG')
+            [masterFolder filesep 'TuftImages' filesep myFiles(it).name], 'JPG')
 
-        save([masterFolder filesep 'Results' filesep 'TuftValues' myFiles(it).name '.mat'],...
+        save([masterFolder filesep 'TuftNumbers' filesep myFiles(it).name '.mat'],...
             'tuftsMask', 'allMasks', 'consensusMask');
     
     end % do vasculature network
@@ -94,7 +97,10 @@ for it=1:numel(myFiles)
             uint8(logical(aVascZone)+imdilate(brchPts, strel('disk',3))).*255);
         
         imwrite([leftHalf rightHalf], ...
-            [masterFolder filesep 'Vasculature' filesep myFiles(it).name 'Result' '.jpg'], 'JPG')
+            [masterFolder filesep 'VasculatureImages' filesep myFiles(it).name], 'JPG')
+        
+        save(fullfile(masterFolder, 'VasculatureNumbers', [myFiles(it).name,'.mat']),...
+            'vesselSkelMask', 'brchPts','aVascZone');
     end
     
 

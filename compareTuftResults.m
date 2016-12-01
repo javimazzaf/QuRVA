@@ -1,10 +1,10 @@
 clear
 %% Set folders
 masterFolder='/Users/santiago/Dropbox (Biophotonics)/Projects/Bruno/Images/ToTest/Anonymous/';
-mkdir(masterFolder, 'Results/Global')
+mkdir(masterFolder, 'Global')
 
 %% Get file names
-myFiles=dir([masterFolder filesep 'Results' filesep '*.mat']);
+myFiles=dir([masterFolder filesep 'TuftNumbers' filesep '*.mat']);
 
 distancesStats={[0], [0], [0], [0], [0], [0], [0], [0], [0], [0], [0]};
 
@@ -12,7 +12,7 @@ distancesStats={[0], [0], [0], [0], [0], [0], [0], [0], [0], [0], [0]};
 
 for it=1:numel(myFiles)
     it
-    load([masterFolder 'Results' filesep myFiles(it).name]);
+    load([masterFolder 'TuftNumbers' filesep myFiles(it).name]);
     
     swiftMasks=collectSwift(masterFolder, myFiles(it).name, consensusMask);
         
@@ -48,14 +48,14 @@ for it=1:numel(myFiles)
     clear distanceImage offPixelsImage
 end
 
-save([masterFolder filesep 'Results' filesep 'Global' filesep 'Comparissons.mat'], 'offPixels', 'distancesStats')
+save([masterFolder filesep 'Global' filesep 'Comparissons.mat'], 'offPixels', 'distancesStats')
 
 
 %% Make barplots
 close all
 makeNiceOffPixelFigure(offPixels)
 
-print(gcf,'-dpng',[masterFolder filesep 'Results' filesep 'Global' filesep 'Barplot.png']);
+print(gcf,'-dpng',[masterFolder filesep 'Global' filesep 'Barplot.png']);
 
 
 %% Make boxplots
@@ -69,9 +69,9 @@ end
 
 boxplot(dataToPlot(:,1), dataToPlot(:,2))
 
-print(gcf,'-dpng',[masterFolder filesep 'Results' filesep 'Global' filesep 'Boxplot.png']);
+print(gcf,'-dpng',[masterFolder filesep 'Global' filesep 'Boxplot.png']);
 
 %% Violin Plots
 figure
 violinplot(dataToPlot(:,1), dataToPlot(:,2))
-print(gcf,'-dpng',[masterFolder filesep 'Results' filesep 'Global' filesep 'Violins.png']);
+print(gcf,'-dpng',[masterFolder filesep 'Global' filesep 'Violins.png']);
