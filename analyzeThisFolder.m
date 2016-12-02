@@ -13,9 +13,8 @@ mkdir(masterFolder, 'TuftNumbers')
 mkdir(masterFolder, 'VasculatureImages')
 mkdir(masterFolder, 'VasculatureNumbers')
 
-
 doTufts=1;
-doVasculature=1;
+doVasculature=0;
 
 %% Get file names
 myFiles=dir([masterFolder filesep '*.jpg']);
@@ -60,6 +59,35 @@ for it=1:numel(myFiles)
         %% Get observers data
         [allMasks consensusMask]=getConsensusMask(it);
 
+        %% Test for improving false positives
+%         fpTestIm = imoverlay(redImage,brightMask,'r');
+%         fpTestIm = imoverlay(fpTestIm,bwperim(thickMask),'b');
+        fpTestIm = imoverlay(redImage,tuftsMask  &  consensusMask,'g');
+        fpTestIm = imoverlay(fpTestIm,tuftsMask  & ~consensusMask,'r');
+        fpTestIm = imoverlay(fpTestIm,~tuftsMask & consensusMask,'m');
+        
+        FpTufts(it)  = sum(tuftsMask(:)  & ~consensusMask(:));
+        FpBright(it) = sum(brightMask(:) & ~consensusMask(:));
+        FpThick(it)  = sum(thickMask(:)  & ~consensusMask(:));
+        
+        FnTufts(it)  = sum(~tuftsMask(:)  & consensusMask(:));
+        FnBright(it) = sum(~brightMask(:) & consensusMask(:));
+        FnThick(it)  = sum(~thickMask(:)  & consensusMask(:));
+        
+        mkdir(fullfile(masterFolder,'falsePositiveTest'));
+        imwrite(fpTestIm, fullfile(masterFolder,'falsePositiveTest',myFiles(it).name), 'JPG')
+        
+%         fg = figure;
+        subplot(1,2,1), bar([FpBright(it), FpThick(it), FpTufts(it)], 'r'), 
+        set(gca,'XTick',1:3,'XTickLabel',{'FpBright';'FpThick';'FpTufts'})
+        hold off
+        
+        subplot(1,2,2), bar([FnBright(it), FnThick(it), FnTufts(it)], 'b')
+        set(gca,'XTick',1:3,'XTickLabel',{'FnBright';'FnThick';'FnTufts'})
+        print(1,fullfile(masterFolder,'falsePositiveTest',[myFiles(it).name '.png']),'-dpng')
+        hold off
+        continue
+        
         %% Create votes Image
         votesImageRed=.5*redImage;
         votesImageGreen=.5*redImage;
