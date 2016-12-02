@@ -41,8 +41,10 @@ for it=1:numel(myFiles)
         distancesStats{itUsers+1+itSwift}=[distancesStats{itUsers+1+itSwift}; nonzeros(distanceImage(:,:,itSwift))];
     end
 
+    offPixelsRelative(1:itUsers+1+itSwift, it)=reshape(sum(sum(offPixelsImage))/sum(sum(consensusMask)),...
+        [size(allMasks,3)+1+size(swiftMasks,3), 1]);
     
-    offPixels(1:itUsers+1+itSwift, it)=reshape(sum(sum(offPixelsImage))/sum(sum(consensusMask)),...
+    offPixels(1:itUsers+1+itSwift, it)=reshape(sum(sum(offPixelsImage)),...
         [size(allMasks,3)+1+size(swiftMasks,3), 1]);
     
     clear distanceImage offPixelsImage
@@ -55,8 +57,12 @@ save([masterFolder filesep 'Global' filesep 'Comparissons.mat'], 'offPixels', 'd
 close all
 makeNiceOffPixelFigure(offPixels)
 
-print(gcf,'-dpng',[masterFolder filesep 'Global' filesep 'Barplot.png']);
+print(gcf,'-dpng',[masterFolder filesep 'Global' filesep 'BarplotOffOixels.png']);
+%%
 
+figure
+makeNiceOffPixelRelativeFigure(offPixelsRelative)
+print(gcf,'-dpng',[masterFolder filesep 'Global' filesep 'BarplotOffOixelsRelative.png']);
 
 %% Make boxplots
 
