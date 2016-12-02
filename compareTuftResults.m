@@ -1,18 +1,18 @@
 clear
 %% Set folders
 masterFolder='/Users/santiago/Dropbox (Biophotonics)/Projects/Bruno/Images/ToTest/Anonymous/';
-mkdir(masterFolder, 'Results/Global')
+mkdir(masterFolder, 'Global')
 
 %% Get file names
-myFiles=dir([masterFolder filesep 'Results' filesep '*.mat']);
+myFiles=dir([masterFolder filesep 'TuftNumbers' filesep '*.mat']);
 
-distancesStats={[0], [0], [0], [0], [0], [0], [0], [0], [0], [0], [0]};
+distancesStats={[0], [0], [0], [0], [0], [0], [0], [0], [0], [0], [0], [0]};
 
 %% Load results
 
 for it=1:numel(myFiles)
     it
-    load([masterFolder 'Results' filesep myFiles(it).name]);
+    load([masterFolder 'TuftNumbers' filesep myFiles(it).name]);
     
     swiftMasks=collectSwift(masterFolder, myFiles(it).name, consensusMask);
         
@@ -41,22 +41,28 @@ for it=1:numel(myFiles)
         distancesStats{itUsers+1+itSwift}=[distancesStats{itUsers+1+itSwift}; nonzeros(distanceImage(:,:,itSwift))];
     end
 
+    offPixelsRelative(1:itUsers+1+itSwift, it)=reshape(sum(sum(offPixelsImage))/sum(sum(consensusMask)),...
+        [size(allMasks,3)+1+size(swiftMasks,3), 1]);
     
-    offPixels(1:itUsers+1+itSwift, it)=reshape(sum(sum(offPixelsImage))/sum(sum(consensusMask)),...
+    offPixels(1:itUsers+1+itSwift, it)=reshape(sum(sum(offPixelsImage)),...
         [size(allMasks,3)+1+size(swiftMasks,3), 1]);
     
     clear distanceImage offPixelsImage
 end
 
-save([masterFolder filesep 'Results' filesep 'Global' filesep 'Comparissons.mat'], 'offPixels', 'distancesStats')
+save([masterFolder filesep 'Global' filesep 'Comparissons.mat'], 'offPixels', 'distancesStats')
 
 
 %% Make barplots
 close all
 makeNiceOffPixelFigure(offPixels)
 
-print(gcf,'-dpng',[masterFolder filesep 'Results' filesep 'Global' filesep 'Barplot.png']);
+print(gcf,'-dpng',[masterFolder filesep 'Global' filesep 'BarplotOffOixels.png']);
+%%
 
+figure
+makeNiceOffPixelRelativeFigure(offPixelsRelative)
+print(gcf,'-dpng',[masterFolder filesep 'Global' filesep 'BarplotOffOixelsRelative.png']);
 
 %% Make boxplots
 
@@ -69,9 +75,9 @@ end
 
 boxplot(dataToPlot(:,1), dataToPlot(:,2))
 
-print(gcf,'-dpng',[masterFolder filesep 'Results' filesep 'Global' filesep 'Boxplot.png']);
+print(gcf,'-dpng',[masterFolder filesep 'Global' filesep 'Boxplot.png']);
 
 %% Violin Plots
 figure
 violinplot(dataToPlot(:,1), dataToPlot(:,2))
-print(gcf,'-dpng',[masterFolder filesep 'Results' filesep 'Global' filesep 'Violins.png']);
+print(gcf,'-dpng',[masterFolder filesep 'Global' filesep 'Violins.png']);
