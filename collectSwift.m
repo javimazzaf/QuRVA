@@ -1,6 +1,6 @@
 function allSwiftMasks=collectSwift(masterFolder, imageFileName, consensusMask)
 
-folderNames={'Bruno', 'Carlos', 'Santiago', 'Agnieszka'};
+folderNames={'Bruno', 'Carlos', 'Santiago', 'Agnieszka', 'Kalo'};
 
 for itUser=1:numel(folderNames)
     isFile(itUser)=logical(exist([masterFolder 'SWIFT' filesep folderNames{itUser} ...

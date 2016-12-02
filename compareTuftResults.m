@@ -6,7 +6,7 @@ mkdir(masterFolder, 'Global')
 %% Get file names
 myFiles=dir([masterFolder filesep 'TuftNumbers' filesep '*.mat']);
 
-distancesStats={[0], [0], [0], [0], [0], [0], [0], [0], [0], [0], [0]};
+distancesStats={[0], [0], [0], [0], [0], [0], [0], [0], [0], [0], [0], [0]};
 
 %% Load results
 
