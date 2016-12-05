@@ -77,7 +77,7 @@ for it=1:numel(myFiles)
         mkdir(fullfile(masterFolder,'falsePositiveTest'));
         imwrite(fpTestIm, fullfile(masterFolder,'falsePositiveTest',myFiles(it).name), 'JPG')
         
-%         fg = figure;
+%       fg = figure;
         subplot(1,2,1), bar([FpBright(it), FpThick(it), FpTufts(it)], 'r'), 
         set(gca,'XTick',1:3,'XTickLabel',{'FpBright';'FpThick';'FpTufts'})
         hold off
