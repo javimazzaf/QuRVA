@@ -131,9 +131,11 @@ for it=1:numel(myFiles)
         
         imwrite([leftHalf rightHalf], ...
             [masterFolder filesep 'VasculatureImages' filesep myFiles(it).name], 'JPG')
+             
+        thisSholl=getShollEq(vesselSkelMask, maskStats, thisONCenter);
         
         save(fullfile(masterFolder, 'VasculatureNumbers', [myFiles(it).name,'.mat']),...
-            'vesselSkelMask', 'brchPts','aVascZone');
+            'vesselSkelMask', 'brchPts','aVascZone', 'thisSholl');
     end
     
 
