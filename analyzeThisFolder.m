@@ -1,7 +1,6 @@
 clear
 %% Set folders
 masterFolder='/Users/santiago/Dropbox (Biophotonics)/Projects/Bruno/Images/ToTest/Anonymous/';
-
 % Change folder if Javier
 [~,user] = system('whoami');
 if strcmp(strtrim(user),'javimazzaf'), masterFolder='../Anonymous/';end
@@ -58,7 +57,7 @@ for it=1:numel(myFiles)
     
         %% Get observers data
         [allMasks consensusMask]=getConsensusMask(it);
-        
+
         %% Create votes Image
         votesImageRed=.5*redImage;
         votesImageGreen=.5*redImage;
