@@ -8,8 +8,11 @@ mkdir(masterFolder, 'TuftNumbers')
 mkdir(masterFolder, 'VasculatureImages')
 mkdir(masterFolder, 'VasculatureNumbers')
 
+% Change folder if Javier
+[~,user] = system('whoami');
+if strcmp(strtrim(user),'javimazzaf'), masterFolder='../Anonymous/';end
 
-doTufts=1;
+doTufts=0;
 doVasculature=1;
 
 %% Get file names
@@ -98,9 +101,11 @@ for it=1:numel(myFiles)
         
         imwrite([leftHalf rightHalf], ...
             [masterFolder filesep 'VasculatureImages' filesep myFiles(it).name], 'JPG')
+             
+        thisSholl=getShollEq(vesselSkelMask, maskStats, thisONCenter);
         
         save(fullfile(masterFolder, 'VasculatureNumbers', [myFiles(it).name,'.mat']),...
-            'vesselSkelMask', 'brchPts','aVascZone');
+            'vesselSkelMask', 'brchPts','aVascZone', 'thisSholl');
     end
     
 
