@@ -56,7 +56,7 @@ for it=1:numel(myFiles)
                
     
         %% Get observers data
-        [allMasks consensusMask]=getConsensusMask(it);
+        [allMasks, consensusMask]=getTuftConsensusMask(it);
 
         %% Create votes Image
         votesImageRed=.5*redImage;
@@ -92,9 +92,10 @@ for it=1:numel(myFiles)
 
         [vesselSkelMask, brchPts]=getVacularNetwork(thisMask, redImage);
         [aVascZone]=getAvacularZone(thisMask, vesselSkelMask);
+        aVascConsensus=getAVascularConsensusMask(it);
 
         %% Make a nice image
-        leftHalf=cat(3, redImage, redImage, redImage);
+        leftHalf=cat(3, redImage, redImage, uint8(aVascConsensus)*255);
         rightHalf=cat(3, redImage,...
             uint8(vesselSkelMask).*255,...
             uint8(logical(aVascZone)+imdilate(brchPts, strel('disk',3))).*255);

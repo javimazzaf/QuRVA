@@ -25,11 +25,13 @@ for it=1:numel(myFiles)
 
     distancesStats{1}=[distancesStats{1}; nonzeros(distanceImage(:,:,1))];
     
+   
     for itUsers=1:size(allMasks,3)
         distanceImage(:,:,itUsers+1)=allMasks(:,:,itUsers).*bwdist(consensusMask);
         offPixelsImage(:,:,itUsers+1)=abs(allMasks(:,:,itUsers)-consensusMask);
         
         distancesStats{itUsers+1}=[distancesStats{itUsers+1}; nonzeros(distanceImage(:,:,itUsers+1))];
+        
     end
     
     for itSwift=1:size(swiftMasks,3)
@@ -43,6 +45,8 @@ for it=1:numel(myFiles)
         end
         
         distancesStats{itUsers+1+itSwift}=[distancesStats{itUsers+1+itSwift}; nonzeros(distanceImage(:,:,itSwift))];
+                distancesStats{itUsers+1}=[distancesStats{itUsers+1}; nonzeros(distanceImage(:,:,itUsers+1))];
+       
     end
 
     offPixelsRelative(1:itUsers+1+itSwift, it)=reshape(sum(sum(offPixelsImage))/sum(sum(consensusMask)),...
