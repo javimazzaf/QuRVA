@@ -20,8 +20,10 @@ for itUser=1:numel(users)
         trimedImage=trimThisImage(image4channel);
 
         magentaMaskOriginal=createMagentaMask(trimedImage);
-
-        magentaMasks{it}=imresize(logical(magentaMaskOriginal), [size(thisRawImage,1), size(thisRawImage,2)]);
+        
+        magentaMaskFilled=imfill(magentaMaskOriginal, 'holes');
+        
+        magentaMasks{it}=imresize(logical(magentaMaskFilled), [size(thisRawImage,1), size(thisRawImage,2)]);
     end
 
 save([masterFolder 'Testers/vascular/Masks' users{itUser} '.mat'], 'magentaMasks')

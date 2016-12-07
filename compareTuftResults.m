@@ -21,19 +21,13 @@ for it=1:numel(myFiles)
 
     distancesStats{1}=[distancesStats{1}; nonzeros(distanceImage(:,:,1))];
     
-    [X,Y,T, areaROC(1,1)] = perfcurve(reshape(consensusMask,1,numel(consensusMask)),...
-        reshape(tuftsMask,1, numel(consensusMask)),1);
-
-    
+   
     for itUsers=1:size(allMasks,3)
         distanceImage(:,:,itUsers+1)=allMasks(:,:,itUsers).*bwdist(consensusMask);
         offPixelsImage(:,:,itUsers+1)=abs(allMasks(:,:,itUsers)-consensusMask);
         
         distancesStats{itUsers+1}=[distancesStats{itUsers+1}; nonzeros(distanceImage(:,:,itUsers+1))];
         
-        [X,Y, T, areaROC(it, itUsers+1)] = perfcurve(reshape(consensusMask,1,numel(consensusMask)),...
-            reshape(double(allMasks(:,:,itUsers)),1, numel(consensusMask)),1);
-
     end
     
     for itSwift=1:size(swiftMasks,3)
@@ -49,9 +43,6 @@ for it=1:numel(myFiles)
         distancesStats{itUsers+1+itSwift}=[distancesStats{itUsers+1+itSwift}; nonzeros(distanceImage(:,:,itSwift))];
                 distancesStats{itUsers+1}=[distancesStats{itUsers+1}; nonzeros(distanceImage(:,:,itUsers+1))];
        
-                [X,Y, T, areaROC(it, itUsers+1+itSwift)] = perfcurve(reshape(consensusMask,1,numel(consensusMask)),...
-                    reshape(double(swiftMasks(:,:,itSwift)),1, numel(consensusMask)),1);
-
     end
 
     offPixelsRelative(1:itUsers+1+itSwift, it)=reshape(sum(sum(offPixelsImage))/sum(sum(consensusMask)),...
