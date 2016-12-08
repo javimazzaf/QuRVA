@@ -58,6 +58,20 @@ for it=1:numel(myFiles)
         %% Get observers data
         [allMasks, consensusMask]=getTuftConsensusMask(it);
 
+        %% Testing tufts false positives
+        tuftsMaskQC = getTuftQC(tuftsMask);
+        imOverlay   = imoverlay(zeros(size(tuftsMask)),consensusMask & tuftsMaskQC,'g'); % TP
+        imOverlay   = imoverlay(imOverlay,consensusMask & ~tuftsMaskQC,'b'); % FN
+        imOverlay   = imoverlay(imOverlay,~consensusMask & tuftsMaskQC,'r'); % FP
+        figure;imshow(imOverlay);
+        GT = sum(consensusMask(:));
+        TP = sum(consensusMask(:) & tuftsMaskQC(:));
+        FN = sum(consensusMask(:) & ~tuftsMaskQC(:));
+        FP = sum(~consensusMask(:) & tuftsMaskQC(:));
+        text(50,100,['TP = ' num2str(TP) '(' num2str(TP/GT*100) '%)'],'Color','g','FontSize',36)
+        text(50,250,['FN = ' num2str(FN) '(' num2str(FN/GT*100) '%)'],'Color','b','FontSize',36)
+        text(50,400,['FP = ' num2str(FP) '(' num2str(FP/GT*100) '%)'],'Color','r','FontSize',36)
+        
         %% Create votes Image
         votesImageRed=.5*redImage;
         votesImageGreen=.5*redImage;

@@ -10,7 +10,7 @@ thickMask=logical(getThickTufts(myImage, thisMask)).*maskNoCenter;
 
 tuftsMask=brightMask.*thickMask;
 
-tuftsMask=getTuftQC(tuftsMask)
+% tuftsMask=getTuftQC(tuftsMask);
 
 
 
