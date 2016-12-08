@@ -59,6 +59,8 @@ for it=1:numel(myFiles)
         [allMasks, consensusMask]=getTuftConsensusMask(it);
 
         %% Testing tufts false positives
+        labeledTuftsMask=makeLabeledImage(tuftsMask);
+        
         tuftsMaskQC = getTuftQC(tuftsMask);
         imOverlay   = imoverlay(zeros(size(tuftsMask)),consensusMask & tuftsMaskQC,'g'); % TP
         imOverlay   = imoverlay(imOverlay,consensusMask & ~tuftsMaskQC,'b'); % FN
