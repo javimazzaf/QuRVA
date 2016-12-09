@@ -8,9 +8,11 @@ BW=imbinarize(myImage.*uint8(thisMask), 'adaptive', 'Sensitivity', 0.4);
 
 imSkel=bwmorph(BW, 'thin', Inf);
 dst = bwdist(imSkel) .* BW .* maskNoCenter;
+skelDist = bwdist(~BW) .* imSkel .* maskNoCenter;
+
 nDist = 8;
 dstParts = dst > nDist;
-dstPartsGrow = imdilate(dstParts, strel('disk', nDist));
+dstPartsGrow = imdilate(dstParts, strel('disk', nDist+2));
 test = BW .* dstPartsGrow;
 
 medFiltVessels=filter2(ones(50), double(BW),'same') > (50^2/2);
