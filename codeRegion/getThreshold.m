@@ -14,10 +14,16 @@ function thresh = getThreshold(inIm)
     [~,ixMx2] = max(N .* (edges(1:end-1) >= otsuThresh));
     
     absmin = prctile(N(ixMx1:ixMx2),2);
+    [~,ix]=min(N(ixMx1:ixMx2)-absmin);
+    absmin=N(ixMx1+ix-1);    
+%     aux = N(ixMx1:ixMx2);
+%     [~,ix] = min(abs(aux-absmin));
+%     absmin = aux(ix);
+    
     
     %     absmin = max(0.02, absmin + 0.02);
     
-    ix = find(N < absmin & edges(1:end-1) > edges(ixMx1)& edges(1:end-1) < edges(ixMx2), 1, 'first');
+    ix = find(N <= absmin & edges(1:end-1) > edges(ixMx1)& edges(1:end-1) < edges(ixMx2), 1, 'first');
 %     hold on
 %     line([otsuThresh otsuThresh],[0 1.1],'Color','r')
 %     plot(edges(ixMx1),N(ixMx1),'*m')

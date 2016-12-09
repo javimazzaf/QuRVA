@@ -1,6 +1,12 @@
 function outMask = getTuftQC(inMask)
 
-tb = struct2table(regionprops(logical(inMask),'Perimeter','Area','Solidity','PixelIdxList'));
+inMask = logical(inMask);
+
+tb = struct2table(regionprops(inMask,'Perimeter','Area','Solidity','PixelIdxList'));
+
+imSkel=bwmorph(inMask, 'thin', Inf);
+
+bwdist(imSkel) .* inMask
 
 id = (1:size(tb,1))';
 
