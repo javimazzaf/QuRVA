@@ -1,6 +1,7 @@
 clear
 %% Set folders
-masterFolder='/Users/santiago/Dropbox (Biophotonics)/Projects/Bruno/Images/ToTest/Anonymous/';
+%masterFolder='/Users/santiago/Dropbox (Biophotonics)/Projects/Bruno/Images/ToTest/Anonymous/';
+masterFolder='/Users/santiago/Dropbox (Biophotonics)/Projects/Bruno/Images/IOVS/NrpLyz/P2';
 % Change folder if Javier
 [~,user] = system('whoami');
 if strcmp(strtrim(user),'javimazzaf'), masterFolder='../Anonymous/';end
@@ -17,8 +18,8 @@ mkdir(masterFolder, 'VasculatureNumbers')
 [~,user] = system('whoami');
 if strcmp(strtrim(user),'javimazzaf'), masterFolder='../Anonymous/';end
 
-doTufts=1;
-doVasculature=0;
+doTufts=0;
+doVasculature=1;
 
 %% Get file names
 myFiles=dir([masterFolder filesep '*.jpg']);
@@ -43,17 +44,28 @@ for it=1:numel(myFiles)
     if exist([masterFolder filesep 'Masks' filesep myFiles(it).name '.mat'],'file')
         load([masterFolder filesep 'Masks' filesep myFiles(it).name '.mat']);
     else
-        thisMask=roipoly(thisImage);
-        save([masterFolder filesep 'Masks' filesep myFiles(it).name '.mat'], 'thisMask');
+        thisMask=getMask(redImage);
+        imshow(uint8(imdilate(bwperim(thisMask),strel('disk',5)))*255+redImage)
+        
+        choice = questdlg('Are you happy with the mask?', 'Yes', 'No');
+        switch choice
+            case 'Yes'
+                save([masterFolder filesep 'Masks' filesep myFiles(it).name '.mat'], 'thisMask');
+            case 'No'
+                thisMask=roipoly(thisImage);
+                save([masterFolder filesep 'Masks' filesep myFiles(it).name '.mat'], 'thisMask');
+        end
     end
     
     %% Check for ON coordinates
     if exist([masterFolder filesep 'ONCenter' filesep myFiles(it).name '.mat'],'file')
         load([masterFolder filesep 'ONCenter' filesep myFiles(it).name '.mat']);
+        [maskStats, maskNoCenter]=processMask(thisMask, redImage, thisONCenter);
+    else
+        [maskStats, maskNoCenter, thisONCenter]=processMask(thisMask, redImage);
     end
     
-    [maskStats, maskNoCenter]=processMask(thisMask, redImage, thisONCenter);
-    
+        
     %% Analyze tufts
     if doTufts==true
 
@@ -97,10 +109,10 @@ for it=1:numel(myFiles)
 
         [vesselSkelMask, brchPts]=getVacularNetwork(thisMask, redImage);
         [aVascZone]=getAvacularZone(thisMask, vesselSkelMask);
-        aVascConsensus=getAVascularConsensusMask(it);
+        % aVascConsensus=getAVascularConsensusMask(it);
 
         %% Make a nice image
-        leftHalf=cat(3, redImage, redImage, uint8(aVascConsensus)*255);
+        leftHalf=cat(3, redImage, redImage, redImage);
         rightHalf=cat(3, redImage,...
             uint8(vesselSkelMask).*255,...
             uint8(logical(aVascZone)+imdilate(brchPts, strel('disk',3))).*255);
