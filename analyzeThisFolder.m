@@ -17,17 +17,17 @@ doTufts=0;
 doVasculature=1;
 
 %% Get file names
-myFiles=dir([masterFolder filesep '*.jpg']);
-if numel(myFiles)==0
-    myFiles=dir([masterFolder filesep '*.tif']);
+myFiles=dir(fullfile(masterFolder, '*.jpg'));
+if isempty(myFiles)
+    myFiles=dir(fullfile(masterFolder, '*.tif'));
 end
 
 %% Do loop
 for it=1:numel(myFiles)
-    myFiles(it).name
+    disp(myFiles(it).name)
     
     %% Read image
-    thisImage=imread([masterFolder filesep myFiles(it).name]);
+    thisImage=imread(fullfile(masterFolder, myFiles(it).name));
     redImage=thisImage(:,:,1);
     
     %% Make 8 bits
@@ -35,38 +35,59 @@ for it=1:numel(myFiles)
         redImage=uint8(double(redImage)/65535*255);
     end
 
-    %% Check for a mask or make one
-    if exist([masterFolder filesep 'Masks' filesep myFiles(it).name '.mat'],'file')
-        load([masterFolder filesep 'Masks' filesep myFiles(it).name '.mat']);
+    %% Load mask and center
+    clear thisMask thisONCenter fg
+    
+    maskFile = fullfile(masterFolder, 'Masks', [myFiles(it).name '.mat']);
+    if exist(maskFile,'file')
+        load(maskFile,'thisMask');  
     else
         thisMask=getMask(redImage);
-        imshow(uint8(imdilate(bwperim(thisMask),strel('disk',5)))*255+redImage)
+        fg = figure; imshow(imoverlay(redImage,imdilate(bwperim(thisMask),strel('disk',5)),'m')), hold on
         
-        choice = questdlg('Are you happy with the mask?', 'Yes', 'No');
-        switch choice
-            case 'Yes'
-                save([masterFolder filesep 'Masks' filesep myFiles(it).name '.mat'], 'thisMask');
-            case 'No'
-                thisMask=roipoly(thisImage);
-                save([masterFolder filesep 'Masks' filesep myFiles(it).name '.mat'], 'thisMask');
+        if strcmp(questdlg('Are you happy with the mask?', 'Yes', 'No'),'No')  
+           thisMask=roipoly(thisImage);
         end
-    end
-    
-    %% Check for ON coordinates
-    if exist([masterFolder filesep 'ONCenter' filesep myFiles(it).name '.mat'],'file')
-        load([masterFolder filesep 'ONCenter' filesep myFiles(it).name '.mat']);
-        [maskStats, maskNoCenter]=processMask(thisMask, redImage, thisONCenter);
-    else
-        [maskStats, maskNoCenter, thisONCenter]=processMask(thisMask, redImage);
-    end
-    
         
+        save(maskFile, 'thisMask');          
+    end 
+    
+    centerFile = fullfile(masterFolder, 'ONCenter', [myFiles(it).name '.mat']);
+    if exist(centerFile,'file')
+        load(centerFile,'thisONCenter'); 
+    end
+    
+    if ~exist('fg','var')
+       imshow(imoverlay(redImage,imdilate(bwperim(thisMask),strel('disk',5)),'m')) 
+    else
+       figure(fg); 
+    end
+    
+    title('Set center')
+        
+    if ~exist('thisONCenter','var')
+       [x,y]=ginput(1);
+       thisONCenter=[round(x) round(y)];
+    end
+    
+    hold on
+    plot(thisONCenter(1),thisONCenter(2),'*g')    
+    
+    if strcmp(questdlg('Are you happy with the Center?', 'Yes', 'No'),'No')
+        [x,y]=ginput(1);
+        thisONCenter=[round(x) round(y)];
+        save(centerFile, 'thisONCenter');
+    end
+    
+    if exist('fg','var'), close(fg), end
+    
+    [maskStats, maskNoCenter]=processMask(thisMask, redImage, thisONCenter);
+    
     %% Analyze tufts
     if doTufts==true
 
         [tuftsMask, brightMask, thickMask]=getTufts(thisMask, redImage, maskNoCenter);
                
-    
         %% Get observers data
         [allMasks, consensusMask]=getTuftConsensusMask(it);
 
@@ -121,6 +142,5 @@ for it=1:numel(myFiles)
             'vesselSkelMask', 'brchPts','aVascZone', 'thisSholl');
     end
     
-
 end
 
