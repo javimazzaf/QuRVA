@@ -1,4 +1,6 @@
-function outMask=getThickTufts(myImage, thisMask,maskNoCenter)
+% Detects the parts of vessels that are thicker than mean+3SD and use it as
+% a method to discard false positives of the Tuft detection
+function outMask = getThickVessels(myImage, thisMask,maskNoCenter)
 
 maskProps=regionprops(thisMask, 'Centroid', 'EquivDiameter');
 
