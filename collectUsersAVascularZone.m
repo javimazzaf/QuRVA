@@ -1,6 +1,6 @@
 clear 
 
-users={'Santiago'};
+users={'Santiago' 'Carlos'};
 
 rotatedAngles=-90*[1 0 1 1 1 0 1 1 1 0 0 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 1];
 

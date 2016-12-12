@@ -1,5 +1,7 @@
 function msk = getMask(im)
 
+im(im(:) >= 0.99 * max(im(:))) = 0;
+
 oSize = size(im);
 
 scl = 500 / max(oSize);
