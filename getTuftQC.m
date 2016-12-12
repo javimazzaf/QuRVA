@@ -1,32 +1,16 @@
-function outMask=getTuftQC(tuftsMask)
+function outMask = getTuftQC(myImage, thisMask,maskNoCenter, tuftsMask)
 
-outMask=tuftsMask;
+thickMask = getThickVessels(myImage, thisMask,maskNoCenter);
 
-outMask=bwareaopen(outMask, 30);
+tuftsMaskProps = struct2table(regionprops(logical(tuftsMask), 'PixelIdxList'));
 
-maskStats=struct2table(regionprops(logical(outMask), 'All'));
-
-objLabeledImage=makeLabeledImage(logical(outMask));
-
-%imshow(label2rgb(bwlabel(outMask), 'jet'))
-
-thinObjects=find(maskStats.Solidity<.5);
-
-bigObjects=find(maskStats.Area>mean(maskStats.Area));
-
-for it=1:numel(bigObjects)
-    thisObjSkel=bwmorph(maskStats.Image{bigObjects(it)}, 'thin', Inf);
-    numBrchPts=sum(sum(bwmorph(thisObjSkel, 'branchpoints')));
-    branchAreaRatio(it)=numBrchPts/maskStats.Area(bigObjects(it));
+for k = 1:numel(tuftsMaskProps)
+    ix = tuftsMaskProps.PixelIdxList{k};
+    valid(k) = logical(sum(thickMask(ix)) > 2);
 end
 
-branchedObjects=find(branchAreaRatio>0.005);
+validIxs = vertcat(tuftsMaskProps.PixelIdxList{valid'});
 
-for it=1:numel(branchedObjects)
-    outMask(maskStats.PixelIdxList{bigObjects(branchedObjects(it))})=0;
-end
+outMask = zeros(size(tuftsMask),'logical');
 
-elongatedObjects=find(maskStats.Eccentricity>.9);
-
-imshow([outMask tuftsMask]);
-
+outMask(validIxs) = true;
