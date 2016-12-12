@@ -6,7 +6,7 @@ mkdir(masterFolder, 'Global')
 %% Get file names
 myFiles=dir([masterFolder filesep 'TuftNumbers' filesep '*.mat']);
 
-distancesStats={[0], [0], [0], [0], [0], [0], [0], [0], [0], [0], [0], [0]};
+distancesStats={[0], [0], [0], [0], [0], [0], [0], [0], [0], [0], [0], [0], [0]};
 
 %% Load results
 
@@ -69,6 +69,7 @@ makeNiceOffPixelRelativeFigure(offPixelsRelative)
 print(gcf,'-dpng',[masterFolder filesep 'Global' filesep 'BarplotOffOixelsRelative.png']);
 
 %% Make boxplots
+figure
 
 dataToPlot=[distancesStats{1} ones(numel(distancesStats{1}),1)];
 

@@ -1,4 +1,4 @@
-function [maskProps, maskNoCenter]=processMask(varargin)
+function [maskProps, maskNoCenter, thisONCenter]=processMask(varargin)
 
 
 myMask=varargin{1};
@@ -26,6 +26,8 @@ else
 
     maskNoEdge=createCircularMask(size(myMask, 1), size(myMask, 2),...
         maskProps.WeightedCentroid(1), maskProps.WeightedCentroid(2), maskProps.EquivDiameter*.4);
+    
+    thisONCenter=maskProps.WeightedCentroid;
 end
 
 maskNoCenter=maskNoEdge.*~newCenterCircleMask;
