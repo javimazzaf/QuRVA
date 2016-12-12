@@ -1,38 +1,16 @@
-function outMask = getTuftQC(inMask)
+function outMask = getTuftQC(myImage, thisMask,maskNoCenter, tuftsMask)
 
-inMask = logical(inMask);
+thickMask = getThickVessels(myImage, thisMask,maskNoCenter);
 
-tb = struct2table(regionprops(inMask,'Perimeter','Area','Solidity','PixelIdxList'));
+tuftsMaskProps = struct2table(regionprops(logical(tuftsMask), 'PixelIdxList'));
 
-imSkel=bwmorph(inMask, 'thin', Inf);
+for k = 1:numel(tuftsMaskProps)
+    ix = tuftsMaskProps.PixelIdxList{k};
+    valid(k) = logical(sum(thickMask(ix)) > 2);
+end
 
-bwdist(imSkel) .* inMask
+validIxs = vertcat(tuftsMaskProps.PixelIdxList{valid'});
 
-id = (1:size(tb,1))';
+outMask = zeros(size(tuftsMask),'logical');
 
-fillIndex = tb.Perimeter(:) ./ tb.Area(:);
-
-tb = [table(id), tb, table(fillIndex)];
-
-figure;
-% subplot(2,1,1)
-% plot(id,tb.Perimeter(:),'.-r'), hold on
-% plot(id,tb.Area(:),'.-b'), hold off
-% 
-% subplot(2,1,2)
-% plot(id,fillIndex,'.-k')
-plot(id,tb.Solidity(:),'.-k')
-
-outMask = zeros(size(inMask),'logical');
-
-idx = tb.PixelIdxList(tb.Solidity > 0.5); 
-
-idx = [cell2mat(idx(:))];
-
-outMask(idx) = true;
-
-disp(1)
-
-
-
-% outMask = filter2(fspecial('disk',20),inMask,'same') > 0.5;
+outMask(validIxs) = true;

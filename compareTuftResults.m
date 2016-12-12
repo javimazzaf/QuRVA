@@ -44,8 +44,8 @@ for it=1:numel(myFiles)
             offPixelsImage(:,:,itUsers+1+itSwift)=abs(swiftMasks(:,:,itSwift)-consensusMask);
         end
         
-        distancesStats{itUsers+1+itSwift}=[distancesStats{itUsers+1+itSwift}; nonzeros(distanceImage(:,:,itSwift))];
-                distancesStats{itUsers+1}=[distancesStats{itUsers+1}; nonzeros(distanceImage(:,:,itUsers+1))];
+        distancesStats{itUsers+1+itSwift}=[distancesStats{itUsers+1+itSwift}; nonzeros(distanceImage(:,:,itUsers+1+itSwift))];
+%                 distancesStats{itUsers+1}=[distancesStats{itUsers+1}; nonzeros(distanceImage(:,:,itUsers+1))];
        
     end
 
@@ -86,7 +86,7 @@ boxplot(dataToPlot(:,1), dataToPlot(:,2))
 
 print(gcf,'-dpng',[masterFolder filesep 'Global' filesep 'Boxplot.png']);
 
-%% Violin Plots
-figure
-violinplot(dataToPlot(:,1), dataToPlot(:,2))
-print(gcf,'-dpng',[masterFolder filesep 'Global' filesep 'Violins.png']);
+% %% Violin Plots
+% figure
+% violinplot(dataToPlot(:,1), dataToPlot(:,2))
+% print(gcf,'-dpng',[masterFolder filesep 'Global' filesep 'Violins.png']);
