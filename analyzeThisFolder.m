@@ -1,6 +1,6 @@
 clear
 %% Set folders
-masterFolder='/Users/santiago/Dropbox (Biophotonics)/Projects/Bruno/Images/ToTest/Anonymous/';
+masterFolder='/Users/santiago/Dropbox (Biophotonics)/Projects/FlatMounts/PaperImageSet/Anonymous/';
 %masterFolder='/Users/santiago/Dropbox (Biophotonics)/Projects/Bruno/Images/IOVS/NrpLyz/P2';
 % Change folder if Javier
 [~,user] = system('whoami');
