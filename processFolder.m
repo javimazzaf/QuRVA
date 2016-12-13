@@ -85,7 +85,7 @@ for it=1:numel(myFiles)
         
     end
     
-    if exist('fg','var'), close(fg), end
+    if exist('fg','var'), close(fg); clear fg; end
     
     [maskStats, maskNoCenter]=processMask(thisMask, redImage, thisONCenter);
     
