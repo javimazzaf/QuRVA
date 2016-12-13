@@ -19,13 +19,14 @@ if ~exist(fullfile(masterFolder,'TuftConsensusMasks'),'dir')
 end
 
 % Computes the consensus for each image
-for it = 1:15 
+for it = 1:14 
     
     for itUser = 1:numel(users)
         
         testerImage  = imread(fullfile(masterFolder, 'Testers', [users{itUser} '.tiff']),it);
         testerImage  = imrotate(testerImage, rotatedAngles(it));
         thisRawImage = imread(fullfile(masterFolder, rawFileNames(it).name));
+        thisRawImage = thisRawImage(:,:,1);
         
         trimedImage  = trimThisImage(testerImage);
         
