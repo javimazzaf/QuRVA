@@ -119,8 +119,6 @@ for it=1:numel(myFiles)
             [tuftsMask, brightMask, thickMask]=getTufts(thisMask, redImage, maskNoCenter);
         end
                
-
-
         %% Save Tuft Images
 
         quadNW=cat(3, uint8(thickMask).*redImage, redImage, uint8(brightMask).*redImage);
