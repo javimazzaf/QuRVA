@@ -1,15 +1,14 @@
 function [allMasks consensusMask]=getAVascularConsensusMask(imageId)
 
-masterFolder='/Users/santiago/Dropbox (Biophotonics)/Projects/Bruno/Images/ToTest/Testers/vascular/';
-% Change folder if Javier
-[~,user] = system('whoami');
-if strcmp(strtrim(user),'javimazzaf'), masterFolder='../Anonymous/Test/';end
+localConfig
 
-matFiles=dir([masterFolder '*.mat']);
+vascTestFolder=[testersFolder 'vascular/'];
+
+matFiles=dir([vascTestFolder '*.mat']);
 
 for it=1:numel(matFiles)
 
-    load([masterFolder matFiles(it).name]);
+    load([vascTestFolder matFiles(it).name]);
     
     allMasks(:,:,it)=magentaMasks{imageId};
    

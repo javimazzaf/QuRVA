@@ -1,6 +1,17 @@
-function outMask = getTuftQC(myImage, thisMask,maskNoCenter, tuftsMask)
+function outMask = getTuftQC(varargin)
 
-thickMask = getThickVessels(myImage, thisMask, maskNoCenter);
+% getTuftQC(myImage, thisMask, maskNoCenter, tuftsMask, smoothVessels)
+
+myImage=varargin{1};
+thisMask=varargin{2};
+maskNoCenter=varargin{3};
+tuftsMask=varargin{4};
+
+if nargin==5 
+    thickMask=varargin{5};
+else
+    thickMask = getThickVessels(myImage, thisMask, maskNoCenter);
+end
 
 tuftsMaskProps = struct2table(regionprops(logical(tuftsMask), 'PixelIdxList'));
 

@@ -1,7 +1,4 @@
 clear
-%% Set folders
-masterFolder='/Users/santiago/Dropbox (Biophotonics)/Projects/FlatMounts/PaperImageSet/Anonymous/';
-
 % loads local parameters
 if exist('localConfig.m','file'), localConfig; end
 
@@ -13,7 +10,7 @@ mkdir(masterFolder, 'VasculatureImages')
 mkdir(masterFolder, 'VasculatureNumbers')
 
 doTufts=1;
-doVasculature=0;
+doVasculature=1;
 
 %% Get file names
 myFiles=dir(fullfile(masterFolder, '*.jpg'));
@@ -85,10 +82,36 @@ for it=1:numel(myFiles)
     
     [maskStats, maskNoCenter]=processMask(thisMask, redImage, thisONCenter);
     
+    
+    if doVasculature==true
+
+        [vesselSkelMask, brchPts, smoothVessels]=getVacularNetwork(thisMask, redImage);
+        [aVascZone]=getAvacularZone(thisMask, vesselSkelMask);
+        [aVascAllMasks aVascConsensus]=getAVascularConsensusMask(it);
+
+        %% Make a nice image
+        leftHalf=cat(3, redImage, redImage, uint8(aVascConsensus)*255);
+        rightHalf=cat(3, redImage,...
+            uint8(vesselSkelMask).*255,...
+            uint8(logical(aVascZone)+imdilate(brchPts, strel('disk',3))).*255);
+        
+        imwrite([leftHalf rightHalf], ...
+            [masterFolder filesep 'VasculatureImages' filesep myFiles(it).name], 'JPG')
+             
+        thisSholl=getShollEq(vesselSkelMask, maskStats, thisONCenter);
+        
+        save(fullfile(masterFolder, 'VasculatureNumbers', [myFiles(it).name,'.mat']),...
+            'vesselSkelMask', 'brchPts','aVascZone', 'thisSholl');
+    end
+
     %% Analyze tufts
     if doTufts==true
 
-        [tuftsMask, brightMask, thickMask]=getTufts(thisMask, redImage, maskNoCenter);
+        if exist('smoothVessels', 'var')
+            [tuftsMask, brightMask, thickMask]=getTufts(thisMask, redImage, maskNoCenter, smoothVessels);
+        else
+            [tuftsMask, brightMask, thickMask]=getTufts(thisMask, redImage, maskNoCenter);
+        end
                
         %% Get observers data
         [allMasks, consensusMask]=getTuftConsensusMask(it);
@@ -123,26 +146,6 @@ for it=1:numel(myFiles)
     
     end % do vasculature network
     
-    if doVasculature==true
-
-        [vesselSkelMask, brchPts]=getVacularNetwork(thisMask, redImage);
-        [aVascZone]=getAvacularZone(thisMask, vesselSkelMask);
-        [aVascAllMasks aVascConsensus]=getAVascularConsensusMask(it);
-
-        %% Make a nice image
-        leftHalf=cat(3, redImage, redImage, uint8(aVascConsensus)*255);
-        rightHalf=cat(3, redImage,...
-            uint8(vesselSkelMask).*255,...
-            uint8(logical(aVascZone)+imdilate(brchPts, strel('disk',3))).*255);
-        
-        imwrite([leftHalf rightHalf], ...
-            [masterFolder filesep 'VasculatureImages' filesep myFiles(it).name], 'JPG')
-             
-        thisSholl=getShollEq(vesselSkelMask, maskStats, thisONCenter);
-        
-        save(fullfile(masterFolder, 'VasculatureNumbers', [myFiles(it).name,'.mat']),...
-            'vesselSkelMask', 'brchPts','aVascZone', 'thisSholl');
-    end
     
 end
 

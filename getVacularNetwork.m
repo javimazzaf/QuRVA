@@ -1,4 +1,4 @@
-function [vesselSkelMask, brchPts]=getVacularNetwork(thisMask, myImage)
+function [vesselSkelMask, brchPts, smoothVessels]=getVacularNetwork(thisMask, myImage)
 
 
 %% Segment a very fine vessels
