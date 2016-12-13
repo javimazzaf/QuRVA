@@ -1,15 +1,15 @@
-function [allMasks consensusMask]=getConsensusMask(imageId)
+function [allMasks, consensusMask]=getTuftConsensusMask(imageId)
 
-masterFolder='/Users/santiago/Dropbox (Biophotonics)/Projects/Bruno/Images/ToTest/Testers/';
-% Change folder if Javier
-[~,user] = system('whoami');
-if strcmp(strtrim(user),'javimazzaf'), masterFolder='../Anonymous/Test/';end
+testersFolder='/Users/santiago/Dropbox (Biophotonics)/Projects/Bruno/Images/ToTest/Testers/';
 
-matFiles=dir([masterFolder '*.mat']);
+% loads local parameters
+if exist('localConfig.m','file'), localConfig; end
+
+matFiles=dir([testersFolder '*.mat']);
 
 for it=1:numel(matFiles)
 
-    load([masterFolder matFiles(it).name]);
+    load([testersFolder matFiles(it).name]);
     
     allMasks(:,:,it)=magentaMasks{imageId};
    
