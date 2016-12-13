@@ -91,7 +91,7 @@ for it=1:numel(myFiles)
         [tuftsMask, brightMask, thickMask]=getTufts(thisMask, redImage, maskNoCenter);
                
         %% Get observers data
-        [allMasks, consensusMask]=getTuftConsensusMask(myFiles(it).name);
+        load(fullfile(masterFolder,'TuftConsensusMasks',[myFiles(it).name '.mat']),'allMasks','consensusMask')
 
         %% Create votes Image
         votesImageRed=.5*redImage;

@@ -1,29 +1,45 @@
-clear 
+function collectUsersTufts 
 
-users={'Kalo' 'Bruno' 'Santiago' 'Francois' 'Carlos' 'Agnieszka'};
+rotatedAngles = -90 * [1 0 1 1 1 0 1 1 1 0 0 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 1];
 
-rotatedAngles=-90*[1 0 1 1 1 0 1 1 1 0 0 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 1];
+masterFolder='/Users/santiago/Dropbox (Biophotonics)/Projects/FlatMounts/PaperImageSet/Anonymous/';
 
-masterFolder='/Users/santiago/Dropbox (Biophotonics)/Projects/Bruno/Images/ToTest/';
-rawImgFolder=[masterFolder 'Anonymous/'];
+% loads local parameters
+if exist('localConfig.m','file'), localConfig; end
 
-rawFileNames=dir([rawImgFolder 'Im*']);
+% Get tester names
+testerFiles = dir(fullfile(masterFolder,'Testers','*.tiff'));
+users = cellfun(@(x) regexp(x,'^.*(?=(\.tiff))','match'),{testerFiles(:).name});
 
-for itUser=1:numel(users)
-    users{itUser}
+% Get image files names
+rawFileNames = dir(fullfile(masterFolder,'Im*'));
 
-    for it=1:15% numel(rawFileNames)
-        image4channel=imread([masterFolder 'Testers/' users{itUser} '.tiff'],it);
-        image4channel=imrotate(image4channel, rotatedAngles(it));
-        thisRawImage=imread([rawImgFolder rawFileNames(it).name]);
-
-        trimedImage=trimThisImage(image4channel);
-
-        magentaMaskOriginal=createMagentaMask(trimedImage);
-
-        magentaMasks{it}=imresize(logical(magentaMaskOriginal), [size(thisRawImage,1), size(thisRawImage,2)]);
-    end
-
-save([masterFolder 'Testers/Masks' users{itUser} '.mat'], 'magentaMasks')
-
+if ~exist(fullfile(masterFolder,'TuftConsensusMasks'),'dir')
+    mkdir(fullfile(masterFolder,'TuftConsensusMasks'));
 end
+
+% Computes the consensus for each image
+for it = 1:15 
+    
+    for itUser = 1:numel(users)
+        
+        testerImage  = imread(fullfile(masterFolder, 'Testers', [users{itUser} '.tiff']),it);
+        testerImage  = imrotate(testerImage, rotatedAngles(it));
+        thisRawImage = imread(fullfile(masterFolder, rawFileNames(it).name));
+        
+        trimedImage  = trimThisImage(testerImage);
+        
+        magentaMaskOriginal = createMagentaMask(trimedImage);
+        
+        allMasks(:,:,itUser) = imresize(logical(magentaMaskOriginal), size(thisRawImage));
+        
+    end
+    
+    consensusMask = round(mean(allMasks, 3));
+    
+    save(fullfile(masterFolder,'TuftConsensusMasks',[rawFileNames(it).name '.mat']), 'allMasks','consensusMask')
+    
+    clear allMasks
+    
+end
+
