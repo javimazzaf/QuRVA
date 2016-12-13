@@ -1,10 +1,9 @@
 clear
 %% Set folders
 masterFolder='/Users/santiago/Dropbox (Biophotonics)/Projects/Bruno/Images/ToTest/Anonymous/';
-%masterFolder='/Users/santiago/Dropbox (Biophotonics)/Projects/Bruno/Images/IOVS/NrpLyz/P2';
-% Change folder if Javier
-[~,user] = system('whoami');
-if strcmp(strtrim(user),'javimazzaf'), masterFolder='../Anonymous/';end
+
+% loads local parameters
+if exist('localConfig.m','file'), localConfig; end
 
 warning('Off')
 mkdir(masterFolder, 'Masks')
