@@ -13,8 +13,8 @@ mkdir(masterFolder, 'TuftNumbers')
 mkdir(masterFolder, 'VasculatureImages')
 mkdir(masterFolder, 'VasculatureNumbers')
 
-doTufts=0;
-doVasculature=1;
+doTufts=1;
+doVasculature=0;
 
 %% Get file names
 myFiles=dir(fullfile(masterFolder, '*.jpg'));
@@ -36,47 +36,50 @@ for it=1:numel(myFiles)
     end
 
     %% Load mask and center
-    clear thisMask thisONCenter fg
-    
     maskFile = fullfile(masterFolder, 'Masks', [myFiles(it).name '.mat']);
     if exist(maskFile,'file')
         load(maskFile,'thisMask');  
     else
         thisMask=getMask(redImage);
-        fg = figure; imshow(imoverlay(redImage,imdilate(bwperim(thisMask),strel('disk',5)),'m')), hold on
+        fg = figure;
+        imshow(imoverlay(redImage,imdilate(bwperim(thisMask),strel('disk',5)),'m'))
         
-        if strcmp(questdlg('Are you happy with the mask?', 'Yes', 'No'),'No')  
-           thisMask=roipoly(thisImage);
+        while true
+            
+            if strcmp(questdlg('Are you happy with the mask?', 'Yes', 'No'),'No')
+                imshow(redImage,[])
+                thisMask=roipoly(thisImage);
+                imshow(imoverlay(redImage,imdilate(bwperim(thisMask),strel('disk',5)),'m'))
+            else
+                save(maskFile, 'thisMask');
+                break
+            end
         end
         
-        save(maskFile, 'thisMask');          
-    end 
+    end
     
     centerFile = fullfile(masterFolder, 'ONCenter', [myFiles(it).name '.mat']);
     if exist(centerFile,'file')
-        load(centerFile,'thisONCenter'); 
-    end
-    
-    if ~exist('fg','var')
-       imshow(imoverlay(redImage,imdilate(bwperim(thisMask),strel('disk',5)),'m')) 
+        load(centerFile,'thisONCenter');
     else
-       figure(fg); 
-    end
-    
-    title('Set center')
+        while true
+            
+            if exist('fg','var'), clf(fg)
+            else                , fg = figure; end
+            
+            imshow(redImage,[]), hold on
+            title('Set center')
+            [x,y]=ginput(1);
+            thisONCenter=round([x y]);
+            plot(x,y,'*g')
+            
+            if strcmp(questdlg('Are you happy with the Center?', 'Yes', 'No'),'Yes')
+                save(centerFile, 'thisONCenter');
+                break
+            end
+            
+        end
         
-    if ~exist('thisONCenter','var')
-       [x,y]=ginput(1);
-       thisONCenter=[round(x) round(y)];
-    end
-    
-    hold on
-    plot(thisONCenter(1),thisONCenter(2),'*g')    
-    
-    if strcmp(questdlg('Are you happy with the Center?', 'Yes', 'No'),'No')
-        [x,y]=ginput(1);
-        thisONCenter=[round(x) round(y)];
-        save(centerFile, 'thisONCenter');
     end
     
     if exist('fg','var'), close(fg), end
