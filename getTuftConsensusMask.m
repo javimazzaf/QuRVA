@@ -1,18 +1,18 @@
-function [allMasks, consensusMask]=getTuftConsensusMask(imageId)
+function [allMasks, consensusMask]=getTuftConsensusMask(imName)
 
-testersFolder='/Users/santiago/Dropbox (Biophotonics)/Projects/Bruno/Images/ToTest/Testers/';
+masterFolder='/Users/santiago/Dropbox (Biophotonics)/Projects/FlatMounts/PaperImageSet/Anonymous/';
 
 % loads local parameters
 if exist('localConfig.m','file'), localConfig; end
 
-matFiles=dir([testersFolder '*.mat']);
+fileName = fullfile(masterFolder,'TuftConsensusMasks',[imName '.mat']);
 
-for it=1:numel(matFiles)
-
-    load([testersFolder matFiles(it).name]);
-    
-    allMasks(:,:,it)=magentaMasks{imageId};
-   
+if exist(fileName,'file')
+    load(fileName,'allMasks','consensusMask')
+else
+    [allMasks, consensusMask] = computeTuftConsensusMask(imName);
+    save(fileName,'allMasks','consensusMask')
 end
 
-consensusMask=round(mean(allMasks, 3));
+end
+
