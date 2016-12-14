@@ -1,11 +1,8 @@
 clear
 
 %% Settings and folders
-if exist('localConfig.m','file')
-    localConfig
-else
-    masterFolder=uigetdir('/Users/santiago/Dropbox (Biophotonics)/Projects/FlatMounts/', 'Select folder');
-end
+masterFolder=uigetdir('/Users/santiago/Dropbox (Biophotonics)/Projects/FlatMounts/', 'Select folder');
+readConfig
 
 warning('Off')
 mkdir(masterFolder, 'Masks')

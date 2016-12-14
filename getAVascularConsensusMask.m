@@ -1,6 +1,6 @@
 function [allMasks consensusMask]=getAVascularConsensusMask(imageId)
 
-localConfig
+readConfig;
 
 vascTestFolder=[testersFolder 'vascular/'];
 

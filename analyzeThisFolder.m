@@ -1,6 +1,6 @@
 clear
 % loads local parameters
-if exist('localConfig.m','file'), localConfig; end
+readConfig;
 
 warning('Off')
 mkdir(masterFolder, 'Masks')
