@@ -1,4 +1,4 @@
-function [allMasks consensusMask]=getAVascularConsensusMask(imageId)
+function [allMasks, consensusMask] = getAVascularConsensusMask(imageId)
 
 readConfig;
 
