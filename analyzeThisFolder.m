@@ -10,7 +10,7 @@ mkdir(masterFolder, 'VasculatureImages')
 mkdir(masterFolder, 'VasculatureNumbers')
 
 doTufts=1;
-doVasculature=1;
+doVasculature=0;
 
 %% Get file names
 myFiles=dir(fullfile(masterFolder, '*.jpg'));
