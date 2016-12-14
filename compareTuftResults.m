@@ -15,20 +15,22 @@ distancesStats={[0], [0], [0], [0], [0], [0], [0], [0], [0], [0], [0], [0], [0]}
 %% Load results
 
 for it=1:numel(myFiles)
-    it
+    disp(myFiles(it).name);
     load([masterFolder 'TuftNumbers' filesep myFiles(it).name]);
     
     swiftMasks=collectSwift(masterFolder, myFiles(it).name, consensusMask);
         
     distanceImage(:,:,1)=tuftsMask.*bwdist(consensusMask);
-    offPixelsImage(:,:,1)=abs(tuftsMask-consensusMask);
+    falsePositivePixelsImage(:,:,1)=uint8((tuftsMask-consensusMask)>0);
+    falseNegativePixelsImage(:,:,1)=uint8((tuftsMask-consensusMask)<0);
 
     distancesStats{1}=[distancesStats{1}; nonzeros(distanceImage(:,:,1))];
     
    
     for itUsers=1:size(allMasks,3)
         distanceImage(:,:,itUsers+1)=allMasks(:,:,itUsers).*bwdist(consensusMask);
-        offPixelsImage(:,:,itUsers+1)=abs(allMasks(:,:,itUsers)-consensusMask);
+        falsePositivePixelsImage(:,:,itUsers+1)=uint8((allMasks(:,:,itUsers)-consensusMask)>0);
+        falseNegativePixelsImage(:,:,itUsers+1)=uint8((allMasks(:,:,itUsers)-consensusMask)<0);
         
         distancesStats{itUsers+1}=[distancesStats{itUsers+1}; nonzeros(distanceImage(:,:,itUsers+1))];
         
@@ -39,9 +41,11 @@ for it=1:numel(myFiles)
         
         %% Check if I got zeros because the user did not analyze this image
         if max(max(swiftMasks(:,:,itSwift)))==0
-            offPixelsImage(:,:,itUsers+1+itSwift)=NaN(size(consensusMask));
+            falsePositivePixelsImage(:,:,itUsers+1+itSwift)=NaN(size(consensusMask));
+            falseNegativePixelsImage(:,:,itUsers+1+itSwift)=NaN(size(consensusMask));
         else
-            offPixelsImage(:,:,itUsers+1+itSwift)=abs(swiftMasks(:,:,itSwift)-consensusMask);
+            falsePositivePixelsImage(:,:,itUsers+1+itSwift)=uint8((swiftMasks(:,:,itSwift)-consensusMask)>0);
+            falseNegativePixelsImage(:,:,itUsers+1+itSwift)=uint8((swiftMasks(:,:,itSwift)-consensusMask)<0);
         end
         
         distancesStats{itUsers+1+itSwift}=[distancesStats{itUsers+1+itSwift}; nonzeros(distanceImage(:,:,itUsers+1+itSwift))];
@@ -49,23 +53,31 @@ for it=1:numel(myFiles)
        
     end
 
-    offPixelsRelative(1:itUsers+1+itSwift, it)=reshape(sum(sum(offPixelsImage))/sum(sum(consensusMask)),...
+    falsePositivePixelsImage(1:itUsers+1+itSwift, it)=reshape(sum(sum(falsePositivePixelsImage))/sum(sum(consensusMask)),...
+        [size(allMasks,3)+1+size(swiftMasks,3), 1]);
+    falseNegativePixelsImage(1:itUsers+1+itSwift, it)=reshape(sum(sum(falseNegativePixelsImage))/sum(sum(consensusMask)),...
         [size(allMasks,3)+1+size(swiftMasks,3), 1]);
     
-    offPixels(1:itUsers+1+itSwift, it)=reshape(sum(sum(offPixelsImage)),...
+    falsePositivePixels(1:itUsers+1+itSwift, it)=reshape(sum(sum(falsePositivePixelsImage)),...
+        [size(allMasks,3)+1+size(swiftMasks,3), 1]);
+    falseNegativePixels(1:itUsers+1+itSwift, it)=reshape(sum(sum(falseNegativePixelsImage)),...
         [size(allMasks,3)+1+size(swiftMasks,3), 1]);
     
-    clear distanceImage offPixelsImage
+    clear distanceImage falsePositivePixelsImage falseNegativePixelsImage
 end
 
-save([masterFolder filesep 'Global' filesep 'Comparissons.mat'], 'offPixels', 'distancesStats')
+save([masterFolder filesep 'Global' filesep 'Comparissons.mat'], 'falsePositivePixels', 'falseNegativePixels', 'distancesStats')
 
 
 %% Make barplots
 close all
-makeNiceOffPixelFigure(offPixels)
+makeNiceOffPixelFigure(falsePositivePixels)
 
-print(gcf,'-dpng',[masterFolder filesep 'Global' filesep 'BarplotOffOixels.png']);
+print(gcf,'-dpng',[masterFolder filesep 'Global' filesep 'BarplotFPpixels.png']);
+
+makeNiceOffPixelFigure(falseNegativePixels)
+
+print(gcf,'-dpng',[masterFolder filesep 'Global' filesep 'BarplotFNpixels.png']);
 %%
 
 figure
