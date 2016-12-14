@@ -23,7 +23,7 @@ for it = 1:numel(fileNames)
         
         while true
             
-            if strcmp(questdlg('Are you happy with the mask?', 'Yes', 'No'),'No')
+            if strcmp(questdlg('Are you happy with the mask?', 'Confirmation','Yes','No','Yes'),'No')
                 imshow(redImage,[])
                 thisMask=roipoly(thisImage);
                 imshow(imoverlay(redImage,imdilate(bwperim(thisMask),strel('disk',5)),'m'))
@@ -48,7 +48,7 @@ for it = 1:numel(fileNames)
             thisONCenter=round([x y]);
             plot(x,y,'*g')
             
-            if strcmp(questdlg('Are you happy with the Center?', 'Yes', 'No'),'Yes')
+            if strcmp(questdlg('Are you happy with the Center?', 'Confirmation','Yes','No','Yes'),'Yes')
                 save(centerFile, 'thisONCenter');
                 break
             end
