@@ -7,6 +7,8 @@ thisMask=varargin{2};
 maskNoCenter=varargin{3};
 tuftsMask=varargin{4};
 
+outMask = thisMask;
+
 if nargin==5 
     thickMask=varargin{5};
 else
@@ -14,6 +16,8 @@ else
 end
 
 tuftsMaskProps = struct2table(regionprops(logical(tuftsMask), 'PixelIdxList'));
+
+if isempty(tuftsMaskProps), return, end
 
 for k = 1:numel(tuftsMaskProps)
     ix = tuftsMaskProps.PixelIdxList{k};
