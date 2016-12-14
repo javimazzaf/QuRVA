@@ -9,7 +9,6 @@ end
    
 maskProps = regionprops(thisMask, 'Centroid', 'EquivDiameter');
 
-
 %% Adaptive threshold
 BW = imbinarize(redImage.*uint8(thisMask), 'adaptive', 'Sensitivity', 0.4);
 

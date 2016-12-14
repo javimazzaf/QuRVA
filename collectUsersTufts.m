@@ -5,7 +5,7 @@ rotatedAngles = -90 * [1 0 1 1 1 0 1 1 1 0 0 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1
 masterFolder='/Users/santiago/Dropbox (Biophotonics)/Projects/FlatMounts/PaperImageSet/Anonymous/';
 
 % loads local parameters
-if exist('localConfig.m','file'), localConfig; end
+readConfig
 
 % Get tester names
 testerFiles = dir(fullfile(masterFolder,'Testers','*.tiff'));

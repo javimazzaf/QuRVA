@@ -3,7 +3,7 @@ clear
 masterFolder='/Users/santiago/Dropbox (Biophotonics)/Projects/Bruno/Images/ToTest/Anonymous/';
 
 % loads local parameters
-if exist('localConfig.m','file'), localConfig; end
+readConfig;
 
 mkdir(masterFolder, 'Global')
 
