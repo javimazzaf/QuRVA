@@ -55,8 +55,7 @@ for it=1:numel(myFiles)
             uint8(vesselSkelMask).*255,...
             uint8(logical(aVascZone)+imdilate(brchPts, strel('disk',3))).*255);
         
-        imwrite([leftHalf rightHalf], ...
-            [masterFolder filesep 'VasculatureImages' filesep myFiles{it}], 'JPG')
+        imwrite([leftHalf rightHalf], fullfile(masterFolder,'VasculatureImages',myFiles{it}), 'JPG')
              
         thisSholl=getShollEq(vesselSkelMask, maskStats, thisONCenter);
         
@@ -98,11 +97,9 @@ for it=1:numel(myFiles)
         quadSW=cat(3, redImage, uint8(consensusMask)*255,uint8(consensusMask)*255);
         quadSE=votesImage;
 
-        imwrite([quadNW quadNE; quadSW quadSE], ...
-            [masterFolder filesep 'TuftImages' filesep myFiles{it}], 'JPG')
+        imwrite([quadNW quadNE; quadSW quadSE], fullfile(masterFolder, 'TuftImages', myFiles{it}), 'JPG')
 
-        save([masterFolder filesep 'TuftNumbers' filesep myFiles{it} '.mat'],...
-            'tuftsMask', 'allMasks', 'consensusMask');
+        save(fullfil(masterFolder,'TuftNumbers',[myFiles{it} '.mat']),'tuftsMask', 'allMasks', 'consensusMask');
     
     end % do vasculature network
     

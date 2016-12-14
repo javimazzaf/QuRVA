@@ -1,7 +1,7 @@
 [OK] - arreglar AnalyzeThisFolder.m para que si no encuentra el on center, 
     te permita hacerlo a mano.
-2 - Cambiar el orden en que calcula la vasculatura para que no la recalcule 
+[OK] - Cambiar el orden en que calcula la vasculatura para que no la recalcule 
     cuando busca los tufts.
-3 - probar el código con más imágenes, aunque no estén analizadas a mano para 
+[OK] - probar el código con más imágenes, aunque no estén analizadas a mano para 
     ver si funciona en más casos.
-4 - optimizar un poco el código para que se ejecute más rápidamente.
+[OK] - optimizar un poco el código para que se ejecute más rápidamente.
