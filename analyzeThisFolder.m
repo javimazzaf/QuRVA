@@ -94,7 +94,7 @@ for it=1:numel(myFiles)
 
         quadNW=cat(3, uint8(thickMask).*redImage, redImage, uint8(brightMask).*redImage);
         quadNE=cat(3, redImage, redImage, redImage);
-        quadSW=cat(3, redImage, uint8(consensusMask)*255,uint8(consensusMask)*255);
+        quadSW=imoverlay(imoverlay(imoverlay(redImage, uint8(tuftsMask-consensusMask>0)*255, 'm'), uint8(tuftsMask-consensusMask<0)*255, 'y'), uint8(and(consensusMask, tuftsMask))*255, 'g');
         quadSE=votesImage;
 
         imwrite([quadNW quadNE; quadSW quadSE], fullfile(masterFolder, 'TuftImages', myFiles{it}), 'JPG')
