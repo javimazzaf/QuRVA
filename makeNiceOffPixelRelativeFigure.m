@@ -1,4 +1,4 @@
-function makeNiceOffPixelFigure(offPixels)
+function makeNiceOffPixelRelativeFigure(offPixels)
 
 axes1 = axes('Parent',gcf);
 bar1 = bar(offPixels','Parent',axes1);

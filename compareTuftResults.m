@@ -71,18 +71,24 @@ save([masterFolder filesep 'Global' filesep 'Comparissons.mat'], 'falsePositiveP
 
 %% Make barplots
 close all
+figure;
 makeNiceOffPixelFigure(falsePositivePixels)
+% ylim([0 3.5E5])
+print(gcf,'-dpng',fullfile(masterFolder,'Global','BarplotFPpixels.png'));
 
-print(gcf,'-dpng',[masterFolder filesep 'Global' filesep 'BarplotFPpixels.png']);
-
+figure;
 makeNiceOffPixelFigure(falseNegativePixels)
+% ylim([0 3.5E5])
+print(gcf,'-dpng',fullfile(masterFolder,'Global','BarplotFNpixels.png'));
+%% Relative
 
-print(gcf,'-dpng',[masterFolder filesep 'Global' filesep 'BarplotFNpixels.png']);
-%%
-
-figure
-makeNiceOffPixelRelativeFigure(offPixelsRelative)
-print(gcf,'-dpng',[masterFolder filesep 'Global' filesep 'BarplotOffOixelsRelative.png']);
+% figure;
+% makeNiceOffPixelRelativeFigure(falsePositivePixels)
+% print(gcf,'-dpng',fullfile(masterFolder,'Global','BarplotFPpixelsRelative.png'));
+% 
+% figure;
+% makeNiceOffPixelRelativeFigure(falseNegativePixels)
+% print(gcf,'-dpng',fullfile(masterFolder,'Global','BarplotFNpixelsRelative.png'));
 
 %% Make boxplots
 figure
@@ -96,7 +102,7 @@ end
 
 boxplot(dataToPlot(:,1), dataToPlot(:,2))
 
-print(gcf,'-dpng',[masterFolder filesep 'Global' filesep 'Boxplot.png']);
+print(gcf,'-dpng',fullfile(masterFolder,'Global','Boxplot.png'));
 
 % %% Violin Plots
 % figure
