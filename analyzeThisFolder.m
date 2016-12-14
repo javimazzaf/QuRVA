@@ -43,7 +43,7 @@ for it=1:numel(myFiles)
     
     [maskStats, maskNoCenter] = processMask(thisMask, redImage, thisONCenter);
     
-    if doVasculature==true
+    if doVasculature
 
         [vesselSkelMask, brchPts, smoothVessels]=getVacularNetwork(thisMask, redImage);
         [aVascZone]=getAvacularZone(thisMask, vesselSkelMask);
@@ -64,7 +64,7 @@ for it=1:numel(myFiles)
     end
 
     %% Analyze tufts
-    if doTufts==true
+    if doTufts
 
         if exist('smoothVessels', 'var')
             [tuftsMask, brightMask, thickMask]=getTufts(thisMask, redImage, maskNoCenter, smoothVessels);
@@ -99,7 +99,7 @@ for it=1:numel(myFiles)
 
         imwrite([quadNW quadNE; quadSW quadSE], fullfile(masterFolder, 'TuftImages', myFiles{it}), 'JPG')
 
-        save(fullfil(masterFolder,'TuftNumbers',[myFiles{it} '.mat']),'tuftsMask', 'allMasks', 'consensusMask');
+        save(fullfile(masterFolder,'TuftNumbers',[myFiles{it} '.mat']),'tuftsMask', 'allMasks', 'consensusMask');
     
     end % do vasculature network
     
