@@ -16,7 +16,7 @@ thickMask=logical(getThickTufts(myImage, thisMask)).*maskNoCenter;
 
 tuftsMask=brightMask.*thickMask;
 
-tuftsMask=bwareaopen(tuftsMask, 20);
+%tuftsMask=bwareaopen(tuftsMask, 20);
 
 if nargin==4
     tuftsMask=getTuftQC(myImage, thisMask, maskNoCenter, tuftsMask, smoothVessels);
