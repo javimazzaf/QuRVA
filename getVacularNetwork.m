@@ -1,13 +1,14 @@
 function [vesselSkelMask, brchPts, smoothVessels]=getVacularNetwork(thisMask, myImage)
 
+readConfig
 
 %% Segment a very fine vessels
 
-vessels=imbinarize(myImage.*uint8(thisMask), adaptthresh(myImage.*uint8(thisMask), 'NeighborhoodSize', [51, 51]));
+vessels=imbinarize(myImage.*uint8(thisMask), adaptthresh(myImage.*uint8(thisMask), 'NeighborhoodSize', vascNet.ThreshNeighborSize));
 
-vesselsClean=bwareaopen(vessels, 500);
+vesselsClean=bwareaopen(vessels, vascNet.OpeningSize);
 
-smoothVessels=imdilate(vesselsClean, strel('disk', 2));
+smoothVessels=imdilate(vesselsClean, strel('disk', vascNet.DilatingRadius));
 
 vesselSkelMask=bwmorph(smoothVessels, 'thin', Inf);
 

@@ -1,6 +1,4 @@
 clear
-%% Set folders
-masterFolder='/Users/santiago/Dropbox (Biophotonics)/Projects/Bruno/Images/ToTest/Anonymous/';
 
 % loads local parameters
 readConfig;
@@ -8,17 +6,19 @@ readConfig;
 mkdir(masterFolder, 'Global')
 
 %% Get file names
-myFiles=dir([masterFolder filesep 'TuftNumbers' filesep '*.mat']);
+myFiles = dir(fullfile(masterFolder, 'TuftNumbers','*.mat'));
+myFiles = {myFiles(:).name};
 
-distancesStats={[0], [0], [0], [0], [0], [0], [0], [0], [0], [0], [0], [0], [0]};
+distancesStats = num2cell(zeros(1,13));
 
 %% Load results
 
 for it=1:numel(myFiles)
-    disp(myFiles(it).name);
-    load([masterFolder 'TuftNumbers' filesep myFiles(it).name]);
+    disp(myFiles{it});
     
-    swiftMasks=collectSwift(masterFolder, myFiles(it).name, consensusMask);
+    load(fullfile(masterFolder, 'TuftNumbers', myFiles{it}));
+    
+    swiftMasks=collectSwift(masterFolder, myFiles{it}, consensusMask);
         
     distanceImage(:,:,1)=tuftsMask.*bwdist(consensusMask);
     falsePositivePixelsImage(:,:,1)=uint8((tuftsMask-consensusMask)>0);
