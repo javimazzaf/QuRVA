@@ -1,5 +1,4 @@
-clear
-
+function processFolder
 %% Settings and folders
 readConfig
 if ~exist('masterFolder','var')
@@ -20,7 +19,7 @@ myFiles = getImageList(masterFolder);
 computeMaskAndCenter(masterFolder, myFiles);
 
 %% Do loop
-for it=1:numel(myFiles)
+for it=1:14 %numel(myFiles)
     
     %% Verbose current Image
     disp(myFiles{it})
@@ -87,5 +86,7 @@ for it=1:numel(myFiles)
     end % doTufts
     
     
+end
+
 end
 
