@@ -13,7 +13,8 @@ try
     N      = 4;
     minVal = 100;
     maxVal = 200;
-    parValues = ((1:N)-1)/(N-1) * (maxVal-minVal) + minVal;
+%     parValues = ((1:N)-1)/(N-1) * (maxVal-minVal) + minVal;
+    parValues = [50 100 150 200];
     
     allTP = NaN(1,N);
     allFP = NaN(1,N);
