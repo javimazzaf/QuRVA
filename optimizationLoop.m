@@ -9,12 +9,12 @@ try
     inifile('config.ini','write',{'','','doVasculature',0})
     inifile('config.ini','write',{'','','doSaveImages',0})
     
-    paramName = 'tufts.bright.OpeningSizeDivisor1';
-    N      = 4;
-    minVal = 100;
-    maxVal = 200;
+    paramName = 'tufts.bright.OpeningSizeDivisor2';
+    N      = 10;
+    minVal = 5;
+    maxVal = 95;
 %     parValues = ((1:N)-1)/(N-1) * (maxVal-minVal) + minVal;
-    parValues = [50 100 150 200];
+    parValues = [5 15 25 35 45 55 65 75 85 95];
     
     allTP = NaN(1,N);
     allFP = NaN(1,N);
