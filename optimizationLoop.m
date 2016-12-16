@@ -10,9 +10,9 @@ try
     inifile('config.ini','write',{'','','doSaveImages',0})
     
     paramName = 'tufts.thick.DilatingRadiusDivisor';
-    N      = 3;
-    minVal = 8000;
-    maxVal = 32000;
+    N      = 6;
+    minVal = 4000;
+    maxVal = 9000;
     parValues = ((1:N)-1)/(N-1) * (maxVal-minVal) + minVal;
     
     allTP = NaN(1,N);
