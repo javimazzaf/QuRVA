@@ -16,7 +16,8 @@ distancesStats = num2cell(zeros(1,13));
 for it=1:numel(myFiles)
     disp(myFiles{it});
     
-    load(fullfile(masterFolder, 'TuftNumbers', myFiles{it}));
+    load(fullfile(masterFolder, 'TuftNumbers', myFiles{it}),'tuftsMask');
+    load(fullfile(masterFolder, 'TuftConsensusMasks',myFiles{it}),'consensusMask','allMasks')
     
     swiftMasks=collectSwift(masterFolder, myFiles{it}, consensusMask);
         
