@@ -7,5 +7,6 @@ try
     end
     
     fclose(fid);
-catch
+catch err
+    disp(err)
 end
