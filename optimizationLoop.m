@@ -9,12 +9,12 @@ try
     inifile('config.ini','write',{'','','doVasculature',0})
     inifile('config.ini','write',{'','','doSaveImages',0})
     
-    paramName = 'tufts.bright.OpeningSizeDivisor2';
-    N      = 9;
+    paramName = 'tufts.thick.binSensitivity';
+    N      = 7;
     minVal = 10;
     maxVal = 30;
-    parValues = ((1:N)-1)/(N-1) * (maxVal-minVal) + minVal;
-%     parValues = [5 15 25 35 45 55 65 75 85 95];
+%     parValues = ((1:N)-1)/(N-1) * (maxVal-minVal) + minVal;
+    parValues = [0.1 0.2 0.3 0.4 0.5 0.6 0.7];
     
     allTP = NaN(1,N);
     allFP = NaN(1,N);
