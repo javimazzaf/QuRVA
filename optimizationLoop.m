@@ -9,10 +9,10 @@ try
     inifile('config.ini','write',{'','','doVasculature',0})
     inifile('config.ini','write',{'','','doSaveImages',0})
     
-    paramName = 'tufts.thick.DilatingRadiusDivisor';
-    N      = 6;
+    paramName = 'tufts.bright.DilatingRadiusDivisor';
+    N      = 5;
     minVal = 1000;
-    maxVal = 6000;
+    maxVal = 10000;
     parValues = ((1:N)-1)/(N-1) * (maxVal-minVal) + minVal;
     
     allTP = NaN(1,N);
