@@ -11,8 +11,8 @@ try
     
     paramName = 'tufts.thick.DilatingRadiusDivisor';
     N      = 3;
-    minVal = 2000;
-    maxVal = 8000;
+    minVal = 8000;
+    maxVal = 32000;
     parValues = ((1:N)-1)/(N-1) * (maxVal-minVal) + minVal;
     
     allTP = NaN(1,N);
