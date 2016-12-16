@@ -9,19 +9,22 @@ try
     inifile('config.ini','write',{'','','doVasculature',0})
     inifile('config.ini','write',{'','','doSaveImages',0})
     
-    allTP = NaN(1,3);
-    allFP = NaN(1,3);
-    allFN = NaN(1,3);
+    N = 3;
+    paramName = 'tufts.thick.DilatingRadiusDivisor';
+    parValues = ((1:N)-1)/(N-1) * 1000 + 500;
     
-    for ms = 1:1
-        for bs = 1:3
+    allTP = NaN(1,N);
+    allFP = NaN(1,N);
+    allFN = NaN(1,N);
+    
+    for p = 1:N
+        disp(['Iteration ' num2str(p) ' of ' num2str(N)])
+        
         % Compute parameters
-        medFilterSize = 30 + 10 * (ms-1);
-        brightSensitivity = (bs-1)/2 * 0.4 + 0.3;
+        parValue = parValues(p);
         
         % Set parameters
-        inifile('config.ini','write',{'','','tufts.thick.medFilterSize',medFilterSize})
-        inifile('config.ini','write',{'','','tufts.bright.binSensitivity',brightSensitivity})
+        inifile('config.ini','write',{'','',paramName,parValue})
         
         % Compute tufts
         processFolder;
@@ -29,26 +32,20 @@ try
         % measure performance
         [FP, FN, TP] = measureTuftSegmentationPerformance;
         
-        fg = figure;
-        plot(TP,'g'), hold on
-        plot(FP,'r')
-        plot(FN,'b')
-        legend({'TP';'FP';'FN'})
-        
         [params,~,~] = inifile('config.ini','readall');
-        save(fullfile(masterFolder, 'Optimization',['optimization_MedianSize=' num2str(medFilterSize) '_brightSensitivity=' num2str(brightSensitivity) '.mat']),'TP','FP','FN','params')
+        save(fullfile(masterFolder, 'Optimization',[paramName '=' num2str(parValue) '.mat']),'TP','FP','FN','params')
         
-        allTP(ms,bs) = sum(TP);
-        allFP(ms,bs) = sum(FP);
-        allFN(ms,bs) = sum(FN);
+        allTP(ms,p) = sum(TP);
+        allFP(ms,p) = sum(FP);
+        allFN(ms,p) = sum(FN);
         
         close(fg)
         
-        end
-        
     end
     
-    save(fullfile(masterFolder, 'Optimization','optimizationAll.mat'),'allTP','allFP','allFN');
+%     table()
+    
+    save(fullfile(masterFolder, 'Optimization','optimizationAll.mat'),'allTP','allFP','allFN','paramName','parValues');
     
     % Restore config.ini
     movefile('config.ini.bak','config.ini','f');
