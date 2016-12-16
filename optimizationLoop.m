@@ -9,7 +9,7 @@ try
     inifile('config.ini','write',{'','','doVasculature',0})
     inifile('config.ini','write',{'','','doSaveImages',0})
     
-    N = 3;
+    N = 6;
     paramName = 'tufts.thick.DilatingRadiusDivisor';
     parValues = ((1:N)-1)/(N-1) * 1000 + 500;
     
@@ -35,9 +35,9 @@ try
         [params,~,~] = inifile('config.ini','readall');
         save(fullfile(masterFolder, 'Optimization',[paramName '=' num2str(parValue) '.mat']),'TP','FP','FN','params')
         
-        allTP(ms,p) = sum(TP);
-        allFP(ms,p) = sum(FP);
-        allFN(ms,p) = sum(FN);
+        allTP(p) = sum(TP);
+        allFP(p) = sum(FP);
+        allFN(p) = sum(FN);
         
         close(fg)
         
