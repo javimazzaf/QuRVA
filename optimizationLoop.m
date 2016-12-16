@@ -39,8 +39,6 @@ try
         allFP(p) = sum(FP);
         allFN(p) = sum(FN);
         
-        close(fg)
-        
     end
     
 %     table()
