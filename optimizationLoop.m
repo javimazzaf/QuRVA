@@ -10,9 +10,9 @@ try
     inifile('config.ini','write',{'','','doSaveImages',0})
     
     paramName = 'tufts.bright.OpeningSizeDivisor1';
-    N      = 9;
-    minVal = 50;
-    maxVal = 950;
+    N      = 4;
+    minVal = 100;
+    maxVal = 200;
     parValues = ((1:N)-1)/(N-1) * (maxVal-minVal) + minVal;
     
     allTP = NaN(1,N);
