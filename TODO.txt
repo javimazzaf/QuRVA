@@ -1,1 +1,0 @@
- - Lo mejor parece ser medianfilter 50 pix, y sensitivity 0.3, pero esto es viendo que los FP sean mínimos. y a costa de subir los falsos negativos.
