@@ -16,7 +16,7 @@ if nargin >= 4, smoothVessels = varargin{4}; end
 % [brightMask, brightThreshold] = getBrightTufts(myImage, thisMask);
 % brightMask = logical(brightMask).*maskNoCenter;
 
-thickMask  = logical(getThickTufts(myImage, thisMask,maskNoCenter)).*maskNoCenter;
+thickMask  = logical(getThickTufts(myImage, thisMask)).*maskNoCenter;
 
 % tuftsMask  = brightMask.*thickMask;
 tuftsMask  = thickMask;
@@ -31,7 +31,6 @@ else
     tuftsMask=getTuftQC(myImage, thisMask, maskNoCenter, tuftsMask);
 end
 
-tuftsMask = imdilate(tuftsMask, strel('disk', round(tufts.thick.medFilterSize/2)));
 
 
 
