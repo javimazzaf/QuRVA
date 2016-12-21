@@ -1,4 +1,4 @@
-function brightVesselsRegions = getBrightTufts(varargin)
+function [brightVesselsRegions, usedThreshold] = getBrightTufts(varargin)
 
 if nargin >= 2
     thisMask = varargin{2};
@@ -18,6 +18,7 @@ BW = imbinarize(redImage.*uint8(thisMask), 'adaptive', 'Sensitivity', tufts.brig
 thisVessels = bwareaopen(BW, round(maskProps.EquivDiameter/tufts.bright.OpeningSizeDivisor1));
 
 %% Calculate among foreground pixels an Otsu threshold
+usedThreshold = graythresh(nonzeros(uint8(thisVessels).*redImage));
 
 bV=im2bw(uint8(thisVessels).*redImage, graythresh(nonzeros(uint8(thisVessels).*redImage)));
 
