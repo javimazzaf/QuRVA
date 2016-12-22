@@ -1,34 +1,34 @@
-function [tuftsMask, brightMask, thickMask]=getTufts(varargin)
-%use like getTufts(thisMask, myImage, maskNoCenter, smoothVessels)
+function [tuftsMask, thickMask] = getTufts(varargin)
 
 readConfig
 
 if nargin < 3, error('Not enough input parameters.'), end
 
-thisMask     = varargin{1};
-myImage      = varargin{2}; 
-maskNoCenter = varargin{3};
+thisMask      = varargin{1};
+rawImage      = varargin{2}; 
+maskNoCenter  = varargin{3};
 
 if nargin >= 4, smoothVessels = varargin{4}; end
 
+rawImage = rawImage.*uint8(thisMask);
+rawImageNorm = mat2gray(double(rawImage));
 
-%% Calculate tufts based on intensity only
-% [brightMask, brightThreshold] = getBrightTufts(myImage, thisMask);
-% brightMask = logical(brightMask).*maskNoCenter;
+vascMask  = imbinarize(mat2gray(bpass(rawImageNorm,1,5)));
 
-thickMask  = logical(getThickTufts(myImage, thisMask)).*maskNoCenter;
+threshold = median(rawImageNorm(vascMask));
 
-% tuftsMask  = brightMask.*thickMask;
-tuftsMask  = thickMask;
+enhancedTufts = filter2(fspecial('disk',tufts.lowpassFilterSize/2), rawImageNorm,'same');
+outMask = enhancedTufts >= threshold;
 
-brightMask = [];
+thickMask = imdilate(outMask, strel('disk', round(tufts.lowpassFilterSize/2)));
 
-%tuftsMask=bwareaopen(tuftsMask, 20);
+tuftsMask = logical(thickMask) .* maskNoCenter;
 
+% Procedure to get rid of false positives
 if nargin >= 4
-    tuftsMask=getTuftQC(myImage, thisMask, maskNoCenter, tuftsMask, smoothVessels);
+    tuftsMask=getTuftQC(rawImage, thisMask, maskNoCenter, tuftsMask, smoothVessels);
 else
-    tuftsMask=getTuftQC(myImage, thisMask, maskNoCenter, tuftsMask);
+    tuftsMask=getTuftQC(rawImage, thisMask, maskNoCenter, tuftsMask);
 end
 
 

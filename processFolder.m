@@ -66,15 +66,15 @@ for it=1:14 %numel(myFiles)
     if doTufts==true
         
         if exist('smoothVessels', 'var')
-            [tuftsMask, brightMask, thickMask]=getTufts(thisMask, redImage, maskNoCenter, smoothVessels);
+            [tuftsMask, thickMask]=getTufts(thisMask, redImage, maskNoCenter, smoothVessels);
         else
-            [tuftsMask, brightMask, thickMask]=getTufts(thisMask, redImage, maskNoCenter);
+            [tuftsMask, thickMask]=getTufts(thisMask, redImage, maskNoCenter);
         end
         
         %% Save Tuft Images
         if doSaveImages
             
-            quadNW=cat(3, uint8(thickMask).*redImage, redImage, uint8(brightMask).*redImage);
+            quadNW=cat(3, uint8(thickMask).*redImage, redImage, redImage);
             quadNE=cat(3, redImage, redImage, redImage);
             
             imwrite([quadNW quadNE], fullfile(masterFolder, 'TuftImages', myFiles{it}), 'JPG')

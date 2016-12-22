@@ -1,5 +1,5 @@
-clear
-% loads local parameters
+function analyzeThisFolder
+
 readConfig;
 
 warning('Off')
@@ -61,9 +61,9 @@ for it=1:numel(myFiles)
     if doTufts
         
         if exist('smoothVessels', 'var')
-            [tuftsMask, brightMask, thickMask]=getTufts(thisMask, redImage, maskNoCenter, smoothVessels);
+            [tuftsMask, thickMask]=getTufts(thisMask, redImage, maskNoCenter, smoothVessels);
         else
-            [tuftsMask, brightMask, thickMask]=getTufts(thisMask, redImage, maskNoCenter);
+            [tuftsMask, thickMask]=getTufts(thisMask, redImage, maskNoCenter);
         end
         
         %% Get observers data
@@ -87,7 +87,7 @@ for it=1:numel(myFiles)
             
             %% Save Tuft Images
             
-            quadNW=cat(3, uint8(thickMask).*redImage, redImage, uint8(brightMask).*redImage);
+            quadNW=cat(3, redImage, uint8(~thickMask).*redImage, uint8(~thickMask).*redImage);
             quadNE=cat(3, redImage, redImage, redImage);
             quadSW=imoverlay(imoverlay(imoverlay(redImage, uint8(tuftsMask-consensusMask>0)*255, 'm'), uint8(tuftsMask-consensusMask<0)*255, 'y'), uint8(and(consensusMask, tuftsMask))*255, 'g');
             quadSE=votesImage;

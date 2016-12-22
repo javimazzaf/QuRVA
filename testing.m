@@ -1,7 +1,7 @@
 % testing
 
 %% 
-% medSize = tufts.thick.medFilterSize/2;
+% medSize = tufts.lowpassFilterSize/2;
 medSize = 8;
 
 testIm = double(myImage.*uint8(thisMask));
@@ -88,7 +88,7 @@ media(n<5) = 0;
 
 % media = imopen(media,strel('disk',20));
 
-enhancedTufts = filter2(fspecial('disk',tufts.thick.medFilterSize/2), testIm,'same');
+enhancedTufts = filter2(fspecial('disk',tufts.lowpassFilterSize/2), testIm,'same');
 outMask = (enhancedTufts > factor * media) & media > 0.1;
 outMaskOld = (enhancedTufts >= threshold);
 
