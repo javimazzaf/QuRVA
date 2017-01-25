@@ -67,7 +67,10 @@ for it=1:numel(myFiles)
         end
         
         %% Get observers data
-        load(fullfile(masterFolder,'TuftConsensusMasks',[myFiles{it} '.mat']),'allMasks','consensusMask')
+        load(fullfile(masterFolder,'TuftConsensusMasks',[myFiles{it} '.mat']),'allMasks','consensusMask','orMask')
+        
+        % Modify evaluation by replacing the consensus by the orMask.
+        consensusMask = orMask;
         
         if doSaveImages
             %% Create votes Image

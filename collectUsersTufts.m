@@ -38,7 +38,9 @@ for it = 1:14
     
     consensusMask = round(mean(allMasks, 3));
     
-    save(fullfile(masterFolder,'TuftConsensusMasks',[rawFileNames(it).name '.mat']), 'allMasks','consensusMask')
+    orMask   = logical(sum(allMasks, 3));
+    
+    save(fullfile(masterFolder,'TuftConsensusMasks',[rawFileNames(it).name '.mat']), 'allMasks','consensusMask','orMask')
     
     clear allMasks
     
