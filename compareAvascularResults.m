@@ -51,7 +51,7 @@ for it = 1:numel(myFiles)
                        uint8(TPimage)*255, 'g'),...
                        vesselSkelMask,'r');
     
-    totalPix(it)   = sum(aVascZone(:) & thisMask(:));
+    totalPix(1,it)   = sum(aVascZone(:) & thisMask(:));
     retinaPix(it)  = sum(thisMask(:));
     VotosPix(it)   = sum(aVascVotos(:) & thisMask(:));
     TodosPix(it)   = sum(aVascTodos(:) & thisMask(:));
@@ -62,6 +62,8 @@ for it = 1:numel(myFiles)
     % Compute users
     for us = 1:size(aVascAllMasks,3)
         userMask = aVascAllMasks(:,:,us);
+        
+        totalPix(1+us,it)   = sum(userMask(:) & thisMask(:));
         
         FNimage = (aVascVotos > userMask) & thisMask; 
         FPimage = (aVascVotos < userMask) & thisMask;
@@ -85,7 +87,8 @@ end
 
 save(fullfile(masterFolder, 'GlobalVascular', 'results.mat'), 'totalPix',...
      'retinaPix', 'VotosPix', 'TodosPix','FNpixelsVotos','FPpixelsVotos',...
-     'FNpixelsTodos','FPpixelsTodos');
+     'FNpixelsTodos','FPpixelsTodos','FNpixelsTodosRel','FPpixelsTodosRel',...
+     'FNpixelsVotosRel','FPpixelsVotosRel');
 
 %% Votos 
 figure; yLab='FNpixelsVotos'; makeNiceFigure(FNpixelsVotos,yLab)
@@ -112,6 +115,10 @@ figure; yLab='FNpixelsTodosRel'; makeNiceFigure(FNpixelsTodosRel,yLab)
 print(gcf,'-dpng',fullfile(masterFolder,'GlobalVascular',[yLab '.png']));
 
 figure; yLab='FPpixelsTodosRel'; makeNiceFigure(FPpixelsTodosRel,yLab)
+print(gcf,'-dpng',fullfile(masterFolder,'GlobalVascular',[yLab '.png']));
+
+%% Area
+figure; yLab='Area'; makeNiceFigure(totalPix,yLab)
 print(gcf,'-dpng',fullfile(masterFolder,'GlobalVascular',[yLab '.png']));
 
 end

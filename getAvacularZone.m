@@ -1,27 +1,34 @@
-function [aVascZone]=getThickTufts(thisMask, vesselSkelMask)
+function [aVascZone]=getAvacularZone(originalMask, vesselSkelMask)
 
-maskProps=regionprops(thisMask, 'Centroid', 'EquivDiameter');
+maskProps=regionprops(originalMask, 'Centroid', 'EquivDiameter');
 
-%% Calculate using median filters
+retinaMask = imerode(originalMask,strel('disk',round(maskProps.EquivDiameter* 0.05)));
 
 
-dist2vessels=bwdist(vesselSkelMask).*thisMask;
+dist2vessels=bwdist(vesselSkelMask).*retinaMask;
 
-maskNoEdge=createCircularMask(size(thisMask, 1), size(thisMask, 2),...
+maskNoEdge=createCircularMask(size(retinaMask, 1), size(retinaMask, 2),...
     maskProps.Centroid(1), maskProps.Centroid(2), maskProps.EquivDiameter*.4);
 
 emptyLbl=bwlabel(imbinarize(imerode(dist2vessels.*maskNoEdge,strel('disk',5))));
 
 emptyProps=struct2table(regionprops(emptyLbl, dist2vessels, 'MaxIntensity', 'PixelIdxList', 'Area'));
 
-mostEmptyLbL=find(emptyProps.MaxIntensity>3*std(emptyProps.MaxIntensity)+mean(emptyProps.MaxIntensity));
+% mostEmptyLbL=find(emptyProps.MaxIntensity>3*std(emptyProps.MaxIntensity)+mean(emptyProps.MaxIntensity));
+mostEmptyLbL=find(emptyProps.MaxIntensity>5*std(emptyProps.MaxIntensity)+mean(emptyProps.MaxIntensity));
 
-mostEmptyIm=zeros(size(thisMask));
+mostEmptyIm=zeros(size(retinaMask));
 
 for itEmpty=1:numel(mostEmptyLbL);
     mostEmptyIm(emptyProps.PixelIdxList{mostEmptyLbL(itEmpty)})=1;
 end
 
-pegoteados=logical(imclose(mostEmptyIm, strel('disk', 30)));
-biggestObject=bwareafilt(pegoteados, 1);
-aVascZone=imfill(biggestObject.*mostEmptyIm, 'holes');
+% aVascZone  = mostEmptyIm;
+
+aVascZone = logical(imclose(mostEmptyIm, strel('disk', 15)));
+% aVascZone = imfill(cerrado, 'holes');
+
+% pegoteados = logical(imclose(mostEmptyIm, strel('disk', 30)));
+
+% biggestObject=bwareafilt(pegoteados, 1);
+% aVascZone=imfill(biggestObject.*mostEmptyIm, 'holes');

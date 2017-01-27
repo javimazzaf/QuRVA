@@ -51,10 +51,10 @@ for it=1:numel(myFiles)
             imwrite([leftHalf rightHalf], fullfile(masterFolder,'VasculatureImages',myFiles{it}), 'JPG')
         end % doSaveImages
         
-        thisSholl=getShollEq(vesselSkelMask, maskStats, thisONCenter);
+%         thisSholl=getShollEq(vesselSkelMask, maskStats, thisONCenter);
         
         save(fullfile(masterFolder, 'VasculatureNumbers', [myFiles{it},'.mat']),...
-            'vesselSkelMask', 'brchPts','aVascZone', 'thisSholl');
+            'vesselSkelMask', 'brchPts','aVascZone');
     end % doVasculature
     
     %% Analyze tufts
