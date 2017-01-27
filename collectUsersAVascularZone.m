@@ -1,31 +1,34 @@
 clear 
 
-users={'Santiago' 'Carlos'};
+users={'Santiago' 'Carlos' 'Javier'};
 
 rotatedAngles=-90*[1 0 1 1 1 0 1 1 1 0 0 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 1];
 
-masterFolder='/Users/santiago/Dropbox (Biophotonics)/Projects/Bruno/Images/ToTest/';
-rawImgFolder=[masterFolder 'Anonymous/'];
+readConfig;
 
-rawFileNames=dir([rawImgFolder 'Im*']);
+rawFileNames = dir([masterFolder 'Im*']);
 
 for itUser=1:numel(users)
     users{itUser}
 
     for it=1:15% numel(rawFileNames)
-        image4channel=imread([masterFolder 'Testers/vascular/' users{itUser} '.tiff'],it);
+        image4channel=imread(fullfile(testersFolder, 'vascular', [users{itUser} '.tiff']),it);
         image4channel=imrotate(image4channel, rotatedAngles(it));
-        thisRawImage=imread([rawImgFolder rawFileNames(it).name]);
+        thisRawImage=imread(fullfile(masterFolder, rawFileNames(it).name));
 
         trimedImage=trimThisImage(image4channel);
 
         magentaMaskOriginal=createMagentaMask(trimedImage);
         
+        magentaMaskOriginal = imclose(magentaMaskOriginal,strel('disk',5));
+        
         magentaMaskFilled=imfill(magentaMaskOriginal, 'holes');
+        
+        magentaMaskFilled = imerode(magentaMaskFilled,strel('disk',5));
         
         magentaMasks{it}=imresize(logical(magentaMaskFilled), [size(thisRawImage,1), size(thisRawImage,2)]);
     end
 
-save([masterFolder 'Testers/vascular/Masks' users{itUser} '.mat'], 'magentaMasks')
+save(fullfile(testersFolder, 'vascular', ['Masks' users{itUser} '.mat']), 'magentaMasks')
 
 end
