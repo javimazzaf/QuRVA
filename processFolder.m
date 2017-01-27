@@ -12,6 +12,7 @@ mkdir(masterFolder, 'TuftNumbers')
 mkdir(masterFolder, 'VasculatureImages')
 mkdir(masterFolder, 'VasculatureNumbers')
 mkdir(masterFolder, 'ONCenter')
+nkDir(masterFolder, 'Reports')
 
 myFiles = getImageList(masterFolder);
 
@@ -19,7 +20,7 @@ myFiles = getImageList(masterFolder);
 computeMaskAndCenter(masterFolder, myFiles);
 
 %% Do loop
-for it=1:14 %numel(myFiles)
+for it=1:numel(myFiles)
     
     %% Verbose current Image
     disp(myFiles{it})
@@ -47,19 +48,17 @@ for it=1:14 %numel(myFiles)
         %% Make a nice image
         if doSaveImages
             
-            leftHalf=cat(3, redImage, redImage, uint8(smoothVessels)*255);
-            rightHalf=cat(3, redImage,...
-                uint8(vesselSkelMask).*255,...
-                uint8(logical(aVascZone)+imdilate(brchPts, strel('disk',5))).*255);
+            leftHalf=cat(3, redImage, redImage, redImage);
+            rightHalf=makeNiceVascularImage(redImage, aVascZone, vesselSkelMask, brchPts);
             
             imwrite([leftHalf rightHalf], fullfile(masterFolder, 'VasculatureImages', myFiles{it}), 'JPG')
             
         end % doSaveImages
         
-        thisSholl = getShollEq(vesselSkelMask, maskStats, thisONCenter);
+        %thisSholl = getShollEq(vesselSkelMask, maskStats, thisONCenter);
         
         save(fullfile(masterFolder, 'VasculatureNumbers', [myFiles{it},'.mat']),...
-            'vesselSkelMask', 'brchPts', 'aVascZone', 'thisSholl');
+            'vesselSkelMask', 'brchPts', 'aVascZone');
     end % doVasculature
     
     %% Analyze tufts
@@ -74,7 +73,7 @@ for it=1:14 %numel(myFiles)
         %% Save Tuft Images
         if doSaveImages
             
-            quadNW=cat(3, uint8(thickMask).*redImage, redImage, redImage);
+            quadNW=cat(3, uint8(tuftsMask).*redImage, redImage, redImage);
             quadNE=cat(3, redImage, redImage, redImage);
             
             imwrite([quadNW quadNE], fullfile(masterFolder, 'TuftImages', myFiles{it}), 'JPG')
