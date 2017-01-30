@@ -23,7 +23,7 @@ for it = 1:numel(fileNames)
         
         while true
             
-            if strcmp(questdlg('Are you happy with the mask?', 'Confirmation','Yes','No','Yes'),'No')
+            if strcmp(questdlg('Are you happy with this mask?', 'Confirmation','Yes','No','Yes'),'No')
                 imshow(redImage,[])
                 thisMask=roipoly(thisImage);
                 imshow(imoverlay(redImage,imdilate(bwperim(thisMask),strel('disk',5)),'m'))
@@ -43,12 +43,12 @@ for it = 1:numel(fileNames)
             else                , fg = figure; end
             
             imshow(redImage,[]), hold on
-            title('Set center')
+            title('Click on the center of the optic nerve head')
             [x,y]=ginput(1);
             thisONCenter=round([x y]);
-            plot(x,y,'*g')
+            plot(x,y,'*m')
             
-            if strcmp(questdlg('Are you happy with the Center?', 'Confirmation','Yes','No','Yes'),'Yes')
+            if strcmp(questdlg('Should center of the optic nerve head be here?', 'Confirmation','Yes','No','Yes'),'Yes')
                 save(centerFile, 'thisONCenter');
                 break
             end

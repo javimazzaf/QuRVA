@@ -12,7 +12,7 @@ mkdir(masterFolder, 'TuftNumbers')
 mkdir(masterFolder, 'VasculatureImages')
 mkdir(masterFolder, 'VasculatureNumbers')
 mkdir(masterFolder, 'ONCenter')
-nkDir(masterFolder, 'Reports')
+mkdir(masterFolder, 'Reports')
 
 myFiles = getImageList(masterFolder);
 
@@ -73,7 +73,7 @@ for it=1:numel(myFiles)
         %% Save Tuft Images
         if doSaveImages
             
-            quadNW=cat(3, uint8(tuftsMask).*redImage, redImage, redImage);
+            quadNW=cat(3, uint8(tuftsMask).*redImage,redImage, redImage);
             quadNE=cat(3, redImage, redImage, redImage);
             
             imwrite([quadNW quadNE], fullfile(masterFolder, 'TuftImages', myFiles{it}), 'JPG')
@@ -84,8 +84,27 @@ for it=1:numel(myFiles)
         
     end % doTufts
     
-    
+outFlatMountArea(it)=sum(thisMask(:));
+outBranchingPoints(it)=sum(brchPts(:));
+outAVascularArea(it)=sum(aVascZone(:));
+outVasculatureLength(it)=sum(vesselSkelMask(:));
+outTuftArea(it)=sum(tuftsMask(:));
+outTuftNumber(it)=max(max(bwlabel(tuftsMask)));
+
+
 end
+
+
+resultsTable = table;
+resultsTable.FileName=myFiles';
+resultsTable.FlatMountArea = outFlatMountArea';
+resultsTable.BranchingPoints = outBranchingPoints';
+resultsTable.AVascularArea = outAVascularArea';
+resultsTable.VasculatureLength = outVasculatureLength';
+resultsTable.TuftArea = outTuftArea';
+resultsTable.TuftNumber = outTuftNumber';
+
+writetable(resultsTable,fullfile(masterFolder, 'Reports', 'AnalysisResult.xls'))
 
 end
 

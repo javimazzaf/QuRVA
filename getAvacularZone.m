@@ -2,7 +2,7 @@ function [aVascZone]=getAvacularZone(originalMask, vesselSkelMask)
 
 maskProps=regionprops(originalMask, 'Centroid', 'EquivDiameter');
 
-retinaMask = imerode(originalMask,strel('disk',round(maskProps.EquivDiameter* 0.05)));
+retinaMask = imerode(originalMask,strel('disk',round(maskProps.EquivDiameter* 0.02)));
 
 
 dist2vessels=bwdist(vesselSkelMask).*retinaMask;
@@ -15,7 +15,7 @@ emptyLbl=bwlabel(imbinarize(imerode(dist2vessels.*maskNoEdge,strel('disk',5))));
 emptyProps=struct2table(regionprops(emptyLbl, dist2vessels, 'MaxIntensity', 'PixelIdxList', 'Area'));
 
 % mostEmptyLbL=find(emptyProps.MaxIntensity>3*std(emptyProps.MaxIntensity)+mean(emptyProps.MaxIntensity));
-mostEmptyLbL=find(emptyProps.MaxIntensity>5*std(emptyProps.MaxIntensity)+mean(emptyProps.MaxIntensity));
+mostEmptyLbL=find(emptyProps.MaxIntensity>4*std(emptyProps.MaxIntensity)+mean(emptyProps.MaxIntensity));
 
 mostEmptyIm=zeros(size(retinaMask));
 
