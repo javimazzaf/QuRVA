@@ -1,0 +1,89 @@
+<deployment-project plugin="plugin.apptool" plugin-version="1.0">
+  <configuration build-checksum="1642364370" file="/Users/santiago/Dropbox (Biophotonics)/Projects/FlatMounts/code/qRVA.prj" location="/Users/santiago/Dropbox (Biophotonics)/Projects/FlatMounts/code" name="qRVA" target="target.mlapps" target-name="Package App">
+    <param.appname>qRVA</param.appname>
+    <param.authnamewatermark>Santiago Costantino and Javier Mazzaferri</param.authnamewatermark>
+    <param.email>santiago.costantino@umontreal.ca</param.email>
+    <param.company>HMR Biophotonics</param.company>
+    <param.icon />
+    <param.icons />
+    <param.summary />
+    <param.description />
+    <param.screenshot>/Users/santiago/Dropbox (Biophotonics)/Projects/FlatMounts/ImageCollection/TuftImages/4. TM.jpg</param.screenshot>
+    <param.version>1.0</param.version>
+    <param.products.name />
+    <param.products.id />
+    <param.products.version />
+    <param.platforms />
+    <param.output>/Users/santiago/Dropbox (Biophotonics)/Projects/FlatMounts/compiled</param.output>
+    <param.guid>b8374a07-28c9-458f-9031-4213b8147361</param.guid>
+    <unset>
+      <param.icon />
+      <param.icons />
+      <param.summary />
+      <param.description />
+      <param.version />
+      <param.products.name />
+      <param.products.id />
+      <param.products.version />
+      <param.platforms />
+    </unset>
+    <fileset.main>
+      <file>${PROJECT_ROOT}/processFolder.m</file>
+    </fileset.main>
+    <fileset.depfun>
+      <file>${PROJECT_ROOT}/bpass.m</file>
+      <file>${PROJECT_ROOT}/computeMaskAndCenter.m</file>
+      <file>${PROJECT_ROOT}/config.ini</file>
+      <file>${PROJECT_ROOT}/createCircularMask.m</file>
+      <file>${PROJECT_ROOT}/getAvacularZone.m</file>
+      <file>${PROJECT_ROOT}/getBigestObject.m</file>
+      <file>${PROJECT_ROOT}/getImageList.m</file>
+      <file>${PROJECT_ROOT}/getMask.m</file>
+      <file>${PROJECT_ROOT}/getThreshold.m</file>
+      <file>${PROJECT_ROOT}/getTufts.m</file>
+      <file>${PROJECT_ROOT}/getVacularNetwork.m</file>
+      <file>${PROJECT_ROOT}/makeNiceVascularImage.m</file>
+      <file>${PROJECT_ROOT}/parameters.ini</file>
+      <file>${PROJECT_ROOT}/processMask.m</file>
+      <file>${PROJECT_ROOT}/readConfig.m</file>
+    </fileset.depfun>
+    <fileset.resources />
+    <fileset.package />
+    <build-deliverables>
+      <file location="/Users/santiago/Dropbox (Biophotonics)/Projects/FlatMounts" name="compiled" optional="false">/Users/santiago/Dropbox (Biophotonics)/Projects/FlatMounts/compiled</file>
+    </build-deliverables>
+    <workflow />
+    <matlab>
+      <root>/Applications/MATLAB_R2016b.app</root>
+      <toolboxes>
+        <toolbox name="matlabcoder" />
+        <toolbox name="embeddedcoder" />
+      </toolboxes>
+      <toolbox>
+        <matlabcoder>
+          <enabled>true</enabled>
+        </matlabcoder>
+      </toolbox>
+      <toolbox>
+        <embeddedcoder>
+          <enabled>true</enabled>
+        </embeddedcoder>
+      </toolbox>
+    </matlab>
+    <platform>
+      <unix>true</unix>
+      <mac>true</mac>
+      <windows>false</windows>
+      <win2k>false</win2k>
+      <winxp>false</winxp>
+      <vista>false</vista>
+      <linux>false</linux>
+      <solaris>false</solaris>
+      <osver>10.11.6</osver>
+      <os32>false</os32>
+      <os64>true</os64>
+      <arch>maci64</arch>
+      <matlab>true</matlab>
+    </platform>
+  </configuration>
+</deployment-project>
