@@ -1,11 +1,13 @@
 function niceImage=makeNiceVascularImage(myImage, myAVascZone, mySkeleton, myBrchPts)
+    
+    dikSize=round(size(myImage, 1)/1000);
 
     redChannel=myImage/2;
     greenChannel=myImage/2;
     blueChannel=myImage/2;
 
-    myBrchPts=imdilate(myBrchPts, strel('disk', 3));
-    mySkeleton=imdilate(mySkeleton, strel('disk', 3));
+    myBrchPts=imdilate(myBrchPts, strel('disk', dikSize));
+    mySkeleton=imdilate(mySkeleton, strel('disk', dikSize));
     
     redChannel(mySkeleton~=0)=255;
     greenChannel(myBrchPts~=0)=255;
