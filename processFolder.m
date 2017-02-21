@@ -20,7 +20,7 @@ myFiles = getImageList(masterFolder);
 computeMaskAndCenter(masterFolder, myFiles);
 
 %% Do loop
-for it=1:numel(myFiles)
+for it=2:numel(myFiles)
     
     %% Verbose current Image
     disp(myFiles{it})
@@ -63,6 +63,7 @@ for it=1:numel(myFiles)
     
     %% Analyze tufts
     if doTufts==true
+        
         
         if exist('smoothVessels', 'var')
             [tuftsMask, thickMask]=getTufts(thisMask, redImage, maskNoCenter, smoothVessels);

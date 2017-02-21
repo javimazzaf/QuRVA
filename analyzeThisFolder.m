@@ -63,7 +63,8 @@ for it=1:numel(myFiles)
         if exist('smoothVessels', 'var')
             [tuftsMask, thickMask]=getTufts(thisMask, redImage, maskNoCenter, smoothVessels);
         else
-            [tuftsMask, thickMask]=getTufts(thisMask, redImage, maskNoCenter);
+            %[tuftsMask, thickMask]=getTufts(thisMask, redImage, maskNoCenter);
+            tuftsMask=testSURF(redImage, maskNoCenter, thisMask);
         end
         
         %% Get observers data
@@ -90,7 +91,7 @@ for it=1:numel(myFiles)
             
             %% Save Tuft Images
             
-            quadNW=cat(3, redImage, uint8(~thickMask).*redImage, uint8(~thickMask).*redImage);
+            quadNW=cat(3, redImage, uint8(~tuftsMask).*redImage, uint8(~tuftsMask).*redImage);
             quadNE=cat(3, redImage, redImage, redImage);
             quadSW=imoverlay(imoverlay(imoverlay(redImage, uint8(tuftsMask-consensusMask>0)*255, 'm'), uint8(tuftsMask-consensusMask<0)*255, 'y'), uint8(and(consensusMask, tuftsMask))*255, 'g');
             quadSE=votesImage;
