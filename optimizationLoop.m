@@ -1,13 +1,18 @@
+function optimizationLoop
+
+% To make sure the config files stay as before
+cleanupObj = onCleanup(@finalClean);
+
 try
     readConfig
     outputFolder = fullfile(masterFolder, 'Optimization');
     mkdir(outputFolder)
     % Backup parameters
-    copyfile('config.ini','config.ini.bak','f');
+    copyfile('parameters.ini','parameters.ini.bak','f');
     
-    inifile('config.ini','write',{'','','doTufts',1})
-    inifile('config.ini','write',{'','','doVasculature',0})
-    inifile('config.ini','write',{'','','doSaveImages',0})
+    inifile('parameters.ini','write',{'','','doTufts',1})
+    inifile('parameters.ini','write',{'','','doVasculature',0})
+    inifile('parameters.ini','write',{'','','doSaveImages',0})
     
     paramName = 'tufts.thick.binSensitivity';
     N      = 7;
@@ -27,7 +32,7 @@ try
         parValue = parValues(p);
         
         % Set parameters
-        inifile('config.ini','write',{'','',paramName,parValue})
+        inifile('parameters.ini','write',{'','',paramName,parValue})
         
         % Compute tufts
         processFolder;
@@ -35,7 +40,7 @@ try
         % measure performance
         [FP, FN, TP] = measureTuftSegmentationPerformance;
         
-        [params,~,~] = inifile('config.ini','readall');
+        [params,~,~] = inifile('parameters.ini','readall');
         save(fullfile(masterFolder, 'Optimization',[paramName '=' num2str(parValue) '.mat']),'TP','FP','FN','params')
         
         allTP(p) = sum(TP);
@@ -44,16 +49,19 @@ try
         
     end
     
-%     table()
-    
     save(fullfile(masterFolder, 'Optimization','optimizationAll.mat'),'allTP','allFP','allFN','paramName','parValues');
-    
-    % Restore config.ini
-    movefile('config.ini.bak','config.ini','f');
     
 catch err
     disp(err)
-    % Restore config.ini
-    movefile('config.ini.bak','config.ini','f');
+    % Restore parameters.ini
+    movefile('parameters.ini.bak','parameters.ini','f');
+end
+
+
+function finalClean
+    % Restore parameters.ini
+    movefile('parameters.ini.bak','parameters.ini','f');
+end
+
 end
 

@@ -19,7 +19,7 @@ myFiles = getImageList(masterFolder);
 computeMaskAndCenter(masterFolder, myFiles);
 
 %% Do loop
-for it=1:14 %numel(myFiles)
+for it=1:numel(myFiles)
     
     %% Verbose current Image
     disp(myFiles{it})
@@ -39,7 +39,7 @@ for it=1:14 %numel(myFiles)
     
     [maskStats, maskNoCenter] = processMask(thisMask, redImage, thisONCenter);
     
-    if doVasculature==true
+    if doVasculature
         
         [vesselSkelMask, brchPts, smoothVessels]=getVacularNetwork(thisMask, redImage);
         [aVascZone]=getAvacularZone(thisMask, vesselSkelMask);
@@ -63,7 +63,7 @@ for it=1:14 %numel(myFiles)
     end % doVasculature
     
     %% Analyze tufts
-    if doTufts==true
+    if doTufts
         
         if exist('smoothVessels', 'var')
             [tuftsMask, thickMask]=getTufts(thisMask, redImage, maskNoCenter, smoothVessels);
