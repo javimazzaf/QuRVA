@@ -75,11 +75,6 @@ stdVesselIntensity = (sum2Values ./ sumWeight - avgVesselIntensity.^2);
 
 factor = 2 * sqrt(vesselRadius^2 / (tufts.lowpassFilterSize^2 + vesselRadius^2));
 
-DEbuguear porque funciona bastante bien con la imagen 2 y tan mal con las 1, 
-o varias otras. Merece la pena tratar de entender porque le valor no da lo que tengo
-en mente que debería dar. Si estimamos el tamano del vaso bien, y tambien su intensidad,
-el umbral debería rechazar estos vasos. Sin embargo no lo hace. Ver porque.
-
 vesselThreshold = (avgVesselIntensity + 3 * stdVesselIntensity) * factor;
 
 outMask = lowpass >= vesselThreshold &...  % Threshold on the lowpass
