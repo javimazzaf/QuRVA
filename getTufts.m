@@ -13,11 +13,11 @@ rawImage = rawImage.*uint8(thisMask);
 rawImageNorm = mat2gray(double(rawImage));
 
 % Low-pass filter
-lowpass  = imgaussfilt(rawImageNorm,tufts.lowpassFilterSize);
+lowpass  = imgfilt(rawImageNorm,tufts.lowpassFilterSize);
 
 %% Computes typical brightness of healthy vasculature locally
 % Enhance healthy (thin) vesses using a band-pass filter
-bandPass = max(0,imgaussfilt(rawImageNorm,tufts.bandPassSizes(1)) - imgaussfilt(rawImageNorm,tufts.bandPassSizes(2)));
+bandPass = max(0,imgfilt(rawImageNorm,tufts.bandPassSizes(1)) - imgfilt(rawImageNorm,tufts.bandPassSizes(2)));
 
 % Computes an adaptive (mean) threshold for the band-pass
 thresh = filter2(fspecial('disk',tufts.bandPassSizes(2)), bandPass,'same');
