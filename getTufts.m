@@ -23,7 +23,7 @@ bandPass = max(0,imgfilt(rawImageNorm,tufts.bandPassSizes(1)) - imgfilt(rawImage
 thresh = filter2(fspecial('disk',tufts.bandPassSizes(2)), bandPass,'same');
 
 % Binarizes the band-pass and remove small objects
-vesselsMask = bwareaopen(imbinarize(bandPass,thresh),25);
+vesselsMask = bwareaopen(bandPass >= thresh,25);
 
 % Computes background mask for later
 bckgMask    = ~vesselsMask & thisMask;
