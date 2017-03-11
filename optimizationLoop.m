@@ -14,12 +14,12 @@ try
     inifile('parameters.ini','write',{'','','doVasculature',0})
     inifile('parameters.ini','write',{'','','doSaveImages',0})
     
-    paramName = 'tufts.thick.binSensitivity';
-    N      = 7;
-    minVal = 10;
-    maxVal = 30;
-%     parValues = ((1:N)-1)/(N-1) * (maxVal-minVal) + minVal;
-    parValues = [0.1 0.2 0.3 0.4 0.5 0.6 0.7];
+    paramName = 'tufts.sensitivityFactor';
+    N      = 21;
+    minVal = 0.5;
+    maxVal = 1;
+    parValues = ((1:N)-1)/(N-1) * (maxVal-minVal) + minVal;
+%     parValues = [0.1 0.2 0.3 0.4 0.5 0.6 0.7];
     
     allTP = NaN(1,N);
     allFP = NaN(1,N);
