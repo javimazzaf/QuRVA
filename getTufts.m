@@ -15,12 +15,16 @@ rawImageNorm = mat2gray(double(rawImage));
 
 vascMask  = imbinarize(mat2gray(bpass(rawImageNorm,1,5)));
 
-threshold = median(rawImageNorm(vascMask));
+kerTh = fspecial('average',tufts.lowpassFilterSize * 5);
+
+sumVessels = filter2(kerTh, rawImageNorm.*vascMask,'same');
+numVessels = filter2(kerTh, vascMask,'same');
+threshold = sumVessels ./ numVessels;
 
 enhancedTufts = filter2(fspecial('average',tufts.lowpassFilterSize), rawImageNorm,'same');
 outMask = enhancedTufts >= threshold;
 
-thickMask = imdilate(outMask, strel('disk', round(tufts.lowpassFilterSize/2)));
+thickMask = imdilate(outMask, strel('disk', floor(tufts.lowpassFilterSize/2)));
 
 tuftsMask = logical(thickMask) .* maskNoCenter;
 
