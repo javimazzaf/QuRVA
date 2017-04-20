@@ -67,11 +67,12 @@ for it=1:numel(myFiles)
     clear distanceImage falsePositivePixelsImage falseNegativePixelsImage
 end
 
-save([masterFolder filesep 'Global' filesep 'Comparissons.mat'], 'falsePositivePixels', 'falseNegativePixels', 'distancesStats')
+save([masterFolder filesep 'Global' filesep 'Comparisons.mat'], 'falsePositivePixels', 'falseNegativePixels', 'distancesStats')
 
 
 %% Make barplots
-close all
+cl;
+load([masterFolder filesep 'Global' filesep 'Comparisons.mat'], 'falsePositivePixels', 'falseNegativePixels', 'distancesStats')
 figure;
 makeNiceOffPixelFigure(falsePositivePixels)
 % ylim([0 3.5E5])

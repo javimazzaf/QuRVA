@@ -15,7 +15,7 @@ myFiles = getImageList(masterFolder);
 computeMaskAndCenter(masterFolder, myFiles);
 
 %% Do loop
-for it=1:14 %1:numel(myFiles)
+for it=2 %1:14 %1:numel(myFiles)
     
     %% Verbose current Image
     disp(myFiles{it})

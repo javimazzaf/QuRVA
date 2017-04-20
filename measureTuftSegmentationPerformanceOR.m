@@ -1,4 +1,4 @@
-function [FP, FN, TP, ERR] = measureTuftSegmentationPerformanceOR
+function [FP, FN, TP, ERR] = measureTuftComparativePerformance
 
 % loads local parameters
 readConfig;
@@ -19,11 +19,12 @@ for it=1:numel(myFiles)
     
     consensusMask = sum(allMasks,3) > 0.5;
     
-    differences = tuftsMask(:) - consensusMask(:);
-
-    FP(it) = sum(differences > 0);
-    FN(it) = sum(differences < 0);
-    TP(it) = sum(tuftsMask(:) & consensusMask(:));
+    ourDiff = tuftsMask(:) - consensusMask(:);
     
-    ERR(it) = FP(it) + FN(it);
+    FP(e,it) = sum(ourDiff > 0);
+    FN(e,it) = sum(ourDiff < 0);
+    TP(e,it) = sum(tuftsMask(:) & consensusMask(:));
+    ERR(e,it) = FP(e,it) + FN(e,it);
+    
+end
 end
