@@ -17,16 +17,18 @@ vascMask  = imbinarize(mat2gray(bpass(rawImageNorm,1,5)));
 
 % threshold = median(rawImageNorm(vascMask));
 
-enhancedTufts = filter2(fspecial('average',tufts.lowpassFilterSize), rawImageNorm,'same');
+[tuftsMask, ~, ~ ] = getTuftNew(rawImageNorm, vascMask);
 
-threshold = median(enhancedTufts(vascMask));
+% enhancedTufts = filter2(fspecial('average',tufts.lowpassFilterSize), rawImageNorm,'same');
+% 
+% threshold = median(enhancedTufts(vascMask));
+% 
+% outMask = enhancedTufts >= threshold;
 
-outMask = enhancedTufts >= threshold;
-
-thickMask = outMask;
+% thickMask = outMask;
 % thickMask = imdilate(outMask, strel('disk', round(tufts.lowpassFilterSize/2)));
 
-tuftsMask = logical(thickMask) .* maskNoCenter;
+tuftsMask = logical(tuftsMask) .* maskNoCenter;
 
 % % Procedure to get rid of false positives
 % if nargin >= 4

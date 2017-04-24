@@ -15,12 +15,12 @@
 thickMask = outMask;
 tuftsMask = logical(thickMask) .* maskNoCenter;
 
-load(fullfile(masterFolder,'TuftConsensusMasks',['Image001.jpg.mat']),'allMasks','consensusMask')
+load(fullfile(masterFolder,'TuftConsensusMasks',['Image003.jpg.mat']),'allMasks','consensusMask')
 redImage = rawImage; 
 imErrors = imoverlay(imoverlay(imoverlay(redImage, uint8(tuftsMask-consensusMask>0)*255, 'm'), uint8(tuftsMask-consensusMask<0)*255, 'y'), uint8(and(consensusMask, tuftsMask))*255, 'g');
 
-satIm = rawImage == max(rawImage(:));
-imErrors = imoverlay(imErrors,satIm,'r');
+% satIm = rawImage == max(rawImage(:));
+% imErrors = imoverlay(imErrors,satIm,'r');
 
 visualizeMultiImages(imErrors,{rawImageNorm;coarse;intens;outMask},100);
 
