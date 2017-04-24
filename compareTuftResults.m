@@ -71,7 +71,6 @@ save([masterFolder filesep 'Global' filesep 'Comparisons.mat'], 'falsePositivePi
 
 
 %% Make barplots
-cl;
 load([masterFolder filesep 'Global' filesep 'Comparisons.mat'], 'falsePositivePixels', 'falseNegativePixels', 'distancesStats')
 figure;
 makeNiceOffPixelFigure(falsePositivePixels)

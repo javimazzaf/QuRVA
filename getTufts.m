@@ -15,9 +15,12 @@ rawImageNorm = mat2gray(double(rawImage));
 
 vascMask  = imbinarize(mat2gray(bpass(rawImageNorm,1,5)));
 
-threshold = median(rawImageNorm(vascMask));
+% threshold = median(rawImageNorm(vascMask));
 
 enhancedTufts = filter2(fspecial('average',tufts.lowpassFilterSize), rawImageNorm,'same');
+
+threshold = median(enhancedTufts(vascMask));
+
 outMask = enhancedTufts >= threshold;
 
 thickMask = outMask;
