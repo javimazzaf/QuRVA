@@ -3,22 +3,26 @@ try
     outputFolder = fullfile(masterFolder, 'Optimization');
     mkdir(outputFolder)
     % Backup parameters
-    copyfile('config.ini','config.ini.bak','f');
+    copyfile('parameters.ini','parameters.ini.bak','f');
     
-    inifile('config.ini','write',{'','','doTufts',1})
-    inifile('config.ini','write',{'','','doVasculature',0})
-    inifile('config.ini','write',{'','','doSaveImages',0})
+    inifile('parameters.ini','write',{'','','doTufts',1})
+    inifile('parameters.ini','write',{'','','doVasculature',0})
+    inifile('parameters.ini','write',{'','','doSaveImages',0})
     
-    paramName = 'tufts.thick.binSensitivity';
-    N      = 7;
-    minVal = 10;
-    maxVal = 30;
+    paramName = 'tufts.openingArea';
+%     N      = 7;
+%     minVal = 10;
+%     maxVal = 30;
 %     parValues = ((1:N)-1)/(N-1) * (maxVal-minVal) + minVal;
-    parValues = [0.1 0.2 0.3 0.4 0.5 0.6 0.7];
+%     parValues = [10 15 20 25 30 40 50 75 100];
+    parValues = [30 50 70 100 200 300 400 500];
+    N         = numel(parValues);
     
-    allTP = NaN(1,N);
-    allFP = NaN(1,N);
-    allFN = NaN(1,N);
+    scoresPix = NaN(1,N);
+    scoresObj = NaN(1,N);
+    
+    evScoresPix = NaN(12,N);
+    evScoresObj = NaN(12,N);    
     
     for p = 1:N
         disp(['Iteration ' num2str(p) ' of ' num2str(N)])
@@ -27,33 +31,46 @@ try
         parValue = parValues(p);
         
         % Set parameters
-        inifile('config.ini','write',{'','',paramName,parValue})
+        inifile('parameters.ini','write',{'','',paramName,parValue})
         
         % Compute tufts
         processFolder;
         
         % measure performance
-        [FP, FN, TP] = measureTuftSegmentationPerformance;
+        [scorePix, scoreObj, evScorePix, evScoreObj] = computeScore;
         
-        [params,~,~] = inifile('config.ini','readall');
-        save(fullfile(masterFolder, 'Optimization',[paramName '=' num2str(parValue) '.mat']),'TP','FP','FN','params')
+        [params,~,~] = inifile('parameters.ini','readall');
+        save(fullfile(masterFolder, 'Optimization',[paramName '=' num2str(parValue) '.mat']),'scorePix', 'scoreObj','evScorePix', 'evScoreObj','params')
         
-        allTP(p) = sum(TP);
-        allFP(p) = sum(FP);
-        allFN(p) = sum(FN);
+        scoresPix(p) = scorePix;
+        scoresObj(p) = scoreObj;
+        
+        evScoresPix(:,p) = evScorePix;
+        evScoresObj(:,p) = evScoreObj;        
         
     end
     
 %     table()
     
-    save(fullfile(masterFolder, 'Optimization','optimizationAll.mat'),'allTP','allFP','allFN','paramName','parValues');
+    save(fullfile(masterFolder, 'Optimization','optimizationAll.mat'),'scoresPix','scoresObj','paramName','evScoresPix','evScoresObj','parValues');
     
-    % Restore config.ini
-    movefile('config.ini.bak','config.ini','f');
+    set(0,'DefaultFigureWindowStyle','docked')
+    figure(1); plot(parValues,scoresPix), xlabel(paramName), ylabel('scoresPix'), hold on
+    plot(parValues,evScoresPix(1:6,:)','-g')
+    plot(parValues,evScoresPix(7:12,:)','-r')
+    print(1, fullfile(masterFolder, 'Optimization','scoresPix.png'),'-dpng')
+    figure(2); plot(parValues,scoresObj), xlabel(paramName), ylabel('scoresObj'), hold on
+    plot(parValues,evScoresObj(1:6,:)','-g')
+    plot(parValues,evScoresObj(7:12,:)','-r')
+    print(2, fullfile(masterFolder, 'Optimization','scoresObj.png'),'-dpng')
+    set(0,'DefaultFigureWindowStyle','normal')
+    
+    % Restore parameters.ini
+    movefile('parameters.ini.bak','parameters.ini','f');
     
 catch err
     disp(err)
-    % Restore config.ini
-    movefile('config.ini.bak','config.ini','f');
+    % Restore parameters.ini
+    movefile('parameters.ini.bak','parameters.ini','f');
 end
 

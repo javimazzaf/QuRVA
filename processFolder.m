@@ -74,7 +74,7 @@ for it=1:14 %numel(myFiles)
         %% Save Tuft Images
         if doSaveImages
             
-            quadNW=cat(3, uint8(thickMask).*redImage, redImage, redImage);
+            quadNW=cat(3, uint8(tuftsMask).*redImage, redImage, redImage);
             quadNE=cat(3, redImage, redImage, redImage);
             
             imwrite([quadNW quadNE], fullfile(masterFolder, 'TuftImages', myFiles{it}), 'JPG')

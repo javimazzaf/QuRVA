@@ -15,27 +15,41 @@ rawImageNorm = mat2gray(double(rawImage));
 
 vascMask  = imbinarize(mat2gray(bpass(rawImageNorm,1,5)));
 
-% threshold = median(rawImageNorm(vascMask));
+eqImage = equalizeBrightness(rawImageNorm, vascMask);
 
-[tuftsMask, ~, ~ ] = getTuftNew(rawImageNorm, vascMask);
+[or, oc] = size(eqImage);
 
-% enhancedTufts = filter2(fspecial('average',tufts.lowpassFilterSize), rawImageNorm,'same');
-% 
-% threshold = median(enhancedTufts(vascMask));
-% 
-% outMask = enhancedTufts >= threshold;
+sz = tufts.lowpassFilterSize * tufts.resampleScale;
 
-% thickMask = outMask;
-% thickMask = imdilate(outMask, strel('disk', round(tufts.lowpassFilterSize/2)));
+sgm = sz / sqrt(2);
 
-tuftsMask = logical(tuftsMask) .* maskNoCenter;
+ker1 =   fspecial('gaussian', ceil(tufts.denoiseFilterSize * 6) * [1 1] , tufts.denoiseFilterSize);
+ker2 = - fspecial('log', ceil(sgm * 8) * [1 1] , sgm);
+ker3 =   fspecial('disk', round(sgm * 0.75)) > 0;
 
-% % Procedure to get rid of false positives
-% if nargin >= 4
-%     tuftsMask=getTuftQC(rawImage, thisMask, maskNoCenter, tuftsMask, smoothVessels);
-% else
-%     tuftsMask=getTuftQC(rawImage, thisMask, maskNoCenter, tuftsMask);
-% end
+thisImage = imresize(eqImage,tufts.resampleScale);
+
+bp1 = mat2gray(max(filter2(ker1,thisImage,'same'),0));
+bp2 = mat2gray(max(filter2(ker2,thisImage,'same'),0));
+
+vascMask = imresize(vascMask,tufts.resampleScale);
+
+mskCoarse = bp2 >= double(median(bp2(vascMask)));
+mskIntens = bp1 >= double(median(bp1(vascMask)));
+
+mskMoreThanPerc = filter2(ker3,mskIntens,'same') / sum(ker3(:)) > tufts.intensePixelsFraction;
+
+msk = mskCoarse & mskMoreThanPerc;
+
+msk = imresize(msk,[or, oc]);
+
+thickMask = bwareaopen(msk,tufts.openingArea);
+
+tuftsMask = logical(thickMask) .* maskNoCenter;
+
+end
+
+
 
 
 
