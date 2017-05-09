@@ -1,107 +1,52 @@
-% testing
+%%
+readConfig
+load(fullfile(masterFolder, 'trainingSet.mat'),'data','res')
 
-% cutPerc = 3;
-% 
-% mn = min(double(rawImage(:))) + double(range(rawImage(:))) / 100 * cutPerc; mx = max(double(rawImage(:))) - double(range(rawImage(:))) / 100 * cutPerc;
-% noExtremeMask = rawImage > mn & rawImage < mx;
+% extra_options.DEBUG_ON
+% extra_options.replace
+% extra_options.classwt
+% extra_options.cutoff
+% extra_options.strata
+% extra_options.sampsize
+% extra_options.nodesize
+extra_options.importance = 1;
+% extra_options.localImp
+% extra_options.nPerm
+% extra_options.proximity
+% extra_options.oob_prox
+extra_options.do_trace = 1;
+% extra_options.keep_inbag
 
-% threshold = double(median(enhancedTufts(vascMask)))
-% threshold = double(mean(rawImageNorm(noExtremeMask & vascMask)))
-% threshold = 0.4;
-% outMask = enhancedTufts >= threshold;
+ntree = 0;
+mtry  = 0;
 
-eqImage = equalizeBrightness(rawImageNorm, vascMask);
+model = classRF_train(data,res,ntree,mtry,extra_options);
 
+save(fullfile(masterFolder, 'model.mat'),'model')
 
-[outMask, coarse, intens ] = getTuftNew(eqImage, vascMask);
-
-thickMask = outMask;
-tuftsMask = logical(thickMask) .* maskNoCenter;
-
-load(fullfile(masterFolder,'TuftConsensusMasks',['Image001.jpg.mat']),'allMasks','consensusMask')
-redImage = rawImage; 
-imErrors = imoverlay(imoverlay(imoverlay(redImage, uint8(tuftsMask-consensusMask>0)*255, 'm'), uint8(tuftsMask-consensusMask<0)*255, 'y'), uint8(and(consensusMask, tuftsMask))*255, 'g');
-
-% satIm = rawImage == max(rawImage(:));
-% imErrors = imoverlay(imErrors,satIm,'r');
-
-visualizeMultiImages(imErrors,{rawImageNorm;coarse;intens;outMask},100);
-
-% readConfig;
-% 
-% myFiles = getImageList(masterFolder);
-% 
-% scl = 0.25;
-% 
-% sz = 30 * scl;
-% sgm = sz / 2 / sqrt(2);
-% ker1 = fspecial('gaussian', ceil(0.5 * 6) * [1 1] , 0.5);
-% ker2 = - fspecial('log', ceil(sgm * 2 * 8) * [1 1] , sgm * 2);
-% 
-% %% Do loop
-% for it = 1:14
-%     
-%     %% Verbose current Image
-%     disp(myFiles{it})
-%     
-%     %% Read image
-%     thisImage = double(imread(fullfile(masterFolder, myFiles{it})));
-%     
-%     thisImage = imresize(thisImage,scl);
-%     
-%     bp1 = filter2(ker1,thisImage,'same');
-%     bp1 = max(bp1,0);
-% 
-%     bp2 = filter2(ker2,thisImage,'same');
-%     bp2 = max(bp2,0);
-%     
-% %     bp1   = bpass(thisImage,5,400);
-% %     bp2   = bpass(thisImage,30,400);
-%     multi = bp1 .* bp2;
-%     
-%     mask = 
-%     
-%     resIm = [[mat2gray(thisImage),...
-%              mat2gray(bp1)];...
-%              [mat2gray(bp2),...
-%              mat2gray(multi)]...
-%              ];
-%     
-%     imshow(resIm,[])
-%     
-%     
-% end
+%%
+load(fullfile(masterFolder, 'model.mat'),'model')
 
 
+smIm = imgaussfilt(oImage,5);
 
+candidatesMsk = imbinarize(smIm, adaptthresh(smIm, 'NeighborhoodSize', [51 51])) & validMask;
+% candidatesMsk = (oImage > max(oImage) * 0.75) & validMask;
+ind = find(candidatesMsk);
+imFeatures = computeImageFeatures(oImage, validMask,ind,[]);
+y = classRF_predict(imFeatures,model);
+tuftInd = ind(y > 0.5);
+resIm = zeros(size(oImage));
+resIm(tuftInd) = true;
 
-% sz = 30;
-% sgm = sz / sqrt(2);
-% ker = - fspecial('log', ceil(sgm * 8) * [1 1] , sgm);
-% 
-% delta = zeros(1024);
-% delta(512,512) = 1;
-% 
-% r = [];
-% mx = [];
-% mn = [];
-% for k = 1:4:100
-%     
-%     im = imdilate(delta,strel('disk',k,8));
-%     
-%     res = filter2(ker,im,'same');
-%     
-%     r = [r k];
-%     mx = [mx max(res(:))];
-%     mn = [mn min(res(:))];
-%     
-%     disp(k)
-% end
-% 
-% subplot(2,1,1), plot(r,mx)
-% 
-% subplot(2,1,2), plot(r,mn)
+%%
+set(0,'DefaultFigureWindowStyle','docked')
 
+load(fullfile(masterFolder, 'TuftConsensusMasks',myFiles{it}),'consensusMask');
+% resIm = candidatesMsk;
+figure(1), imshow(oImage,[]); 
+rgb=imoverlay(imoverlay(imoverlay(oImage, uint8(resIm-consensusMask>0)*255, 'm'), uint8(resIm-consensusMask<0)*255, 'y'), uint8(and(consensusMask, resIm))*255, 'g');
+figure(2), imshow(rgb,[]);   
 
-% imshow([mat2gray(im),mat2gray(res)],[])
+set(0,'DefaultFigureWindowStyle','normal')
 
