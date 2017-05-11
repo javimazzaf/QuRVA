@@ -31,7 +31,7 @@ function [CLBP_S,CLBP_M,CLBP_C] = clbp(varargin) % image,radius,neighbors,mappin
 
 
 % Check number of input arguments.
-error(nargchk(1,5,nargin));
+narginchk(1,5);
 
 image=varargin{1};
 d_image=double(image);

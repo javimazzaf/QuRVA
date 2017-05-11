@@ -50,6 +50,16 @@ log30 = imresize(log30, [or, oc]) ./ localInt;
 log30(~mask & localInt == 0) = 0;
 features = getFeatures(log30,trueInd,falsInd,features);
 
+% 4: LBP, rotational-invariant uniform 2
+mapping = getmapping(8,'riu2');
+[CLBP_S,CLBP_M,CLBP_C] = clbp(smoothedIm,1,8,mapping,'i');
+aux = max(double(CLBP_S(:))) - double(CLBP_S);
+lbps = zeros(size(aux));
+lbps(ismember(aux,0:8)) = aux(ismember(aux,0:8)) + 1;
+lbps(ismember(aux,9)) = 0;
+
+features = getFeatures(lbps,trueInd,falsInd,features);
+
 % % Pixels above thresh
 % mskIntens = resizedIm >= double(median(resizedIm(vascMask)));
 % ker =   fspecial('disk', round(sgm * 0.75)) > 0;

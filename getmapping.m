@@ -25,6 +25,25 @@ function mapping = getmapping(samples,mappingtype)
 % invariant mappings with high number of sampling points.
 % Lauge Sorensen is acknowledged for spotting this problem.
 
+% Modification Javier Mazzaferri. 
+% Updated to work with Matlab 2016b:
+% Functions that have changed type of parameters.
+% bitset
+% bitshift
+% bitget
+
+switch samples
+    case 8
+        intType = 'uint8';
+    case 16
+        intType = 'uint16';  
+    case 32
+        intType = 'uint32';
+    case 64
+        intType = 'uint64';
+    otherwise
+        error('We may need to change the implementation to consider this number of samples')
+end
 
 
 table = 0:2^samples-1;
@@ -56,35 +75,45 @@ end
 
 if strcmp(mappingtype,'ri') %Rotation invariant
   tmpMap = zeros(2^samples,1) - 1;
-  for i = 0:2^samples-1
+  for i = 0:2^samples-1 %JM: loop through table numbers
     rm = i;
-    r  = i;
-    for j = 1:samples-1
-      r = bitset(bitshift(r,1,samples),1,bitget(r,samples)); %rotate
-                                                             %left
-      if r < rm
+    r  = i; %JM: I think this is useless
+    for j = 1:samples-1 %JM: loop thorugh possible bit rotations
+      r = bitset(bitshift(r,1,intType),1,bitget(r,samples,intType),intType); %rotate left
+      if r < rm % Looks for the minimum value among rotations
         rm = r;
       end
     end
-    if tmpMap(rm+1) < 0
+    if tmpMap(rm+1) < 0 %JM: If it is the first time for the pattern, adds it
       tmpMap(rm+1) = newMax;
       newMax = newMax + 1;
     end
-    table(i+1) = tmpMap(rm+1);
+    table(i+1) = tmpMap(rm+1); %JM: Set the label as for the smallest rotation
   end
 end
 
+% if strcmp(mappingtype,'riu2') %Uniform & Rotation invariant
+%   % JM comment: all number that have more than 2 bit jumps goes to miscelaneous tag (samples+1)
+%   % The rest is labeled as the number of 1 bits.
+%   newMax = samples + 2;
+%   for i = 0:2^samples - 1
+%     j = bitset(bitshift(i,1,intType),1,bitget(i,samples,intType),intType); %rotate left
+%     numt = sum(bitget(bitxor(i,j),1:samples));
+%     if numt <= 2
+%       table(i+1) = sum(bitget(i,1:samples));
+%     else
+%       table(i+1) = samples+1;
+%     end
+%   end
+% end
+
+%JM More robust and compact computation
 if strcmp(mappingtype,'riu2') %Uniform & Rotation invariant
-  newMax = samples + 2;
-  for i = 0:2^samples - 1
-    j = bitset(bitshift(i,1,samples),1,bitget(i,samples)); %rotate left
-    numt = sum(bitget(bitxor(i,j),1:samples));
-    if numt <= 2
-      table(i+1) = sum(bitget(i,1:samples));
-    else
-      table(i+1) = samples+1;
-    end
-  end
+    bitArray = bitand((0:2^samples-1)',2.^(samples-1:-1:0)) > 0;
+    rotArray = circshift(bitArray,1,2);
+    miscMask = sum(xor(bitArray,rotArray),2) > 2; %Mask for miscelaneous Labels
+    table    = sum(bitArray,2);  %Write labels
+    table(miscMask) = samples+1; %Write miscelaneous labels
 end
 
 mapping.table=table;
