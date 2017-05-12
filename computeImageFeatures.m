@@ -52,13 +52,19 @@ features = getFeatures(log30,trueInd,falsInd,features);
 
 % 4: LBP, rotational-invariant uniform 2
 mapping = getmapping(8,'riu2');
-[CLBP_S,CLBP_M,CLBP_C] = clbp(smoothedIm,1,8,mapping,'i');
+[CLBP_S,CLBP_M,CLBP_C, CLBP_V,CLBP_SN] = clbp(smoothedIm,1,8,mapping,'i');
 aux = max(double(CLBP_S(:))) - double(CLBP_S);
 lbps = zeros(size(aux));
 lbps(ismember(aux,0:8)) = aux(ismember(aux,0:8)) + 1;
 lbps(ismember(aux,9)) = 0;
 
 features = getFeatures(lbps,trueInd,falsInd,features);
+% 
+% % 5: LBP variance, rotational-invariant uniform 2
+% features = getFeatures(CLBP_V,trueInd,falsInd,features);
+% 
+% % 6: LBP STD / MEAN, rotational-invariant uniform 2
+% features = getFeatures(CLBP_SN,trueInd,falsInd,features);
 
 % % Pixels above thresh
 % mskIntens = resizedIm >= double(median(resizedIm(vascMask)));

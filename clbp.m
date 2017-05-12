@@ -22,7 +22,7 @@
 %       [CLBP_SH,CLBP_MH]=CLBP(I,1,8,mapping,'h'); %CLBP histogram in (8,1) neighborhood
 %                                  %using uniform patterns
 
-function [CLBP_S,CLBP_M,CLBP_C] = clbp(varargin) % image,radius,neighbors,mapping,mode)
+function [CLBP_S,CLBP_M,CLBP_C,CLBP_V,CLBP_SN] = clbp(varargin) % image,radius,neighbors,mapping,mode)
 % Version 0.1
 % Authors: Zhenhua Guo, Lei Zhang, and David Zhang
 
@@ -100,8 +100,6 @@ end
 % Determine the dimensions of the input image.
 [ysize xsize] = size(image);
 
-
-
 miny=min(spoints(:,1));
 maxy=max(spoints(:,1));
 minx=min(spoints(:,2));
@@ -135,6 +133,11 @@ bins = 2^neighbors;
 CLBP_S=zeros(dy+1,dx+1);
 CLBP_M=zeros(dy+1,dx+1);
 CLBP_C=zeros(dy+1,dx+1);
+CLBP_V=zeros(dy+1,dx+1);
+
+D = NaN(dy+1, dx+1, neighbors); %JM modified to ease computations of VAR
+Diff = zeros(dy+1, dx+1, neighbors,'double'); %JM modified to ease computations
+N    = zeros(dy+1, dx+1, neighbors,'double'); % JM
 
 %Compute the LBP code image
 
@@ -147,10 +150,10 @@ for i = 1:neighbors
   % Check if interpolation is needed.
   if (abs(x - rx) < 1e-6) && (abs(y - ry) < 1e-6)
     % Interpolation is not needed, use original datatypes
-    N = image(ry:ry+dy,rx:rx+dx);
-    D{i} = N >= C;   
-    Diff{i} = abs(N-C);
-    MeanDiff(i) = mean(mean(Diff{i}));
+    N(:,:,i) = double(image(ry:ry+dy,rx:rx+dx));
+    D(:,:,i) = N(:,:,i) >= C;   
+    Diff(:,:,i) = abs(N(:,:,i)-double(C));
+    MeanDiff(i) = mean(mean(Diff(:,:,i)));
   else
     % Interpolation needed, use double type images 
     ty = y - fy;
@@ -162,24 +165,32 @@ for i = 1:neighbors
     w3 = (1 - tx) *      ty ;
     w4 =      tx  *      ty ;
     % Compute interpolated pixel values
-    N = w1*d_image(fy:fy+dy,fx:fx+dx) + w2*d_image(fy:fy+dy,cx:cx+dx) + ...
-        w3*d_image(cy:cy+dy,fx:fx+dx) + w4*d_image(cy:cy+dy,cx:cx+dx);
-    D{i} = N >= d_C; 
-    Diff{i} = abs(N-d_C);
-    MeanDiff(i) = mean(mean(Diff{i}));
+    N(:,:,i) = w1*d_image(fy:fy+dy,fx:fx+dx) + w2*d_image(fy:fy+dy,cx:cx+dx) + ...
+               w3*d_image(cy:cy+dy,fx:fx+dx) + w4*d_image(cy:cy+dy,cx:cx+dx);
+    D(:,:,i) = N(:,:,i) >= d_C; 
+    Diff(:,:,i) = abs(N(:,:,i) - d_C);
+    MeanDiff(i) = mean(mean(Diff(:,:,i)));
   end  
 end
 % Difference threshold for CLBP_M
 DiffThreshold = mean(MeanDiff);
+
 % compute CLBP_S and CLBP_M
 for i=1:neighbors
   % Update the result matrix.
   v = 2^(i-1);
-  CLBP_S = CLBP_S + v*D{i};
-  CLBP_M = CLBP_M + v*(Diff{i}>=DiffThreshold);
+  CLBP_S = CLBP_S + v * D(:,:,i);
+  CLBP_M = CLBP_M + v * (Diff(:,:,i) >= DiffThreshold);
 end
+
+ave     = mean(N,3,'omitnan');
+CLBP_V  = var(N,1,3,'omitnan');
+CLBP_SN = sqrt(CLBP_V) ./ ave;
+
 % CLBP_C
 CLBP_C = d_C>=mean(d_image(:));
+
+
 
 %Apply mapping if it is defined
 if isstruct(mapping)
@@ -226,6 +237,10 @@ end
 CLBP_S = padImages(CLBP_S, size(image), rx, ry, dx, dy);
 CLBP_M = padImages(CLBP_M, size(image), rx, ry, dx, dy);
 CLBP_C = padImages(CLBP_C, size(image), rx, ry, dx, dy);
+
+CLBP_V  = padImages(CLBP_V, size(image), rx, ry, dx, dy);
+CLBP_SN = padImages(CLBP_SN, size(image), rx, ry, dx, dy);
+
 
 end
 
