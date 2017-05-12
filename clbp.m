@@ -222,8 +222,18 @@ else
     end
 end
 
+%Pad results back
+CLBP_S = padImages(CLBP_S, size(image), rx, ry, dx, dy);
+CLBP_M = padImages(CLBP_M, size(image), rx, ry, dx, dy);
+CLBP_C = padImages(CLBP_C, size(image), rx, ry, dx, dy);
 
+end
 
+function im = padImages(im, sz, rx, ry, dx, dy)
+aux = zeros(sz);
+aux(ry:ry+dy,rx:rx+dx) = im;
+im = aux;
+end
 
 
 
