@@ -3,14 +3,17 @@ masterFolder = '../Anonymous/';
 myFiles = dir(fullfile(masterFolder, 'TuftNumbers','*.mat'));
 myFiles = {myFiles(:).name};
 
-data = [];
-res  = [];
+data1 = [];
+res1  = [];
+
+data2 = [];
+res2  = [];
 
 % Repeatability
 rng(1);
 
-% for it = 1:floor(numel(myFiles)/2)
-for it = floor(numel(myFiles)/2)+1:numel(myFiles)
+for it = 1:numel(myFiles)
+% for it = floor(numel(myFiles)/2)+1:numel(myFiles)
     
     disp(it)
     
@@ -45,13 +48,17 @@ for it = floor(numel(myFiles)/2)+1:numel(myFiles)
 
     blockFeatures = computeBlockFeatures(oImage,validMask, indBlocks,trueBlocks,falseBlocks);
       
-    data = [data;blockFeatures];
-      
-    res = [res;ones([size(trueBlocks,1),1]);zeros([size(falseBlocks,1),1])];
+    if it <=7
+        data1 = [data1;blockFeatures];
+        res1 = [res1;ones([size(trueBlocks,1),1]);zeros([size(falseBlocks,1),1])];
+    else
+        data2 = [data2;blockFeatures];
+        res2 = [res2;ones([size(trueBlocks,1),1]);zeros([size(falseBlocks,1),1])];
+    end
       
 end
 
-save(fullfile(masterFolder, 'trainingSet.mat'),'data','res')
+save(fullfile(masterFolder, 'trainingSet.mat'),'data1','res1','data2','res2')
 
 
 

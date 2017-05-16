@@ -4,13 +4,7 @@ masterFolder = '../Anonymous/';
 
 % load(fullfile(masterFolder, 'model.mat'),'model')
 
-load(fullfile(masterFolder, 'modelFirstHalf.mat'),'model')
-modelFirst = model;
-
-load(fullfile(masterFolder, 'modelSecondHalf.mat'),'model')
-modelSecond = model;
-
-clear model
+save(fullfile(masterFolder, 'model.mat'),'model1','model2','-v7.3')
 
 myFiles = dir(fullfile(masterFolder, 'TuftNumbers','*.mat'));
 myFiles = {myFiles(:).name};
@@ -42,9 +36,9 @@ for it=1:numel(myFiles)
     blockFeatures = computeBlockFeatures(oImage,validMask, indBlocks,candidateBlocks,[]);
 
     if it <= 7
-       y = classRF_predict(blockFeatures,modelSecond);
+       y = classRF_predict(blockFeatures,model2);
     else
-        y = classRF_predict(blockFeatures,modelFirst);
+       y = classRF_predict(blockFeatures,model1);
     end
 
     goodBlocks = candidateBlocks(y > 0.5,:);
