@@ -58,13 +58,15 @@ scoreFPo = getScore(FPo, label);
 scoreFNo = getScore(FNo, label);
 
 disp('----------------------------------------')
-% disp(['scoreFP:' num2str(scoreFP)])
-% disp(['scoreFN:' num2str(scoreFN)])
-disp(['Average Score Pixels:' num2str((scoreFP + scoreFN) / 2)])
-% disp('----------------------------------------')
-% disp(['scoreFPo:' num2str(scoreFPo)])
-% disp(['scoreFNo:' num2str(scoreFNo)])
-disp(['Average Score Objects:' num2str((scoreFPo + scoreFNo)/2)])
+disp('Pixels')
+disp(['scoreFP:' num2str(scoreFP)])
+disp(['scoreFN:' num2str(scoreFN)])
+disp(['Average:' num2str((scoreFP + scoreFN) / 2)])
+disp('----------------------------------------')
+disp('Objects')
+disp(['scoreFPo:' num2str(scoreFPo)])
+disp(['scoreFNo:' num2str(scoreFNo)])
+disp(['Average:' num2str((scoreFPo + scoreFNo)/2)])
 
 %% Make barplots
 fg=figure;

@@ -4,7 +4,7 @@ masterFolder = '../Anonymous/';
 
 % load(fullfile(masterFolder, 'model.mat'),'model')
 
-save(fullfile(masterFolder, 'model.mat'),'model1','model2','-v7.3')
+load(fullfile(masterFolder, 'model.mat'),'model1','model2')
 
 myFiles = dir(fullfile(masterFolder, 'TuftNumbers','*.mat'));
 myFiles = {myFiles(:).name};
