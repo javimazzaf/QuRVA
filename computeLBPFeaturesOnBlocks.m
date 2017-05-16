@@ -1,6 +1,7 @@
 function features = computeLBPFeaturesOnBlocks(inIm,R,P,blocksInd,selBlocks)
 
-ixFeat = [4 8 12 13] - 3;
+% ixFeat = [4 8 12 13] - 3;
+ixFeat = 1:10;
 
 features = zeros(size(selBlocks,1),numel(ixFeat));
 

@@ -21,6 +21,10 @@ locallyNormIm = smoothedIm ./ localInt;
 locallyNormIm(~mask) = 0;
 blockFeatures = [blockFeatures,computeAvgWithinBlocks(locallyNormIm,blocksInd,[trueBlocks;falseBlocks])];
 
+% 2: Globally Normalized intensity
+globallyNormIm = smoothedIm ./ (maxInt - minInt);
+globallyNormIm(~mask) = 0;
+blockFeatures = [blockFeatures,computeAvgWithinBlocks(globallyNormIm,blocksInd,[trueBlocks;falseBlocks])];
 
 % % 1: Normalized log filter scale
 % sz = szMax / 120;
