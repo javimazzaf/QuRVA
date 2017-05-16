@@ -40,14 +40,14 @@ log60 = imresize(log60, [or, oc]) ./ (maxInt - minInt);
 log60(~mask) = 0;
 blockFeatures = [blockFeatures,computeAvgWithinBlocks(log60,blocksInd,[trueBlocks;falseBlocks])];
 
-% 3: Normalized log filter scale 
-sz = szMax / 30;
-sgm = sz / sqrt(2) * tufts.resampleScale;
-ker  = - fspecial('log', ceil(sgm * 8) * [1 1] , sgm);
-log30 = max(filter2(ker,resizedIm,'same'),0);
-log30 = imresize(log30, [or, oc]) ./ localInt;
-log30(~mask & localInt == 0) = 0;
-blockFeatures = [blockFeatures,computeAvgWithinBlocks(log30,blocksInd,[trueBlocks;falseBlocks])];
+% % 3: Normalized log filter scale 
+% sz = szMax / 30;
+% sgm = sz / sqrt(2) * tufts.resampleScale;
+% ker  = - fspecial('log', ceil(sgm * 8) * [1 1] , sgm);
+% log30 = max(filter2(ker,resizedIm,'same'),0);
+% log30 = imresize(log30, [or, oc]) ./ localInt;
+% log30(~mask & localInt == 0) = 0;
+% blockFeatures = [blockFeatures,computeAvgWithinBlocks(log30,blocksInd,[trueBlocks;falseBlocks])];
 
 % 4: LBP, rotational-invariant uniform 2
 % mapping = getmapping(8,'riu2');

@@ -1,6 +1,8 @@
 function features = computeLBPFeaturesOnBlocks(inIm,R,P,blocksInd,selBlocks)
 
-features = zeros(size(selBlocks,1),P+2);
+ixFeat = [4 8 12 13] - 3;
+
+features = zeros(size(selBlocks,1),numel(ixFeat));
 
 mapping = getmapping(P,'riu2');
 
@@ -21,7 +23,7 @@ for k = 1:size(selBlocks,1)
     h = double(CLBP_SH) / sum(CLBP_SH); 
     
  
-    features(k,:) = h;
+    features(k,:) = h(ixFeat);
 end
 
 
