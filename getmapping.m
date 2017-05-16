@@ -114,6 +114,7 @@ if strcmp(mappingtype,'riu2') %Uniform & Rotation invariant
     miscMask = sum(xor(bitArray,rotArray),2) > 2; %Mask for miscelaneous Labels
     table    = sum(bitArray,2);  %Write labels
     table(miscMask) = samples+1; %Write miscelaneous labels
+    newMax = samples + 2;
 end
 
 mapping.table=table;

@@ -231,16 +231,16 @@ else
         CLBP_S=uint32(CLBP_S);
         CLBP_M=uint32(CLBP_M);
     end
+    
+    %Pad results back
+    CLBP_S = padImages(CLBP_S, size(image), rx, ry, dx, dy);
+    CLBP_M = padImages(CLBP_M, size(image), rx, ry, dx, dy);
+    CLBP_C = padImages(CLBP_C, size(image), rx, ry, dx, dy);
+    
+    CLBP_V  = padImages(CLBP_V, size(image), rx, ry, dx, dy);
+    CLBP_SN = padImages(CLBP_SN, size(image), rx, ry, dx, dy);
+    
 end
-
-%Pad results back
-CLBP_S = padImages(CLBP_S, size(image), rx, ry, dx, dy);
-CLBP_M = padImages(CLBP_M, size(image), rx, ry, dx, dy);
-CLBP_C = padImages(CLBP_C, size(image), rx, ry, dx, dy);
-
-CLBP_V  = padImages(CLBP_V, size(image), rx, ry, dx, dy);
-CLBP_SN = padImages(CLBP_SN, size(image), rx, ry, dx, dy);
-
 
 end
 
