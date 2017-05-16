@@ -1,6 +1,16 @@
 masterFolder = '../Anonymous/';
+% masterFolder = '/Users/javimazzaf/Dropbox (Biophotonics)/Francois/310117TOTM/';
 
-load(fullfile(masterFolder, 'model.mat'),'model')
+
+% load(fullfile(masterFolder, 'model.mat'),'model')
+
+load(fullfile(masterFolder, 'modelFirstHalf.mat'),'model')
+modelFirst = model;
+
+load(fullfile(masterFolder, 'modelSecondHalf.mat'),'model')
+modelSecond = model;
+
+clear model
 
 myFiles = dir(fullfile(masterFolder, 'TuftNumbers','*.mat'));
 myFiles = {myFiles(:).name};
@@ -25,16 +35,17 @@ for it=1:numel(myFiles)
     load(fullfile(masterFolder, 'TuftConsensusMasks',myFiles{it}), 'allMasks','consensusMask');
     
     [blocks, indBlocks] = getBlocks(oImage, [25 25]);
-    
-    smIm = imgaussfilt(oImage,5);
 
-    candidatesMsk = imbinarize(smIm, adaptthresh(smIm, 'NeighborhoodSize', [51 51])) & validMask;
 
-    candidateBlocks  = getBlocksInMask(indBlocks, candidatesMsk, 50);
+    candidateBlocks  = getBlocksInMask(indBlocks, validMask, 50);
 
     blockFeatures = computeBlockFeatures(oImage,validMask, indBlocks,candidateBlocks,[]);
 
-    y = classRF_predict(blockFeatures,model);
+    if it <= 7
+       y = classRF_predict(blockFeatures,modelSecond);
+    else
+        y = classRF_predict(blockFeatures,modelFirst);
+    end
 
     goodBlocks = candidateBlocks(y > 0.5,:);
     
@@ -64,7 +75,11 @@ for it=1:numel(myFiles)
     imwrite([quadNW quadNE; quadSW quadSE], fullfile(masterFolder, 'TuftImagesRF', fname), 'JPG')
     
     save(fullfile(masterFolder,'TuftNumbersRF',[myFiles{it}]),'tuftsMask', 'allMasks', 'consensusMask');
-    
+
+% quadNW=cat(3, oImage, uint8(~tuftsMask).*oImage, uint8(~tuftsMask).*oImage);
+% imwrite(quadNW, fullfile('~/Desktop/', 'TuftImagesRF', [fname(1:end-4) '.jpg']), 'JPG')
+
+
 end
 
 

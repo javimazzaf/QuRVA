@@ -9,7 +9,8 @@ res  = [];
 % Repeatability
 rng(1);
 
-for it=1:numel(myFiles)
+% for it = 1:floor(numel(myFiles)/2)
+for it = floor(numel(myFiles)/2)+1:numel(myFiles)
     
     disp(it)
     

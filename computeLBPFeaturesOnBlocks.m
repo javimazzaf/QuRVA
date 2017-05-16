@@ -17,8 +17,11 @@ for k = 1:size(selBlocks,1)
     
     [CLBP_SH,~] = clbp(aux,R,P,mapping,'h');
     
+    % Normalize histogram
+    h = double(CLBP_SH) / sum(CLBP_SH); 
+    
  
-    features(k,:) = CLBP_SH;
+    features(k,:) = h;
 end
 
 
