@@ -1,11 +1,11 @@
-function selBlocks = getBlocksInMask(ix, msk, percTol)
+function selBlocks = getBlocksInMask(ix, msk, percTol, offSet)
 
 selBlocks = [];
 sz       = size(ix);
 bSz      = sz(1:2);
 nBlocks  = sz(3:4);
 
-padSz   = nBlocks .* bSz - size(msk);
+padSz   = nBlocks .* bSz - size(msk) + offSet;
     
 msk = padarray(msk,padSz,0,'post');
 

@@ -1,4 +1,4 @@
-function features = computeLBPFeaturesOnBlocks(inIm,R,P,blocksInd,selBlocks)
+function features = computeLBPFeaturesOnBlocks(inIm,R,P,blocksInd,selBlocks, offSet)
 
 % ixFeat = [4 8 12 13] - 3;
 ixFeat = 1:10; % All features
@@ -11,7 +11,7 @@ sz       = size(blocksInd);
 bSz      = sz(1:2);
 nBlocks  = sz(3:4);
 
-padSz   = nBlocks .* bSz - size(inIm);
+padSz   = nBlocks .* bSz - size(inIm) + offSet;
     
 inIm = padarray(inIm,padSz,0,'post');
 

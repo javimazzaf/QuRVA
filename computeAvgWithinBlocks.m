@@ -1,4 +1,4 @@
-function features = computeAvgWithinBlocks(inIm,blocksInd,selBlocks)
+function features = computeAvgWithinBlocks(inIm,blocksInd,selBlocks, offSet)
 
 features = zeros(size(selBlocks,1),1);
 
@@ -6,7 +6,7 @@ sz       = size(blocksInd);
 bSz      = sz(1:2);
 nBlocks  = sz(3:4);
 
-padSz   = nBlocks .* bSz - size(inIm);
+padSz   = nBlocks .* bSz - size(inIm) + offSet;
     
 inIm = padarray(inIm,padSz,0,'post');
 

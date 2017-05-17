@@ -1,10 +1,10 @@
-function msk = blocksToMask(sz, ind, blocks)
+function msk = blocksToMask(sz, ind, blocks, offSet)
 
 aux      = size(ind);
 bSz      = aux(1:2);
 nBlocks  = aux(3:4);
 
-msk = zeros(bSz.*nBlocks);
+msk = zeros(bSz.*nBlocks + offSet);
 
 for k = 1:size(blocks,1)
    msk(ind(:,:,blocks(k,1),blocks(k,2))) = true;

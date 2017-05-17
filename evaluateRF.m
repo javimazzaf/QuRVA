@@ -27,21 +27,35 @@ for it=1:numel(myFiles)
     
     load(fullfile(masterFolder, 'TuftConsensusMasks',myFiles{it}), 'allMasks','consensusMask');
     
-    [blocks, indBlocks] = getBlocks(oImage, tufts.blockSize);
-
-    candidateBlocks  = getBlocksInMask(indBlocks, validMask, 50);
-
-    blockFeatures = computeBlockFeatures(oImage,validMask, indBlocks,candidateBlocks,[]);
-
-    if it <= 7
-       y = classRF_predict(blockFeatures,model2);
-    else
-       y = classRF_predict(blockFeatures,model1);
-    end
-
-    goodBlocks = candidateBlocks(y > 0.5,:);
+    summedMask = zeros(size(oImage));
     
-    tuftsMask = blocksToMask(size(oImage), indBlocks, goodBlocks);
+    for k = 1:9
+        
+        [r, c] = ind2sub([3 3], k);
+        
+        step = ceil(tufts.blockSize / 3);
+        
+        offSet = min(([r, c] - 1) .* step,tufts.blockSize); 
+        
+        [blocks, indBlocks] = getBlocks(oImage, tufts.blockSize, offSet);
+        
+        candidateBlocks  = getBlocksInMask(indBlocks, validMask, 50, offSet);
+        
+        blockFeatures = computeBlockFeatures(oImage,validMask, indBlocks,candidateBlocks,[],offSet);
+        
+        if it <= 7
+            y = classRF_predict(blockFeatures,model2);
+        else
+            y = classRF_predict(blockFeatures,model1);
+        end
+        
+        goodBlocks = candidateBlocks(y > 0.5,:);
+        
+        summedMask = summedMask + blocksToMask(size(oImage), indBlocks, goodBlocks, offSet);
+        
+    end
+    
+    tuftsMask = summedMask >= 5;
     
     votesImageRed=.5*oImage;
     votesImageGreen=.5*oImage;

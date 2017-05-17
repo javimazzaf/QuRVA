@@ -58,25 +58,24 @@ disp(['scoreFPo:' num2str(scoreFPo)])
 disp(['scoreFNo:' num2str(scoreFNo)])
 disp(['Average:' num2str((scoreFPo + scoreFNo)/2)])
 
-save(fullfile(masterFolder,'global',[sha '_performance.mat']),'FP','FN','FPo','FNo','scoreFP','scoreFN','scoreFPo','scoreFNo','branch','sha');
+save(fullfile(masterFolder,'global',[sha(1:6) '_performance.mat']),'FP','FN','FPo','FNo','scoreFP','scoreFN','scoreFPo','scoreFNo','branch','sha');
 
 %% Make barplots
-sha = sha(1:6);
 fg=figure;
 makeNiceBarFigure(FP, 'FP pixels')
-print(fg,fullfile(masterFolder,'global',[sha '_FP.png']),'-dpng')
+print(fg,fullfile(masterFolder,'global',[sha(1:6) '_branch' branch '_FP.png']),'-dpng')
 
 fg=figure;
 makeNiceBarFigure(FN, 'FN pixels')
-print(fg,fullfile(masterFolder,'global',[sha '_FN.png']),'-dpng')
+print(fg,fullfile(masterFolder,'global',[sha(1:6) '_branch' branch '_FN.png']),'-dpng')
 
 fg=figure;
 makeNiceBarFigure(FPo, 'FP pixels')
-print(fg,fullfile(masterFolder,'global',[sha '_FPo.png']),'-dpng')
+print(fg,fullfile(masterFolder,'global',[sha(1:6) '_branch' branch '_FPo.png']),'-dpng')
 
 fg=figure;
 makeNiceBarFigure(FNo, 'FN pixels')
-print(fg,fullfile(masterFolder,'global',[sha '_FNo.png']),'-dpng')
+print(fg,fullfile(masterFolder,'global',[sha(1:6) '_branch' branch '_FNo.png']),'-dpng')
 
 end
 
