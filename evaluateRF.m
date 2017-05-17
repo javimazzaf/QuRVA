@@ -30,7 +30,6 @@ for it=1:numel(myFiles)
     
     [blocks, indBlocks] = getBlocks(oImage, [25 25]);
 
-
     candidateBlocks  = getBlocksInMask(indBlocks, validMask, 50);
 
     blockFeatures = computeBlockFeatures(oImage,validMask, indBlocks,candidateBlocks,[]);
