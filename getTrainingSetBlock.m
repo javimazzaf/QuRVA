@@ -15,6 +15,8 @@ res2  = [];
 % Repeatability
 rng(1);
 
+offSet = [0 0];
+
 for it = 1:numel(myFiles)
     
     disp(it)
@@ -34,15 +36,15 @@ for it = 1:numel(myFiles)
     
     load(fullfile(masterFolder, 'TuftConsensusMasks',myFiles{it}),'consensusMask');
 
-    [blocks, indBlocks] = getBlocks(oImage, tufts.blockSize);
+    [blocks, indBlocks] = getBlocks(oImage, tufts.blockSize, offSet);
     
     % Blocks included in consensus
-    trueBlocks  = getBlocksInMask(indBlocks, validMask & consensusMask, 50);
+    trueBlocks  = getBlocksInMask(indBlocks, validMask & consensusMask, 50, offSet);
     
     % Blocks NOT included in consensus
-    falseBlocks = getBlocksInMask(indBlocks, validMask & ~consensusMask, 50);
+    falseBlocks = getBlocksInMask(indBlocks, validMask & ~consensusMask, 50, offSet);
 
-    blockFeatures = computeBlockFeatures(oImage,validMask, indBlocks,trueBlocks,falseBlocks);
+    blockFeatures = computeBlockFeatures(oImage,validMask, indBlocks,trueBlocks,falseBlocks, offSet);
       
     if it <=7
         data1 = [data1;blockFeatures];
