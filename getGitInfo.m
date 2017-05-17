@@ -1,8 +1,5 @@
 function [branch, sha] = getGitInfo
 
-sha = [];
-branch = [];
-
 [~,result] = system('git status --porcelain');
 if ~isempty(result)
     error('Not all changes are commited. Commit before continuing.')

@@ -3,6 +3,9 @@ function [nBetterFP, nBetterFN] = compareTuftAutoRF
 % loads local parameters
 readConfig;
 
+%Ensures everything is commited before starting test.
+[branch, sha] = getGitInfo;
+
 %% Get file names
 myFiles = dir(fullfile(masterFolder, 'TuftNumbersRF','*.mat'));
 myFiles = {myFiles(:).name};
@@ -44,6 +47,7 @@ scoreFPo = getScore(FPo, label);
 scoreFNo = getScore(FNo, label);
 
 disp('----------------------------------------')
+disp(['git branch ' branch '. sha ' sha])
 disp('Pixels')
 disp(['scoreFP:' num2str(scoreFP)])
 disp(['scoreFN:' num2str(scoreFN)])
@@ -57,20 +61,19 @@ disp(['Average:' num2str((scoreFPo + scoreFNo)/2)])
 %% Make barplots
 fg=figure;
 makeNiceBarFigure(FP, 'FP pixels')
-print(fg,fullfile(masterFolder,'FP.png'),'-dpng')
+print(fg,fullfile(masterFolder,[branch sha 'FP.png']),'-dpng')
 
 fg=figure;
 makeNiceBarFigure(FN, 'FN pixels')
-print(fg,fullfile(masterFolder,'FN.png'),'-dpng')
-
+print(fg,fullfile(masterFolder,[branch sha 'FN.png']),'-dpng')
 
 fg=figure;
 makeNiceBarFigure(FPo, 'FP pixels')
-print(fg,fullfile(masterFolder,'FPo.png'),'-dpng')
+print(fg,fullfile(masterFolder,[branch sha 'FPo.png']),'-dpng')
 
 fg=figure;
 makeNiceBarFigure(FNo, 'FN pixels')
-print(fg,fullfile(masterFolder,'FNo.png'),'-dpng')
+print(fg,fullfile(masterFolder,[branch sha 'FNo.png']),'-dpng')
 
 end
 

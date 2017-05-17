@@ -1,5 +1,8 @@
 readConfig
 
+%Ensures everything is commited before starting test.
+[branch, sha] = getGitInfo;
+
 myFiles = dir(fullfile(masterFolder, 'TuftNumbers','*.mat'));
 myFiles = {myFiles(:).name};
 
@@ -51,7 +54,8 @@ for it = 1:numel(myFiles)
       
 end
 
-save(fullfile(masterFolder, 'trainingSet.mat'),'data1','res1','data2','res2')
+save(fullfile(masterFolder, 'trainingSet.mat'),'data1','res1','data2','res2','branch', 'sha')
+
 
 
 

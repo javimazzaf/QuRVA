@@ -1,5 +1,8 @@
 readConfig
 
+%Ensures everything is commited before starting test.
+[branch, sha] = getGitInfo;
+
 load(fullfile(masterFolder, 'model.mat'),'model1','model2')
 
 myFiles = dir(fullfile(masterFolder, 'TuftNumbers','*.mat'));
@@ -63,7 +66,7 @@ for it=1:numel(myFiles)
     
     imwrite([quadNW quadNE; quadSW quadSE], fullfile(masterFolder, 'TuftImagesRF', fname), 'JPG')
     
-    save(fullfile(masterFolder,'TuftNumbersRF',[myFiles{it}]),'tuftsMask', 'allMasks', 'consensusMask');
+    save(fullfile(masterFolder,'TuftNumbersRF',[myFiles{it}]),'tuftsMask', 'allMasks', 'consensusMask','branch', 'sha');
 
 end
 
