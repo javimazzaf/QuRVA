@@ -9,4 +9,6 @@ end
 
 [~,branch] = system('git rev-parse --abbrev-ref HEAD');
 
+branch = strip(strip(branch,char(10),char(13)));
+
 end
