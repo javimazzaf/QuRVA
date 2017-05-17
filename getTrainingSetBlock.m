@@ -1,4 +1,4 @@
-masterFolder = '../Anonymous/';
+readConfig
 
 myFiles = dir(fullfile(masterFolder, 'TuftNumbers','*.mat'));
 myFiles = {myFiles(:).name};
@@ -13,7 +13,6 @@ res2  = [];
 rng(1);
 
 for it = 1:numel(myFiles)
-% for it = floor(numel(myFiles)/2)+1:numel(myFiles)
     
     disp(it)
     
@@ -31,20 +30,14 @@ for it = 1:numel(myFiles)
     validMask = maskNoCenter & thisMask;
     
     load(fullfile(masterFolder, 'TuftConsensusMasks',myFiles{it}),'consensusMask');
-    
-    [blocks, indBlocks] = getBlocks(oImage, [25 25]);
+
+    [blocks, indBlocks] = getBlocks(oImage, tufts.blockSize);
     
     % Blocks included in consensus
     trueBlocks  = getBlocksInMask(indBlocks, validMask & consensusMask, 50);
     
     % Blocks NOT included in consensus
     falseBlocks = getBlocksInMask(indBlocks, validMask & ~consensusMask, 50);
-
-    % Reduce randomly the number of false blocks to match the true blocks
-%     falseBlocks = falseBlocks(randperm(size(falseBlocks,1),size(trueBlocks,1))',:);
-    
-    % FOR TESTING
-%     msk = blocksToMask(size(oImage), ind, flaseBlocks);
 
     blockFeatures = computeBlockFeatures(oImage,validMask, indBlocks,trueBlocks,falseBlocks);
       

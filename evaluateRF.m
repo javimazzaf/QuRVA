@@ -1,8 +1,4 @@
-masterFolder = '../Anonymous/';
-% masterFolder = '/Users/javimazzaf/Dropbox (Biophotonics)/Francois/310117TOTM/';
-
-
-% load(fullfile(masterFolder, 'model.mat'),'model')
+readConfig
 
 load(fullfile(masterFolder, 'model.mat'),'model1','model2')
 
@@ -28,7 +24,7 @@ for it=1:numel(myFiles)
     
     load(fullfile(masterFolder, 'TuftConsensusMasks',myFiles{it}), 'allMasks','consensusMask');
     
-    [blocks, indBlocks] = getBlocks(oImage, [25 25]);
+    [blocks, indBlocks] = getBlocks(oImage, tufts.blockSize);
 
     candidateBlocks  = getBlocksInMask(indBlocks, validMask, 50);
 
@@ -68,10 +64,6 @@ for it=1:numel(myFiles)
     imwrite([quadNW quadNE; quadSW quadSE], fullfile(masterFolder, 'TuftImagesRF', fname), 'JPG')
     
     save(fullfile(masterFolder,'TuftNumbersRF',[myFiles{it}]),'tuftsMask', 'allMasks', 'consensusMask');
-
-% quadNW=cat(3, oImage, uint8(~tuftsMask).*oImage, uint8(~tuftsMask).*oImage);
-% imwrite(quadNW, fullfile('~/Desktop/', 'TuftImagesRF', [fname(1:end-4) '.jpg']), 'JPG')
-
 
 end
 

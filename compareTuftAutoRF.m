@@ -35,22 +35,8 @@ FN = [ FN ; FNothers];
 FPo = [ FPo ; FPoOthers];
 FNo = [ FNo ; FNoOthers];
 
-%%
+%% Scores
 label = 1;
-% nWorseFP = countWorseThanFMA(FP,label);
-% nWorseFN = countWorseThanFMA(FN,label);
-% 
-% nWorseFPo = countWorseThanFMA(FPo,label);
-% nWorseFNo = countWorseThanFMA(FNo,label);
-
-% disp('----------------------------------------')
-% disp(['nWorseFP:' num2str(nWorseFP)])
-% disp(['nWorseFN:' num2str(nWorseFN)])
-% disp(['Total   :' num2str(nWorseFP + nWorseFN)])
-% disp('----------------------------------------')
-% disp(['nWorseFPo:' num2str(nWorseFPo)])
-% disp(['nWorseFNo:' num2str(nWorseFNo)])
-% disp(['Total   :' num2str(nWorseFPo + nWorseFNo)])
 
 scoreFP  = getScore(FP, label);
 scoreFN  = getScore(FN, label);
