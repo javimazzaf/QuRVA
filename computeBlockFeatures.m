@@ -45,7 +45,7 @@ log60(~mask) = 0;
 blockFeatures = [blockFeatures,computeAvgWithinBlocks(log60,blocksInd,[trueBlocks;falseBlocks],offSet)];
 
 % LBPs
-blockFeatures = [blockFeatures,computeLBPFeaturesOnBlocks(smoothedIm,1,8,blocksInd,[trueBlocks;falseBlocks]),offSet];
+blockFeatures = [blockFeatures,computeLBPFeaturesOnBlocks(smoothedIm,1,8,blocksInd,[trueBlocks;falseBlocks],offSet)];
 
 end
 
