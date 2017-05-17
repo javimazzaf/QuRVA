@@ -19,7 +19,7 @@ minInt = min(double(smoothedIm(mask)));
 % 1: Locally Normalized intensity
 locallyNormIm = smoothedIm ./ localInt;
 locallyNormIm(~mask) = 0;
-blockFeatures = [blockFeatures,computeAvgWithinBlocks(locallyNormIm,blocksInd,[trueBlocks;falseBlocks])];
+blockFeatures = [blockFeatures,computeAvgWithinBlocks(locallyNormIm,blocksInd,[trueBlocks;falseBlocks], offSet)];
 
 % % 2: Globally Normalized intensity
 % globallyNormIm = smoothedIm ./ (maxInt - minInt);
