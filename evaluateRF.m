@@ -82,7 +82,7 @@ for it=1:numel(myFiles)
     
     dayTag = datestr(now,'yyyymmdd_HH_MM');
     
-    save(fullfile(masterFolder,'TuftNumbersRF',[myFiles{it}]),'tuftsMask', 'allMasks', 'consensusMask','branch', 'sha','dayTag');
+    save(fullfile(masterFolder,'TuftNumbersRF',[myFiles{it}]),'tuftsMask','summedMask', 'allMasks', 'consensusMask','branch', 'sha','dayTag');
 
 end
 
