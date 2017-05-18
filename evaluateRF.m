@@ -10,8 +10,6 @@ myFiles = {myFiles(:).name};
 
 for it=1:numel(myFiles)
     
-    disp(it)
-    
     fname = myFiles{it};
     fname = fname(1:end-4);
     
@@ -30,6 +28,8 @@ for it=1:numel(myFiles)
     summedMask = zeros(size(oImage));
     
     for k = 1:9
+        
+        disp([num2str(it) '/' num2str(numel(myFiles)) ' - ' num2str(k) '/' num2str(9)])
         
         [r, c] = ind2sub([3 3], k);
         
