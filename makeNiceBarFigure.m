@@ -1,4 +1,4 @@
-function makeNiceBarFigure(data, ylab)
+function makeNiceBarFigure(data, ylab, legendFlag)
 
 axes1 = axes('Parent',gcf);
 bar1 = bar(data','Parent',axes1);
@@ -20,7 +20,8 @@ set(axes1,'FontSize',14,'XTick',[1 2 3 4 5 6 7 8 9 10 11 12 13 14 15],...
     'XTickLabel', xEtiquetas, 'XTickLabelRotation',45);
 ylabel(ylab);
 
+if legendFlag
 legend1 = legend(axes1,'show');
-set(legend1,...
-    'Position',[0.285 0.55 0.082680591818973 0.263908701854494]);
-    %'Position',[0.73585726718886 0.629101283880172 0.082680591818973 0.263908701854494]);
+set(legend1,'Position',[0.285 0.55 0.082680591818973 0.263908701854494]);
+end
+

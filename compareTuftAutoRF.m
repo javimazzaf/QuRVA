@@ -48,7 +48,7 @@ scoreFNo = getScore(FNo, label);
 
 dayTag = datestr(now,'yyyymmdd_HH_MM');
 
-resDir = fullfile(masterFolder,'global',[dayTag '_' sha(1:6) '_branch' branch]);
+resDir = fullfile(masterFolder,'global',[dayTag '_SHA_' sha(1:6) '_BRANCH_' branch]);
 
 if ~exist(resDir,'dir'), mkdir(resDir), end
 
@@ -72,20 +72,30 @@ save(fullfile(resDir,'performance.mat'),'FP','FN','FPo','FNo','scoreFP','scoreFN
 
 %% Make barplots
 fg=figure;
-makeNiceBarFigure(FP, 'FP pixels')
+makeNiceBarFigure(FP, 'FP pixels',false)
 print(fg,fullfile(resDir,'FP.png'),'-dpng')
+F = getframe(gcf);
+[imFP, ~] = frame2im(F);
 
 fg=figure;
-makeNiceBarFigure(FN, 'FN pixels')
+makeNiceBarFigure(FN, 'FN pixels',false)
 print(fg,fullfile(resDir,'FN.png'),'-dpng')
+F = getframe(gcf);
+[imFN, ~] = frame2im(F);
 
 fg=figure;
-makeNiceBarFigure(FPo, 'FP pixels')
+makeNiceBarFigure(FPo, 'FP objects',false)
 print(fg,fullfile(resDir,'FPo.png'),'-dpng')
+F = getframe(gcf);
+[imFPo, ~] = frame2im(F);
 
 fg=figure;
-makeNiceBarFigure(FNo, 'FN pixels')
+makeNiceBarFigure(FNo, 'FN objects',false)
 print(fg,fullfile(resDir,'FNo.png'),'-dpng')
+F = getframe(gcf);
+[imFNo, ~] = frame2im(F);
+
+
 
 end
 
