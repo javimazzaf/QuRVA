@@ -10,6 +10,8 @@ myFiles = {myFiles(:).name};
 
 for it=1:numel(myFiles)
     
+    disp([num2str(it) '/' num2str(numel(myFiles))])
+    
     fname = myFiles{it};
     fname = fname(1:end-4);
     
@@ -25,37 +27,21 @@ for it=1:numel(myFiles)
     
     load(fullfile(masterFolder, 'TuftConsensusMasks',myFiles{it}), 'allMasks','consensusMask');
     
-    summedMask = zeros(size(oImage));
+    [blocks, indBlocks] = getBlocks(oImage, tufts.blockSize, [0 0]);
     
-    for k = 1:9
-        
-        disp([num2str(it) '/' num2str(numel(myFiles)) ' - ' num2str(k) '/' num2str(9)])
-        
-        [r, c] = ind2sub([3 3], k);
-        
-        step = ceil(tufts.blockSize / 3);
-        
-        offSet = min(([r, c] - 1) .* step,tufts.blockSize); 
-        
-        [blocks, indBlocks] = getBlocks(oImage, tufts.blockSize, offSet);
-        
-        candidateBlocks  = getBlocksInMask(indBlocks, validMask, 50, offSet);
-        
-        blockFeatures = computeBlockFeatures(oImage,validMask, indBlocks,candidateBlocks,[],offSet);
-        
-        if it <= 7
-            y = classRF_predict(blockFeatures,model2);
-        else
-            y = classRF_predict(blockFeatures,model1);
-        end
-        
-        goodBlocks = candidateBlocks(y > 0.5,:);
-        
-        summedMask = summedMask + blocksToMask(size(oImage), indBlocks, goodBlocks, offSet);
-        
+    candidateBlocks  = getBlocksInMask(indBlocks, validMask, 50, [0 0]);
+    
+    blockFeatures = computeBlockFeatures(oImage,validMask, indBlocks,candidateBlocks,[],[0 0]);
+    
+    if it <= 7
+        y = classRF_predict(blockFeatures,model2);
+    else
+        y = classRF_predict(blockFeatures,model1);
     end
     
-    tuftsMask = summedMask >= tufts.BlockRequiredVotes;
+    goodBlocks = candidateBlocks(y > 0.5,:);
+    
+    tuftsMask = blocksToMask(size(oImage), indBlocks, goodBlocks, [0 0]);
     
     votesImageRed=.5*oImage;
     votesImageGreen=.5*oImage;
@@ -82,7 +68,7 @@ for it=1:numel(myFiles)
     
     dayTag = datestr(now,'yyyymmdd_HH_MM');
     
-    save(fullfile(masterFolder,'TuftNumbersRF',[myFiles{it}]),'tuftsMask','summedMask', 'allMasks', 'consensusMask','branch', 'sha','dayTag');
+    save(fullfile(masterFolder,'TuftNumbersRF',[myFiles{it}]),'tuftsMask', 'allMasks', 'consensusMask','branch', 'sha','dayTag');
 
 end
 
