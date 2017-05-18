@@ -16,7 +16,7 @@ for it=1:size(data, 2)
     xEtiquetas{it}=['Image ' num2str(it)];
 end
 
-set(axes1,'FontSize',14,'XTick',[1 2 3 4 5 6 7 8 9 10 11 12 13 14 15],...
+set(axes1,'FontSize',14,'XTick',1:size(data, 2),...
     'XTickLabel', xEtiquetas, 'XTickLabelRotation',45);
 ylabel(ylab);
 
