@@ -73,27 +73,27 @@ save(fullfile(resDir,'performance.mat'),'FP','FN','FPo','FNo','scoreFP','scoreFN
 %% Make barplots
 fg=figure;
 makeNiceBarFigure(FP, 'FP pixels',false)
+makeFigureTight(fg)
 print(fg,fullfile(resDir,'FP.png'),'-dpng')
-F = getframe(gcf);
-[imFP, ~] = frame2im(F);
+imFP = print('-RGBImage');
 
 fg=figure;
 makeNiceBarFigure(FN, 'FN pixels',false)
+makeFigureTight(fg)
 print(fg,fullfile(resDir,'FN.png'),'-dpng')
-F = getframe(gcf);
-[imFN, ~] = frame2im(F);
+imFN = print('-RGBImage');
 
 fg=figure;
 makeNiceBarFigure(FPo, 'FP objects',false)
+makeFigureTight(fg)
 print(fg,fullfile(resDir,'FPo.png'),'-dpng')
-F = getframe(gcf);
-[imFPo, ~] = frame2im(F);
+imFPo = print('-RGBImage');
 
 fg=figure;
 makeNiceBarFigure(FNo, 'FN objects',false)
+makeFigureTight(fg)
 print(fg,fullfile(resDir,'FNo.png'),'-dpng')
-F = getframe(gcf);
-[imFNo, ~] = frame2im(F);
+imFNo = print('-RGBImage');
 
 imAll = cat(1, cat(2,imFP,imFN), cat(2,imFPo,imFNo));
 imwrite(imAll,fullfile(resDir,'allStats.png'),'png')
