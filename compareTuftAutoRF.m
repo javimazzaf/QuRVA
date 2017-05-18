@@ -56,6 +56,7 @@ resultsText = [];
 
 resultsText = [resultsText;{dayTag}];
 resultsText = [resultsText;{['git branch: ' branch ' | sha ' sha]}];
+resultsText = [resultsText;{'----------------------------------------'}];
 resultsText = [resultsText;{'Pixel statistics'}];
 resultsText = [resultsText;{['scoreFP:' num2str(scoreFP)]}];
 resultsText = [resultsText;{['scoreFN:' num2str(scoreFN)]}];
