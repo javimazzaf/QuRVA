@@ -95,7 +95,8 @@ print(fg,fullfile(resDir,'FNo.png'),'-dpng')
 F = getframe(gcf);
 [imFNo, ~] = frame2im(F);
 
-
+imAll = cat(1, cat(2,imFP,imFN), cat(2,imFPo,imFNo));
+imwrite(imAll,fullfile(resDir,'allStats.png'),'png')
 
 end
 
