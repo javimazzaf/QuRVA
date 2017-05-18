@@ -55,7 +55,7 @@ for it=1:numel(myFiles)
         
     end
     
-    tuftsMask = summedMask >= 5;
+    tuftsMask = summedMask >= tufts.BlockRequiredVotes;
     
     votesImageRed=.5*oImage;
     votesImageGreen=.5*oImage;
@@ -80,7 +80,9 @@ for it=1:numel(myFiles)
     
     imwrite([quadNW quadNE; quadSW quadSE], fullfile(masterFolder, 'TuftImagesRF', fname), 'JPG')
     
-    save(fullfile(masterFolder,'TuftNumbersRF',[myFiles{it}]),'tuftsMask', 'allMasks', 'consensusMask','branch', 'sha');
+    dayTag = datestr(now,'yyyymmdd_HH_MM');
+    
+    save(fullfile(masterFolder,'TuftNumbersRF',[myFiles{it}]),'tuftsMask', 'allMasks', 'consensusMask','branch', 'sha','dayTag');
 
 end
 

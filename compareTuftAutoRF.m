@@ -46,36 +46,46 @@ scoreFN  = getScore(FN, label);
 scoreFPo = getScore(FPo, label);
 scoreFNo = getScore(FNo, label);
 
-disp('----------------------------------------')
-disp(['git branch ' branch '. sha ' sha])
-disp('Pixels')
-disp(['scoreFP:' num2str(scoreFP)])
-disp(['scoreFN:' num2str(scoreFN)])
-disp(['Average:' num2str((scoreFP + scoreFN) / 2)])
-disp('----------------------------------------')
-disp('Objects')
-disp(['scoreFPo:' num2str(scoreFPo)])
-disp(['scoreFNo:' num2str(scoreFNo)])
-disp(['Average:' num2str((scoreFPo + scoreFNo)/2)])
+dayTag = datestr(now,'yyyymmdd_HH_MM');
 
-save(fullfile(masterFolder,'global',[sha(1:6) '_performance.mat']),'FP','FN','FPo','FNo','scoreFP','scoreFN','scoreFPo','scoreFNo','branch','sha');
+resDir = fullfile(masterFolder,'global',[dayTag '_' sha(1:6) '_branch' branch]);
+
+if ~exist(resDir,'dir'), mkdir(resDir), end
+
+resultsText = [];
+
+resultsText = [resultsText;{dayTag}];
+resultsText = [resultsText;{['git branch: ' branch ' | sha ' sha]}];
+resultsText = [resultsText;{'Pixel statistics'}];
+resultsText = [resultsText;{['scoreFP:' num2str(scoreFP)]}];
+resultsText = [resultsText;{['scoreFN:' num2str(scoreFN)]}];
+resultsText = [resultsText;{['Average:' num2str((scoreFP + scoreFN) / 2)]}];
+resultsText = [resultsText;{'----------------------------------------'}];
+resultsText = [resultsText;{'Object statistics'}];
+resultsText = [resultsText;{['scoreFPo:' num2str(scoreFPo)]}];
+resultsText = [resultsText;{['scoreFNo:' num2str(scoreFNo)]}];
+resultsText = [resultsText;{['Average:' num2str((scoreFPo + scoreFNo)/2)]}];
+
+cellToTextfile(resultsText, fullfile(resDir,'results.txt'))
+
+save(fullfile(resDir,'performance.mat'),'FP','FN','FPo','FNo','scoreFP','scoreFN','scoreFPo','scoreFNo','branch','sha','dayTag');
 
 %% Make barplots
 fg=figure;
 makeNiceBarFigure(FP, 'FP pixels')
-print(fg,fullfile(masterFolder,'global',[sha(1:6) '_branch' branch '_FP.png']),'-dpng')
+print(fg,fullfile(resDir,'FP.png'),'-dpng')
 
 fg=figure;
 makeNiceBarFigure(FN, 'FN pixels')
-print(fg,fullfile(masterFolder,'global',[sha(1:6) '_branch' branch '_FN.png']),'-dpng')
+print(fg,fullfile(resDir,'FN.png'),'-dpng')
 
 fg=figure;
 makeNiceBarFigure(FPo, 'FP pixels')
-print(fg,fullfile(masterFolder,'global',[sha(1:6) '_branch' branch '_FPo.png']),'-dpng')
+print(fg,fullfile(resDir,'FPo.png'),'-dpng')
 
 fg=figure;
 makeNiceBarFigure(FNo, 'FN pixels')
-print(fg,fullfile(masterFolder,'global',[sha(1:6) '_branch' branch '_FNo.png']),'-dpng')
+print(fg,fullfile(resDir,'FNo.png'),'-dpng')
 
 end
 
