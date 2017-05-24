@@ -21,20 +21,6 @@ locallyNormIm = smoothedIm ./ localInt;
 locallyNormIm(~mask) = 0;
 blockFeatures = [blockFeatures,computeAvgWithinBlocks(locallyNormIm,blocksInd,[trueBlocks;falseBlocks], offSet)];
 
-% % 2: Globally Normalized intensity
-% globallyNormIm = smoothedIm ./ (maxInt - minInt);
-% globallyNormIm(~mask) = 0;
-% blockFeatures = [blockFeatures,computeAvgWithinBlocks(globallyNormIm,blocksInd,[trueBlocks;falseBlocks])];
-
-% % 1: Normalized log filter scale
-% sz = szMax / 120;
-% sgm = sz / sqrt(2) * tufts.resampleScale;
-% ker  = - fspecial('log', ceil(sgm * 8) * [1 1] , sgm);
-% log120 = max(filter2(ker,resizedIm,'same'),0);
-% log120 = imresize(log120, [or, oc]) ./ (maxInt - minInt);
-% log120(~mask) = 0;
-% features = getFeatures(log120,trueInd,falsInd,features);
-
 % 2: Normalized log filter scale 
 sz = szMax / 60;
 sgm = sz / sqrt(2) * tufts.resampleScale;
