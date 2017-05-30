@@ -1,11 +1,17 @@
-function processFolder
+function processFolder(varargin)
 %% Settings and folders
-readConfig
+
+if nargin==0
+    readConfig
+else
+    masterFolder=varargin{1};
+end
+
 if ~exist('masterFolder','var')
     masterFolder = uigetdir('/Users/santiago/Dropbox (Biophotonics)/Projects/FlatMounts/', 'Select folder');
 end
 
-warning('Off')
+warning('Off') 
 mkdir(masterFolder, 'Masks')
 mkdir(masterFolder, 'TuftImages')
 mkdir(masterFolder, 'TuftNumbers')
@@ -20,7 +26,7 @@ myFiles = getImageList(masterFolder);
 computeMaskAndCenter(masterFolder, myFiles);
 
 %% Do loop
-for it=2:numel(myFiles)
+for it=1:numel(myFiles)
     
     %% Verbose current Image
     disp(myFiles{it})
@@ -42,7 +48,7 @@ for it=2:numel(myFiles)
     
     if doVasculature==true
         
-        [vesselSkelMask, brchPts, smoothVessels]=getVacularNetwork(thisMask, redImage);
+        [vesselSkelMask, brchPts, smoothVessels, endPts]=getVacularNetwork(thisMask, redImage);
         [aVascZone]=getAvacularZone(thisMask, vesselSkelMask);
         
         %% Make a nice image
@@ -58,7 +64,7 @@ for it=2:numel(myFiles)
         %thisSholl = getShollEq(vesselSkelMask, maskStats, thisONCenter);
         
         save(fullfile(masterFolder, 'VasculatureNumbers', [myFiles{it},'.mat']),...
-            'vesselSkelMask', 'brchPts', 'aVascZone');
+            'vesselSkelMask', 'brchPts', 'aVascZone', 'endPts');
     end % doVasculature
     
     %% Analyze tufts
@@ -66,9 +72,12 @@ for it=2:numel(myFiles)
         
         
         if exist('smoothVessels', 'var')
-            [tuftsMask, thickMask]=getTufts(thisMask, redImage, maskNoCenter, smoothVessels);
+            %[tuftsMask, thickMask]=getTufts(thisMask, redImage, maskNoCenter, smoothVessels);
+            tuftsMask=testSURF(redImage, maskNoCenter, thisMask);
         else
-            [tuftsMask, thickMask]=getTufts(thisMask, redImage, maskNoCenter);
+            %[tuftsMask, thickMask]=getTufts(thisMask, redImage, maskNoCenter);
+            tuftsMask=testSURF(redImage, maskNoCenter, thisMask);
+
         end
         
         %% Save Tuft Images
@@ -91,6 +100,7 @@ outAVascularArea(it)=sum(aVascZone(:));
 outVasculatureLength(it)=sum(vesselSkelMask(:));
 outTuftArea(it)=sum(tuftsMask(:));
 outTuftNumber(it)=max(max(bwlabel(tuftsMask)));
+outEndPoints(it)=sum(endPts(:));
 
 
 end
@@ -104,6 +114,7 @@ resultsTable.AVascularArea = outAVascularArea';
 resultsTable.VasculatureLength = outVasculatureLength';
 resultsTable.TuftArea = outTuftArea';
 resultsTable.TuftNumber = outTuftNumber';
+resultsTable.EndPoints = outEndPoints';
 
 writetable(resultsTable,fullfile(masterFolder, 'Reports', 'AnalysisResult.xls'))
 

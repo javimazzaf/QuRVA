@@ -1,13 +1,13 @@
 function makeNiceFigure(data,yLab)
 
-users={'Santiago' 'Carlos' 'Javier'};
+users={'Santiago' 'Carlos' 'Javier' 'Bruno' 'Erika' 'Natalija'};
 
 axes1 = axes('Parent',gcf);
 bar1 = bar(data','Parent',axes1);
 set(bar1(1),'FaceColor',[1 0 0], 'DisplayName','FMA');
 
 for it=2:size(data, 1)
-    set(bar1(it),'FaceColor',[0 it*1/6 0], 'DisplayName',users{it-1});
+    set(bar1(it),'FaceColor',[0 it*1/7 0], 'DisplayName',users{it-1});
 end
 
 for it=1:size(data, 2)

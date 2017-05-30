@@ -4,7 +4,7 @@ function [maskProps, maskNoCenter, thisONCenter]=processMask(varargin)
 myMask=varargin{1};
 myImage=varargin{2};
 
-maskProps=regionprops(myMask, myImage, 'EquivDiameter', 'WeightedCentroid');
+maskProps=regionprops(myMask, myImage, 'EquivDiameter', 'WeightedCentroid', 'BoundingBox');
 
 if nargin==3
     thisONCenter=varargin{3};

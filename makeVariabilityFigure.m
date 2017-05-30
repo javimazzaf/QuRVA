@@ -22,6 +22,8 @@ for it=1:14
     
     load(fullfile(masterFolder, 'TuftNumbers', myFiles{it}),'tuftsMask');
     load(fullfile(masterFolder, 'TuftConsensusMasks',myFiles{it}),'consensusMask','allMasks','orMask');
+    load(fullfile(masterFolder, 'Masks', myFiles{it}),'thisMask');
+
     
     redImage=imread(fullfile(masterFolder, myImageFiles{it}));
 
@@ -55,9 +57,14 @@ for it=1:14
         falseImageBlue(consensusMask~=0)=uint8(255);
     end
     
-    izq=cat(3, votesImageRed, votesImageGreen, votesImageBlue);
-    der=cat(3, falseImageRed, falseImageGreen, falseImageBlue);
+    izq=cat(3, redImage, redImage, redImage).*uint8(thisMask);
+    der=cat(3, falseImageRed, falseImageGreen, falseImageBlue).*uint8(thisMask);
+    
 
-    imshow([cat(3, redImage, redImage, redImage) der])
+    thisMaskStats=regionprops('table', thisMask, 'boundingBox');
+    izq=imcrop(izq, thisMaskStats.BoundingBox(1,:));
+    der=imcrop(der, thisMaskStats.BoundingBox(1,:));
+    
+    imshow([izq der])
 
 end

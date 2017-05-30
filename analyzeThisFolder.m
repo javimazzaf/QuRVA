@@ -1,4 +1,4 @@
-function analyzeThisFolder
+ function analyzeThisFolder
 
 readConfig;
 
@@ -15,7 +15,7 @@ myFiles = getImageList(masterFolder);
 computeMaskAndCenter(masterFolder, myFiles);
 
 %% Do loop
-for it=1:numel(myFiles)
+for it=1:14
     
     %% Verbose current Image
     disp(myFiles{it})
@@ -34,19 +34,22 @@ for it=1:numel(myFiles)
     load(fullfile(masterFolder, 'ONCenter', [myFiles{it} '.mat']), 'thisONCenter');
     
     [maskStats, maskNoCenter] = processMask(thisMask, redImage, thisONCenter);
-    
+        
     if doVasculature
         
         [vesselSkelMask, brchPts, smoothVessels]=getVacularNetwork(thisMask, redImage);
-        [aVascZone]=getAvacularZone(thisMask, vesselSkelMask);
+        [aVascZone]=getAvacularZone2(thisMask, vesselSkelMask, smoothVessels);
         [aVascAllMasks aVascConsensus]=getAVascularConsensusMask(it);
         
         if doSaveImages
             %% Make a nice image
-            leftHalf=cat(3, redImage, redImage, uint8(aVascConsensus)*255);
+            leftHalf=cat(3, redImage, uint8(imdilate(bwperim(aVascConsensus),strel('disk',4)))*255, uint8(imdilate(bwperim(aVascZone),strel('disk',4)))*255);
             rightHalf=cat(3, redImage,...
                 uint8(vesselSkelMask).*255,...
-                uint8(logical(aVascZone)+imdilate(brchPts, strel('disk',3))).*255);
+                uint8(imdilate(bwperim(aVascZone), strel('disk', 5)) +imdilate(brchPts, strel('disk',3))).*255);
+            
+            leftHalf=imcrop(leftHalf, maskStats.BoundingBox);
+            rightHalf=imcrop(rightHalf, maskStats.BoundingBox);
             
             imwrite([leftHalf rightHalf], fullfile(masterFolder,'VasculatureImages',myFiles{it}), 'JPG')
         end % doSaveImages
@@ -61,7 +64,10 @@ for it=1:numel(myFiles)
     if doTufts
         
         if exist('smoothVessels', 'var')
-            [tuftsMask, thickMask]=getTufts(thisMask, redImage, maskNoCenter, smoothVessels);
+            %[tuftsMask, thickMask]=getTufts(thisMask, redImage, maskNoCenter, smoothVessels);
+            tuftsMask=getTuftsConvNet(thisMask, redImage, maskNoCenter, smoothVessels);
+            %tuftsMask = getTuftQC(redImage, thisMask, maskNoCenter, tuftsMask);
+
         else
             %[tuftsMask, thickMask]=getTufts(thisMask, redImage, maskNoCenter);
             tuftsMask=testSURF(redImage, maskNoCenter, thisMask);
@@ -71,7 +77,7 @@ for it=1:numel(myFiles)
         load(fullfile(masterFolder,'TuftConsensusMasks',[myFiles{it} '.mat']),'allMasks','consensusMask','orMask')
         
         % Modify evaluation by replacing the consensus by the orMask.
-        consensusMask = orMask;
+        % consensusMask = orMask;
         
         if doSaveImages
             %% Create votes Image

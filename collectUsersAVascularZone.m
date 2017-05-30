@@ -1,6 +1,6 @@
 clear 
 
-users={'Santiago' 'Carlos' 'Javier'};
+users={'Santiago' 'Carlos' 'Javier' 'Bruno' 'Erika' 'Natalija'};
 
 rotatedAngles=-90*[1 0 1 1 1 0 1 1 1 0 0 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 1];
 
@@ -11,7 +11,7 @@ rawFileNames = dir([masterFolder 'Im*']);
 for itUser=1:numel(users)
     users{itUser}
 
-    for it=1:15% numel(rawFileNames)
+    for it=1:14% numel(rawFileNames)
         image4channel=imread(fullfile(testersFolder, 'vascular', [users{itUser} '.tiff']),it);
         image4channel=imrotate(image4channel, rotatedAngles(it));
         thisRawImage=imread(fullfile(masterFolder, rawFileNames(it).name));

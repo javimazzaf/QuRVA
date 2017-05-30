@@ -14,4 +14,4 @@ for it=1:numel(matFiles)
    
 end
 
-consensusMask=round(mean(allMasks, 3));
+consensusMask=sum(allMasks, 3)>=ceil(size(allMasks, 3)/2);

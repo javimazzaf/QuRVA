@@ -1,4 +1,4 @@
-function [vesselSkelMask, brchPts, smoothVessels]=getVacularNetwork(thisMask, myImage)
+function [vesselSkelMask, brchPts, smoothVessels, endPts]=getVacularNetwork(thisMask, myImage)
 
 readConfig
 
@@ -19,3 +19,4 @@ vesselSkelMask(maskEdge==1)=0;
 vesselSkelMask=vesselSkelMask.*smoothVessels;
 
 brchPts=bwmorph(vesselSkelMask, 'branchpoints');
+endPts=bwmorph(vesselSkelMask, 'endpoints');
