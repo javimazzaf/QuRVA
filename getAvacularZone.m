@@ -12,7 +12,7 @@ dist2vessels=bwdist(vesselSkelMask).*retinaMask;
 maskNoEdge=createCircularMask(size(retinaMask, 1), size(retinaMask, 2),...
     maskProps.Centroid(1), maskProps.Centroid(2), maskProps.EquivDiameter*.3);
 
-emptyLbl=bwlabel(imbinarize(imerode(dist2vessels.*maskNoEdge,strel('xdisk',6))));
+emptyLbl=bwlabel(imbinarize(imerode(dist2vessels.*maskNoEdge,strel('disk',6))));
 
 
 emptyProps=regionprops('table', emptyLbl, dist2vessels, 'MaxIntensity', 'PixelIdxList', 'Area');

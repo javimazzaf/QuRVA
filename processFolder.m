@@ -1,15 +1,9 @@
 function processFolder(varargin)
 %% Settings and folders
+readConfig
 
-if nargin==0
-    readConfig
-else
-    masterFolder=varargin{1};
-end
 
-if ~exist('masterFolder','var')
     masterFolder = uigetdir('/Users/santiago/Dropbox (Biophotonics)/Projects/FlatMounts/', 'Select folder');
-end
 
 warning('Off') 
 mkdir(masterFolder, 'Masks')
@@ -21,6 +15,8 @@ mkdir(masterFolder, 'ONCenter')
 mkdir(masterFolder, 'Reports')
 
 myFiles = getImageList(masterFolder);
+
+load('model.mat','model')
 
 %% Prepare mask and Center
 computeMaskAndCenter(masterFolder, myFiles);
@@ -70,16 +66,30 @@ for it=1:numel(myFiles)
     %% Analyze tufts
     if doTufts==true
         
-        
-        if exist('smoothVessels', 'var')
-            %[tuftsMask, thickMask]=getTufts(thisMask, redImage, maskNoCenter, smoothVessels);
-            tuftsMask=testSURF(redImage, maskNoCenter, thisMask);
-        else
-            %[tuftsMask, thickMask]=getTufts(thisMask, redImage, maskNoCenter);
-            tuftsMask=testSURF(redImage, maskNoCenter, thisMask);
+        [redImage, scaleFactor]=resetScale(redImage);
+        thisMask=resetScale(thisMask);
+        maskNoCenter=resetScale(maskNoCenter);
+        thisONCenter=thisONCenter/scaleFactor;
+        retinaDiam = computeRetinaSize(thisMask, thisONCenter);
 
-        end
+        blockSize = ceil(retinaDiam * tufts.blockSizeFraction) * [1 1];
+ 
         
+        [blocks, indBlocks] = getBlocks(redImage, blockSize, [0 0]);
+
+        candidateBlocks  = getBlocksInMask(indBlocks, maskNoCenter & thisMask, tufts.blocksInMaskPercentage, [0 0]);
+
+        blockFeatures = computeBlockFeatures(redImage, maskNoCenter, thisMask, indBlocks, candidateBlocks,[],[0 0],thisONCenter);
+
+       
+        y = predict(model, blockFeatures);
+       
+        goodBlocks = candidateBlocks(y > 0.5,:);
+
+        tuftsMask = blocksToMask(size(redImage), indBlocks, goodBlocks, [0 0]);
+
+        tuftsMask = bwareaopen(tuftsMask,prod(blockSize) + 1);
+    
         %% Save Tuft Images
         if doSaveImages
             
