@@ -86,8 +86,8 @@ for it = 1:14
 %     FNpixelsTodosRel(:,it) = FNpixelsTodos(:,it) / retinaPix(it); 
 %     FPpixelsTodosRel(:,it) = FPpixelsTodos(:,it) / retinaPix(it); 
 %     
-    FNpixelsVotosRel(:,it) = FNpixelsVotos(:,it) / retinaPix(it); 
-    FPpixelsVotosRel(:,it) = FPpixelsVotos(:,it) / retinaPix(it); 
+    FNpixelsVotosRel(:,it) = FNpixelsVotos(:,it) / sum(aVascVotos(:)); 
+    FPpixelsVotosRel(:,it) = FPpixelsVotos(:,it) / sum(aVascVotos(:)); 
     
 end
 
@@ -96,16 +96,16 @@ save(fullfile(masterFolder, 'GlobalVascular', 'results.mat'), 'totalPix',...
      'FNpixelsVotosRel','FPpixelsVotosRel');
 
 %% Votos 
-figure; yLab='FNpixelsVotos'; makeNiceFigure(FNpixelsVotos,yLab)
+% figure; yLab='FNpixelsVotos'; makeNiceFigure(FNpixelsVotos,yLab)
+% print(gcf,'-dpng',fullfile(masterFolder,'GlobalVascular',[yLab '.png']));
+
+% figure; yLab='FPpixelsVotos'; makeNiceFigure(FPpixelsVotos,yLab)
+% print(gcf,'-dpng',fullfile(masterFolder,'GlobalVascular',[yLab '.png']));
+
+figure; yLab='False negative selection [%]'; makeNiceFigure(FNpixelsVotosRel*100,yLab, false, 'auto')
 print(gcf,'-dpng',fullfile(masterFolder,'GlobalVascular',[yLab '.png']));
 
-figure; yLab='FPpixelsVotos'; makeNiceFigure(FPpixelsVotos,yLab)
-print(gcf,'-dpng',fullfile(masterFolder,'GlobalVascular',[yLab '.png']));
-
-figure; yLab='FNpixelsVotosRel'; makeNiceFigure(FNpixelsVotosRel,yLab)
-print(gcf,'-dpng',fullfile(masterFolder,'GlobalVascular',[yLab '.png']));
-
-figure; yLab='FPpixelsVotosRel'; makeNiceFigure(FPpixelsVotosRel,yLab)
+figure; yLab='False positive selection [%]'; makeNiceFigure(FPpixelsVotosRel*100,yLab, false, [0 125])
 print(gcf,'-dpng',fullfile(masterFolder,'GlobalVascular',[yLab '.png']));
 
 %% Scores
@@ -137,6 +137,6 @@ fnMean=mean(fnScore)
 % print(gcf,'-dpng',fullfile(masterFolder,'GlobalVascular',[yLab '.png']));
 
 %% Area
-figure; yLab='Relative Area'; makeNiceFigure(totalPix,yLab)
+figure; yLab='Avascular area [%]'; makeNiceFigure(totalPix*100,yLab, true, 'auto')
 print(gcf,'-dpng',fullfile(masterFolder,'GlobalVascular',[yLab '.png']));
 

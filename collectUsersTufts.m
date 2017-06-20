@@ -36,7 +36,7 @@ for it = 1:14
         
     end
     
-    consensusMask = round(mean(allMasks, 3));
+    consensusMask = sum(allMasks, 3)>ceil(size(allMasks, 3)/2);
     
     orMask   = logical(sum(allMasks, 3));
     
