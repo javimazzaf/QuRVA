@@ -3,7 +3,7 @@ clear
 
 readConfig
 
-mkdir(masterFolder, 'GlobalVascular')
+% mkdir(masterFolder, 'GlobalVascular')
 
 %% Get file names
 myFiles = dir(fullfile(masterFolder, 'VasculatureNumbers','*.mat'));
@@ -61,7 +61,7 @@ for it = 1:14
     VotosPix(it)   = sum(aVascVotos(:) & thisMask(:));
 %     TodosPix(it)   = sum(aVascTodos(:) & thisMask(:));
     
-    imwrite(compImageVotos,fullfile(masterFolder, 'GlobalVascular',['votos_' fname '.png']))
+%     imwrite(compImageVotos,fullfile(masterFolder, 'GlobalVascular',['votos_' fname '.png']))
 %     imwrite(compImageTodos,fullfile(masterFolder, 'GlobalVascular',['todos_' fname '.png']))
     
     % Compute users
