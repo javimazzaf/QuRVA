@@ -94,12 +94,7 @@ load(fullfile(masterFolder, 'GlobalVascular', 'results.mat'), 'totalPix',...
     'retinaPix', 'VotosPix','FNpixelsVotos','FPpixelsVotos',...
     'FNpixelsVotosRel','FPpixelsVotosRel');
 
-% figure; yLab='False negative selection [%]'; makeNiceFigure(FNpixelsVotosRel*100,yLab, false, 'auto')
-% print(gcf,'-dpng',fullfile(masterFolder,'GlobalVascular',[yLab '.png']));
-%
-% figure; yLab='False positive selection [%]'; makeNiceFigure(FPpixelsVotosRel*100,yLab, false, [0 125])
-% print(gcf,'-dpng',fullfile(masterFolder,'GlobalVascular',[yLab '.png']));
-
+% Errors
 allErrorRel = (FNpixelsVotosRel + FPpixelsVotosRel) * 100;
 
 fg=figure;
@@ -108,10 +103,7 @@ makeFigureTight(fg)
 imRGB = print('-RGBImage');
 imwrite(imRGB,fullfile(masterFolder,'GlobalVascular','ErrorPixels.png'),'png','Comment',['Comparison Version: ' versionInfo.branch ' | ' versionInfo.sha])
 
-%% Area
-% figure; yLab='Avascular area [%]'; makeNiceFigure(totalPix*100,yLab, true, 'auto')
-% print(gcf,'-dpng',fullfile(masterFolder,'GlobalVascular',[yLab '.png']));
-
+% Area
 fg=figure;
 makeUserDistributionFigure(totalPix*100,'Avascular area [%]',true)
 makeFigureTight(fg)
