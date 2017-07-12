@@ -37,9 +37,9 @@ for it=1:14
         
     if doVasculature
         
-        [vesselSkelMask, brchPts, smoothVessels]=getVacularNetwork(thisMask, redImage);
-        [aVascZone]=getAvacularZone2(thisMask, vesselSkelMask, smoothVessels);
-        [aVascAllMasks aVascConsensus]=getAVascularConsensusMask(it);
+        [vesselSkelMask, brchPts, smoothVessels] = getVacularNetwork(thisMask, redImage);
+        [aVascZone] = getAvacularZone2(thisMask, vesselSkelMask, smoothVessels);
+        [aVascAllMasks aVascConsensus] = getAVascularConsensusMask(it);
         
         if doSaveImages
             %% Make a nice image

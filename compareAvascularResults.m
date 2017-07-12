@@ -3,6 +3,9 @@ clear
 
 readConfig
 
+%Ensures everything is commited before starting test.
+[versionInfo.branch, versionInfo.sha] = getGitInfo;
+
 mkdir(masterFolder, 'GlobalVascular')
 
 %% Get file names
@@ -10,7 +13,7 @@ myFiles = dir(fullfile(masterFolder, 'VasculatureNumbers','*.mat'));
 myFiles = {myFiles(:).name};
 
 for it = 1:14
-    
+    it
     fname = myFiles{it};
     fname = fname(1:end-4);
     
@@ -43,18 +46,6 @@ for it = 1:14
                        uint8(TPimage)*255, 'g'),...
                        vesselSkelMask,'r');
     
-%     % Todos               
-%     FNimage = (aVascTodos > aVascZone) & thisMask; 
-%     FPimage = (aVascTodos < aVascZone) & thisMask;
-%     TPimage = aVascTodos & aVascZone & thisMask;
-%     FNpixelsTodos(1,it) = sum(FNimage(:)); 
-%     FPpixelsTodos(1,it) = sum(FPimage(:));  
-%     
-%     compImageTodos = imoverlay(imoverlay(imoverlay(imoverlay(thisImage,...
-%                        uint8(FPimage)*255, 'm'),...
-%                        uint8(FNimage)*255, 'y'),...
-%                        uint8(TPimage)*255, 'g'),...
-%                        vesselSkelMask,'r');
     
     totalPix(1,it)   = sum(aVascZone(:) & thisMask(:))/sum(thisMask(:));
     retinaPix(it)  = sum(thisMask(:));
@@ -67,7 +58,7 @@ for it = 1:14
     % Compute users
     for us = 1:size(aVascAllMasks,3)
         userMask = aVascAllMasks(:,:,us);
-        userMask=userMask.*maskNoCenter;
+        userMask = userMask .* maskNoCenter;
         
         totalPix(1+us,it)   = sum(userMask(:) & thisMask(:))/sum(thisMask(:));
         
@@ -96,11 +87,6 @@ save(fullfile(masterFolder, 'GlobalVascular', 'results.mat'), 'totalPix',...
      'FNpixelsVotosRel','FPpixelsVotosRel');
 
 %% Votos 
-% figure; yLab='FNpixelsVotos'; makeNiceFigure(FNpixelsVotos,yLab)
-% print(gcf,'-dpng',fullfile(masterFolder,'GlobalVascular',[yLab '.png']));
-
-% figure; yLab='FPpixelsVotos'; makeNiceFigure(FPpixelsVotos,yLab)
-% print(gcf,'-dpng',fullfile(masterFolder,'GlobalVascular',[yLab '.png']));
 
 figure; yLab='False negative selection [%]'; makeNiceFigure(FNpixelsVotosRel*100,yLab, false, 'auto')
 print(gcf,'-dpng',fullfile(masterFolder,'GlobalVascular',[yLab '.png']));
@@ -108,33 +94,13 @@ print(gcf,'-dpng',fullfile(masterFolder,'GlobalVascular',[yLab '.png']));
 figure; yLab='False positive selection [%]'; makeNiceFigure(FPpixelsVotosRel*100,yLab, false, [0 125])
 print(gcf,'-dpng',fullfile(masterFolder,'GlobalVascular',[yLab '.png']));
 
-%% Scores
-for imNumber=1:size(FPpixelsVotos, 2)
-    [~,a]=sort(FPpixelsVotos(:,imNumber))
-    fpScore(imNumber)=find(a==1)
-end
-
-for imNumber=1:size(FNpixelsVotos, 2)
-    [~,a]=sort(FNpixelsVotos(:,imNumber))
-    fnScore(imNumber)=find(a==1)
-end
-
-fpMean=mean(fpScore)
-fnMean=mean(fnScore)
-
-%% Todos
-
-% figure; yLab='FNpixelsTodos'; makeNiceFigure(FNpixelsTodos,yLab)
-% print(gcf,'-dpng',fullfile(masterFolder,'GlobalVascular',[yLab '.png']));
+% allErrorRel = FNrel + FPrel;
 % 
-% figure; yLab='FPpixelsTodos'; makeNiceFigure(FPpixelsTodos,yLab)
-% print(gcf,'-dpng',fullfile(masterFolder,'GlobalVascular',[yLab '.png']));
-% 
-% figure; yLab='FNpixelsTodosRel'; makeNiceFigure(FNpixelsTodosRel,yLab)
-% print(gcf,'-dpng',fullfile(masterFolder,'GlobalVascular',[yLab '.png']));
-% 
-% figure; yLab='FPpixelsTodosRel'; makeNiceFigure(FPpixelsTodosRel,yLab)
-% print(gcf,'-dpng',fullfile(masterFolder,'GlobalVascular',[yLab '.png']));
+% fg=figure;
+% makeUserDistributionFigure(allErrorRel,'Error pixels [%]',true)
+% makeFigureTight(fg)
+% imRGB = print('-RGBImage');
+% imwrite(imRGB,fullfile(resDir,'errorsPerMethod.png'),'png','Comment',['Comparison Version: ' versionInfo.branch ' | ' versionInfo.sha])
 
 %% Area
 figure; yLab='Avascular area [%]'; makeNiceFigure(totalPix*100,yLab, true, 'auto')
