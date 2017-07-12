@@ -20,11 +20,10 @@ vesselSkelMask=vesselSkelMask.*smoothVessels;
 
 brchPts=bwmorph(vesselSkelMask, 'branchpoints');
 
+% Clean Branching points
 choppedSkeleton = vesselSkelMask - brchPts;
-choppedSkeleton = bwareaopen(choppedSkeleton, 3);
-
+choppedSkeleton = bwareaopen(choppedSkeleton, 5);
 vesselSkelMaskNew = bwareaopen(choppedSkeleton + brchPts,1);
-
 brchPts=bwmorph(vesselSkelMaskNew, 'branchpoints');
 
 endPts=bwmorph(vesselSkelMaskNew, 'endpoints');

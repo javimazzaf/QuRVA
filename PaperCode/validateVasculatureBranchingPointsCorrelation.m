@@ -1,7 +1,8 @@
 masterFolder='/Users/javimazzaf/Dropbox (Biophotonics)/ValidationVasculature/';
 
 load([masterFolder, 'automatic.mat'], 'thisCount');
-counts = thisCount.QuRVA(:);
+% counts = thisCount.QuRVA(:);
+counts = thisCount.Var3(:);
 
 counts = [counts,zeros(size(counts)),zeros(size(counts))];
 

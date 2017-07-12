@@ -5,8 +5,6 @@ imageSide=350;
 % loads local parameters
 readConfig;
 
-masterFolder='../Anonymous/';
-
 % mkdir(masterFolder, 'ValidationVasculature')
 
 %% Get file names
@@ -41,7 +39,7 @@ for it=1:14
         thisCount(counter,:)={it, itBlock,sum(sum(logical(branchBlocks(:,:,inMaskBranchBlocks(itBlock,1), inMaskBranchBlocks(itBlock,2)))))};
         theseLocations{counter}=find((logical(branchBlocks(:,:,inMaskBranchBlocks(itBlock,1), inMaskBranchBlocks(itBlock,2))))==1);
         counter=counter+1;
-        save([masterFolder, 'ValidationVasculature/automaticRefined.mat'], 'thisCount');
+        save([masterFolder, 'ValidationVasculature/automatic.mat'], 'thisCount');
     end
 end
 
