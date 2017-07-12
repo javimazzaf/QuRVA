@@ -65,7 +65,7 @@ for it = 8:size(data, 1)
 end
 
 plot(xlim(), meds(1) * [1 1], '--r','linewidth',1)
-plot(1 + ((1:size(data,2)) - floor(size(data,2)/2)) / size(data,2) * 0.5, meds(1) * ones(size(data(it,:))), 'Color', 'k','linewidth',1)
+plot(1 + ((1:size(data,2)) - floor(size(data,2)/2)) / size(data,2) * 0.5, meds(1) * ones(size(data(1,:))), 'Color', 'k','linewidth',1)
 x = 1 + 0.5/size(data,2) - [1 0.5] * floor(size(data,2)/2) / size(data,2);
 y = meds(1) * [1 1];
 
