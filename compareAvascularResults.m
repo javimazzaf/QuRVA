@@ -3,7 +3,7 @@ clear
 
 readConfig
 
-% mkdir(masterFolder, 'GlobalVascular')
+mkdir(masterFolder, 'GlobalVascular')
 
 %% Get file names
 myFiles = dir(fullfile(masterFolder, 'VasculatureNumbers','*.mat'));
