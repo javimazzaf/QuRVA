@@ -42,6 +42,12 @@ for it=1:numel(myFiles)
     
     [maskStats, maskNoCenter] = processMask(thisMask, redImage, thisONCenter);
     
+    [redImage, scaleFactor]=resetScale(redImage);
+        thisMask=resetScale(thisMask);
+        maskNoCenter=resetScale(maskNoCenter);
+        thisONCenter=thisONCenter/scaleFactor;
+        retinaDiam = computeRetinaSize(thisMask, thisONCenter);
+    
     if doVasculature==true
         
         [vesselSkelMask, brchPts, smoothVessels, endPts]=getVacularNetwork(thisMask, redImage);
@@ -52,6 +58,9 @@ for it=1:numel(myFiles)
             
             leftHalf=cat(3, redImage, redImage, redImage);
             rightHalf=makeNiceVascularImage(redImage, aVascZone, vesselSkelMask, brchPts);
+            
+            leftHalf=imcrop(leftHalf, maskStats.BoundingBox/scaleFactor);
+            rightHalf=imcrop(rightHalf, maskStats.BoundingBox/scaleFactor);
             
             imwrite([leftHalf rightHalf], fullfile(masterFolder, 'VasculatureImages', myFiles{it}), 'JPG')
             
@@ -66,11 +75,7 @@ for it=1:numel(myFiles)
     %% Analyze tufts
     if doTufts==true
         
-        [redImage, scaleFactor]=resetScale(redImage);
-        thisMask=resetScale(thisMask);
-        maskNoCenter=resetScale(maskNoCenter);
-        thisONCenter=thisONCenter/scaleFactor;
-        retinaDiam = computeRetinaSize(thisMask, thisONCenter);
+        
 
         blockSize = ceil(retinaDiam * tufts.blockSizeFraction) * [1 1];
  
@@ -95,6 +100,10 @@ for it=1:numel(myFiles)
             
             quadNW=cat(3, uint8(tuftsMask).*redImage,redImage, redImage);
             quadNE=cat(3, redImage, redImage, redImage);
+            
+            quadNW=imcrop(quadNW, maskStats.BoundingBox/scaleFactor);
+            quadNE=imcrop(quadNE, maskStats.BoundingBox/scaleFactor);
+
             
             imwrite([quadNW quadNE], fullfile(masterFolder, 'TuftImages', myFiles{it}), 'JPG')
             
