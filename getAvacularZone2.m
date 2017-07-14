@@ -1,4 +1,4 @@
-function [aVascZone]=getAvacularZone2(originalMask, vesselSkelMask, smoothVessels)
+function [aVascZone]=getAvacularZone2(originalMask, vesselSkelMask, imOrig)
 
 paperFigure=false;
 

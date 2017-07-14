@@ -22,22 +22,22 @@ for it = 1:numel(myFiles)
     redImage = imread(fullfile(masterFolder, myFiles(it).name));
     
     fg = figure;
-    imshow(imoverlay(redImage,skel{it},'r'),[],'Border','Tight'), hold on
+    imshow(imoverlay(redImage,skel{it},'y'),[],'Border','Tight'), hold on
     
     locs = santiagoLocs{it};
     [y,x] = ind2sub([1000 1000], locs);   
     x = x * 350 / 1000;
     y = y * 350 / 1000;
-    plot(x,y,'o','MarkerEdgeColor',[0 1 0])
+    plot(x,y,'o','MarkerEdgeColor',[0 0 0],'MarkerFaceColor',[0 1 0],'MarkerSize', 5)
 
     locs = javierLocs{it};
     [y,x] = ind2sub([1000 1000], locs);   
     x = x * 350 / 1000;
     y = y * 350 / 1000;
-    plot(x,y,'o','MarkerEdgeColor',[0 0.5 0])  
+    plot(x,y,'o','MarkerEdgeColor',[0 0 0],'MarkerFaceColor',[0 0.5 0],'MarkerSize', 5)  
     
     locs = locations{it};
-    plot(locs(:,1),locs(:,2),'s','MarkerEdgeColor','y')
+    plot(locs(:,1),locs(:,2),'s','MarkerEdgeColor','k','MarkerFaceColor','r','MarkerSize', 5)
     
     print(fg,fullfile(resDir,[myFiles(it).name(1:end-3) 'png']), '-dpng')
     

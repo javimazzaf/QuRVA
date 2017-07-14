@@ -1,8 +1,7 @@
 masterFolder='/Users/javimazzaf/Dropbox (Biophotonics)/ValidationVasculature/';
 
 load([masterFolder, 'automatic.mat'], 'thisCount');
-% counts = thisCount.QuRVA(:);
-counts = thisCount.Var3(:);
+counts = thisCount.QuRVA(:);
 
 counts = [counts,zeros(size(counts)),zeros(size(counts))];
 
@@ -47,5 +46,5 @@ end
 [fo, gof] = fit(corrSet(:,1),corrSet(:,2),'poly1');
 plot(corrSet(:,1),fo(corrSet(:,1)),'-r','LineWidth',2)
 
-text(350,25,strText,'FontSize',16)
-% print(fg,fullfile(masterFolder, 'correl.pdf'),'-dpdf')
+text(320,25,strText,'FontSize',16)
+print(fg,fullfile(masterFolder, 'correl.png'),'-dpng')

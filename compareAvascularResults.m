@@ -105,7 +105,7 @@ imwrite(imRGB,fullfile(masterFolder,'GlobalVascular','ErrorPixels.png'),'png','C
 
 % Area
 fg=figure;
-makeUserDistributionFigure(totalPix*100,'Avascular area [%]',true)
+makeNiceFigure(totalPix*100,'Avascular area [%]', true, yAxisLims)
 makeFigureTight(fg)
 imRGB = print('-RGBImage');
 imwrite(imRGB,fullfile(masterFolder,'GlobalVascular','AvascularArea.png'),'png','Comment',['Comparison Version: ' versionInfo.branch ' | ' versionInfo.sha])
