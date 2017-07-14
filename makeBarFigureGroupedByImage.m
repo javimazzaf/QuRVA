@@ -13,6 +13,11 @@ end
 
 for it=1:size(data, 2)
     xEtiquetas{it}=['Image ' num2str(it)];
+    
+    % Compute users mean and std for each image
+    aux = data(2:end,it);
+    md(it) = median(aux);
+    sd(it) = std(aux);
 end
 
 set(axes1,'FontSize',14,'XTick',[1 2 3 4 5 6 7 8 9 10 11 12 13 14],...
@@ -21,4 +26,4 @@ set(axes1,'FontSize',14,'XTick',[1 2 3 4 5 6 7 8 9 10 11 12 13 14],...
 ylabel(yLab);
 
 hold on
-errorbar(1:14,10*ones(1,14),2*ones(1,14),'-k')
+errorbar(1:14,md,sd,'-k')
