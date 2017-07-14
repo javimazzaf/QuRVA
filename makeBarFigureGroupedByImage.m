@@ -21,4 +21,4 @@ set(axes1,'FontSize',14,'XTick',[1 2 3 4 5 6 7 8 9 10 11 12 13 14],...
 ylabel(yLab);
 
 hold on
-errorbar(1:14,10*ones(1,14),'ok')
+errorbar(1:14,10*ones(1,14),2,'ok')
