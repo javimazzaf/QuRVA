@@ -21,10 +21,10 @@ for it=1:size(data, 2)
     md(it) = median(aux);
     sd(it) = std(aux);
     
-    plot(it + ((1:size(data,1)) - floor(size(data,1)/2)) / size(data,1) * 0.5, md(it) * ones(size(data(:,it))), 'Color', 'y','linewidth',2)
+    plot(it + ((0:size(data,1)-1) - floor(size(data,1)/2)) / size(data,1) * 0.5, md(it) * ones(size(data(:,it))), 'Color', 'm','linewidth',2)
     
-    plot(it + ((1:size(data,1)) - floor(size(data,1)/2)) / size(data,1) * 0.5, (md(it) - sd(it)) * ones(size(data(:,it))), 'Color', 'c','linewidth',2)
-    plot(it + ((1:size(data,1)) - floor(size(data,1)/2)) / size(data,1) * 0.5, (md(it) + sd(it)) * ones(size(data(:,it))), 'Color', 'c','linewidth',2)
+    plot(it + ((0:size(data,1)-1) - floor(size(data,1)/2)) / size(data,1) * 0.5, (md(it) - sd(it)) * ones(size(data(:,it))), 'Color', 'b','linewidth',2)
+    plot(it + ((0:size(data,1)-1) - floor(size(data,1)/2)) / size(data,1) * 0.5, (md(it) + sd(it)) * ones(size(data(:,it))), 'Color', 'b','linewidth',2)
     
 end
 
