@@ -6,6 +6,8 @@ axes1 = axes('Parent',gcf);
 bar1 = bar(data','Parent',axes1);
 set(bar1(1),'FaceColor',[1 0 0], 'DisplayName','QuRVA');
 
+hold on
+
 
 for it=2:size(data, 1)
     set(bar1(it),'FaceColor',[0 2/9+it*1/9 0], 'DisplayName',users{it-1});
