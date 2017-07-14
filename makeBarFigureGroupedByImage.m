@@ -18,6 +18,9 @@ for it=1:size(data, 2)
     aux = data(2:end,it);
     md(it) = median(aux);
     sd(it) = std(aux);
+    
+    plot(it + ((1:size(data,1)) - floor(size(data,1)/2)) / size(data,1) * 0.5, md(it) * ones(size(data(:,it))), 'Color', 'k','linewidth',1)
+    
 end
 
 set(axes1,'FontSize',14,'XTick',[1 2 3 4 5 6 7 8 9 10 11 12 13 14],...
@@ -25,5 +28,5 @@ set(axes1,'FontSize',14,'XTick',[1 2 3 4 5 6 7 8 9 10 11 12 13 14],...
 
 ylabel(yLab);
 
-hold on
-errorbar(1:14,md,sd,'-k')
+% hold on
+% errorbar(1:14,md,sd,'-k')
