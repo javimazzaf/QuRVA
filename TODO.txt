@@ -1,10 +1,1 @@
-- El QC baja considerablemente el número de FP.
-    + para mejorarlo repensar la implementación.
-- Los FN no están mal, pero habría que reducirlos más.
-    + usar un umbral local
-    + probablemente esto aumente los FP
-
-
-Idea para evaluar el método nuestro:
-- Hacer una funcion de evaluacion que de el ranking del metodo frente a otros usuarios, imagen por imagen. 
-Es decir, en que orden queda de mejora a peor. 
+- organizar compilaci—n.
