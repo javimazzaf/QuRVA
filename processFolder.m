@@ -66,8 +66,6 @@ for it=1:numel(myFiles)
             
         end % doSaveImages
         
-        %thisSholl = getShollEq(vesselSkelMask, maskStats, thisONCenter);
-        
         save(fullfile(masterFolder, 'VasculatureNumbers', [myFiles{it},'.mat']),...
             'vesselSkelMask', 'brchPts', 'aVascZone', 'endPts');
     end % doVasculature

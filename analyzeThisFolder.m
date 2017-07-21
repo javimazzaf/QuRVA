@@ -54,8 +54,6 @@ for it=1:14
             imwrite([leftHalf rightHalf], fullfile(masterFolder,'VasculatureImages',myFiles{it}), 'JPG')
         end % doSaveImages
         
-%         thisSholl=getShollEq(vesselSkelMask, maskStats, thisONCenter);
-        
         save(fullfile(masterFolder, 'VasculatureNumbers', [myFiles{it},'.mat']),...
             'vesselSkelMask', 'brchPts','aVascZone');
     end % doVasculature
@@ -66,7 +64,6 @@ for it=1:14
         if exist('smoothVessels', 'var')
             %[tuftsMask, thickMask]=getTufts(thisMask, redImage, maskNoCenter, smoothVessels);
             tuftsMask=getTuftsConvNet(thisMask, redImage, maskNoCenter, smoothVessels);
-            %tuftsMask = getTuftQC(redImage, thisMask, maskNoCenter, tuftsMask);
 
         else
             %[tuftsMask, thickMask]=getTufts(thisMask, redImage, maskNoCenter);

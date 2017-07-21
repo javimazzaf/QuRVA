@@ -24,12 +24,6 @@ thickMask = imdilate(outMask, strel('disk', round(tufts.lowpassFilterSize/2)));
 
 tuftsMask = logical(thickMask) .* maskNoCenter;
 
-% Procedure to get rid of false positives
-% if nargin >= 4
-%     tuftsMask=getTuftQC(rawImage, thisMask, maskNoCenter, tuftsMask, smoothVessels);
-% else
-%     tuftsMask=getTuftQC(rawImage, thisMask, maskNoCenter, tuftsMask);
-% end
 
 
 

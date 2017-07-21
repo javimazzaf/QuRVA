@@ -1,7 +1,5 @@
 function features = computeLBP_M_FeaturesOnBlocks(inIm,R,P,blocksInd,selBlocks, offSet, tolRng)
 
-% ixFeat = [4 8 12 13] - 3;
-% ixFeat = 1:10; % All features
 ixFeat = [1,10];
 
 features = zeros(size(selBlocks,1),numel(ixFeat));

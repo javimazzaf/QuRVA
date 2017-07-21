@@ -74,8 +74,8 @@ for it=1:numel(myFiles)
     
     imwrite([quadNW quadNE; quadSW quadSE], fullfile(masterFolder, 'TuftImages', fname), 'JPG','Comment',['TrainingVersion: ' trainingSetVersInfo.sha ' - EvaluationVersion: ' evaluationVersInfo.sha])
     
-    imwrite(quadNE, fullfile(masterFolder, 'TuftImagesPaper', ['original_' fname]), 'JPG','Comment',['TrainingVersion: ' trainingSetVersInfo.sha ' - EvaluationVersion: ' evaluationVersInfo.sha])
-    imwrite(quadSW, fullfile(masterFolder, 'TuftImagesPaper', ['errors_' fname]), 'JPG','Comment',['TrainingVersion: ' trainingSetVersInfo.sha ' - EvaluationVersion: ' evaluationVersInfo.sha])
+%     imwrite(quadNE, fullfile(masterFolder, 'TuftImagesPaper', ['original_' fname]), 'JPG','Comment',['TrainingVersion: ' trainingSetVersInfo.sha ' - EvaluationVersion: ' evaluationVersInfo.sha])
+%     imwrite(quadSW, fullfile(masterFolder, 'TuftImagesPaper', ['errors_' fname]), 'JPG','Comment',['TrainingVersion: ' trainingSetVersInfo.sha ' - EvaluationVersion: ' evaluationVersInfo.sha])
     
     save(fullfile(masterFolder,'TuftNumbers',[myFiles{it}]),'tuftsMask', 'allMasks', 'consensusMask','evaluationVersInfo','trainingSetVersInfo');
 
