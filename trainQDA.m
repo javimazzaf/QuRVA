@@ -6,7 +6,7 @@ delete(fullfile(masterFolder, 'trainingSet.mat'))
 delete(fullfile(masterFolder, 'model.mat'))
 
 % Compute features
-getTrainingSetBlock;
+getTrainingSet;
 
-% Build models
-createModels;
+% Build model
+createModel;
