@@ -9,7 +9,7 @@ load(fullfile(masterFolder, 'trainingSet.mat'),'blockSize')
 myFiles = dir(fullfile(masterFolder, 'Masks','*.mat'));
 myFiles = {myFiles(:).name};
 
-for it=1:numel(myFiles)
+for it=1:14 %numel(myFiles)
     
     disp([num2str(it) '/' num2str(numel(myFiles))])
     
