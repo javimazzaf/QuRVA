@@ -3,7 +3,7 @@ readConfig
 %Ensures everything is commited before starting test.
 % [versionInfo.branch, versionInfo.sha] = getGitInfo;
 
-myFiles = dir(fullfile(masterFolder, 'TuftNumbers','*.mat'));
+myFiles = dir(fullfile(masterFolder, 'TuftConsensusMasks','*.mat'));
 myFiles = {myFiles(:).name};
 
 data = [];
@@ -16,7 +16,7 @@ offSet = [0 0];
 
 blockSize = [0 0];
 
-for it = 1:14%numel(myFiles)
+for it = 1:numel(myFiles)
     
     disp(it)
     

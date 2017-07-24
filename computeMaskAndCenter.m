@@ -1,4 +1,10 @@
-function computeMaskAndCenter(masterFolder, fileNames)
+function computeMaskAndCenter(masterFolder, fileNames,fullAuto)
+
+%Makes sure warning are turned off at return of the function
+finishup = onCleanup(@() warning('On'));
+
+% Default is supervised
+if ~exist('fullAuto','var'), fullAuto = false; end
 
 for it = 1:numel(fileNames)
     
@@ -17,16 +23,23 @@ for it = 1:numel(fileNames)
     %% Load mask and center
     if ~existMask
 
-        thisMask=getMask(redImage);
-        fg = figure;
-        imshow(imoverlay(redImage,imdilate(bwperim(thisMask),strel('disk',5)),'m'))
+        thisMask = getMask(redImage);
+        
+        if ~fullAuto
+          fg = figure;
+          warning('Off')
+          imshow(imoverlay(redImage,imdilate(bwperim(thisMask),strel('disk',5)),'m'))
+          warning('On')
+        end
         
         while true
             
-            if strcmp(questdlg('Are you happy with this mask?', 'Confirmation','Yes','No','Yes'),'No')
+            if ~fullAuto && strcmp(questdlg('Is the mask correct?', 'Confirmation','Yes','No','Yes'),'No')
                 imshow(redImage,[])
                 thisMask=roipoly(thisImage);
+                warning('Off')
                 imshow(imoverlay(redImage,imdilate(bwperim(thisMask),strel('disk',5)),'m'))
+                warning('On')
             else
                 save(maskFile, 'thisMask');
                 break
@@ -37,21 +50,41 @@ for it = 1:numel(fileNames)
     
     if ~existCenter
 
+        % Estimate center from mask
+        if ~exist('thisMask','var')
+            load(maskFile, 'thisMask');
+        end
+        
+        maskProps    = regionprops(thisMask,'Centroid');
+        thisONCenter = maskProps.Centroid;
+        
         while true
+            
+            if fullAuto
+                save(centerFile, 'thisONCenter');
+                break
+            end
             
             if exist('fg','var'), clf(fg)
             else                , fg = figure; end
-            
+
+            warning('Off')
             imshow(redImage,[]), hold on
-            title('Click on the center of the optic nerve head')
-            [x,y]=ginput(1);
-            thisONCenter=round([x y]);
-            plot(x,y,'*m')
-            
+            plot(thisONCenter(1), thisONCenter(2), '*m')
+            warning('On')
+
             if strcmp(questdlg('Should center of the optic nerve head be here?', 'Confirmation','Yes','No','Yes'),'Yes')
                 save(centerFile, 'thisONCenter');
                 break
             end
+            
+            clf(fg)
+            warning('Off')
+            imshow(redImage,[]), hold on
+            warning('On')
+            title('Click on the center of the optic nerve head')
+            [x,y] = ginput(1);
+            thisONCenter=round([x y]);
             
         end
         

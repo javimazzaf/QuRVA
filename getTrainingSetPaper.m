@@ -65,7 +65,7 @@ end
 
 versionInfo.dayTag = datestr(now,'yyyymmdd_HH_MM');
 
-save(fullfile(masterFolder, 'trainingSet.mat'),'data1','res1','data2','res2','blockSize','retinaDiam','versionInfo')
+save(fullfile(masterFolder, 'trainingSetPaper.mat'),'data1','res1','data2','res2','blockSize','retinaDiam','versionInfo')
 
 
 

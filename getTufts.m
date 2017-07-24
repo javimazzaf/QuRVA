@@ -1,28 +1,24 @@
-function [tuftsMask, thickMask] = getTufts(varargin)
+function tuftsMask = getTufts(redImage, maskNoCenter, thisMask, thisONCenter, retinaDiam, model)
 
 readConfig
 
-if nargin < 3, error('Not enough input parameters.'), end
+blockSize = ceil(retinaDiam * tufts.blockSizeFraction) * [1 1];
 
-thisMask      = varargin{1};
-rawImage      = varargin{2}; 
-maskNoCenter  = varargin{3};
+[~, indBlocks] = getBlocks(redImage, blockSize, [0 0]);
 
-if nargin >= 4, smoothVessels = varargin{4}; end
+candidateBlocks  = getBlocksInMask(indBlocks, maskNoCenter & thisMask, tufts.blocksInMaskPercentage, [0 0]);
 
-rawImage = rawImage.*uint8(thisMask);
-rawImageNorm = mat2gray(double(rawImage));
+blockFeatures = computeBlockFeatures(redImage, maskNoCenter, thisMask, indBlocks, candidateBlocks,[],[0 0],thisONCenter);
 
-vascMask  = imbinarize(mat2gray(bpass(rawImageNorm,1,5)));
+y = predict(model, blockFeatures);
 
-threshold = median(rawImageNorm(vascMask));
+goodBlocks = candidateBlocks(y > 0.5,:);
 
-enhancedTufts = filter2(fspecial('disk',tufts.lowpassFilterSize/2), rawImageNorm,'same');
-outMask = enhancedTufts >= threshold;
+tuftsMask = blocksToMask(size(redImage), indBlocks, goodBlocks, [0 0]);
 
-thickMask = imdilate(outMask, strel('disk', round(tufts.lowpassFilterSize/2)));
+tuftsMask = bwareaopen(tuftsMask,prod(blockSize) + 1);
 
-tuftsMask = logical(thickMask) .* maskNoCenter;
+end
 
 
 
