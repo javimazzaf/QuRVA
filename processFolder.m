@@ -4,7 +4,11 @@ try
     %% Settings and folders
     readConfig
     
-    masterFolder = uigetdir('', 'Select folder');
+    if nargin>0
+        masterFolder=varargin{1};
+    else
+        masterFolder = uigetdir('', 'Select folder');
+    end
     
     warning('Off')
     mkdir(masterFolder, 'Masks')

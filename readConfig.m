@@ -21,7 +21,7 @@ doTufts = true;
 doVasculature = true;
 doSaveImages = true;
 
-computeMaskAndCenterAutomatically = false;
+computeMaskAndCenterAutomatically = true;
 
 vascNet.ThreshNeighborSize = [51 51];
 vascNet.OpeningSize = 500;

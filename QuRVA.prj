@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
-  <configuration build-checksum="2778418607" file="/Users/javimazzaf/Documents/work/proyectos/flatMounts/code/QuRVA.prj" location="/Users/javimazzaf/Documents/work/proyectos/flatMounts/code" name="QuRVA" preferred-package-location="/Users/javimazzaf/Documents/work/proyectos/flatMounts/code/QuRVA/for_redistribution" preferred-package-type="package.type.app" target="target.ezdeploy.standalone" target-name="Application Compiler">
+  <configuration build-checksum="70760958" file="/Users/santiago/Dropbox (Biophotonics)/Projects/FlatMounts/code/QuRVA.prj" location="/Users/santiago/Dropbox (Biophotonics)/Projects/FlatMounts/code" name="QuRVA" preferred-package-location="/Users/santiago/Dropbox (Biophotonics)/Projects/FlatMounts/code/QuRVA/for_redistribution" preferred-package-type="package.type.app" target="target.ezdeploy.standalone" target-name="Application Compiler">
     <param.appname>QuRVA</param.appname>
     <param.icon />
     <param.icons />
@@ -9,7 +9,7 @@
     <param.company />
     <param.summary />
     <param.description />
-    <param.screenshot />
+    <param.screenshot>/Users/santiago/Dropbox (Biophotonics)/Projects/FlatMounts/PaperImageSet/Anonymous/TuftImages/Image001.jpg</param.screenshot>
     <param.guid />
     <param.installpath.string>/QuRVA/</param.installpath.string>
     <param.installpath.combo>option.installpath.systemwideapp</param.installpath.combo>
@@ -38,8 +38,8 @@ If it is defined, set it to the concatenation of these strings:
     <param.embed.ctf>true</param.embed.ctf>
     <param.target.type>subtarget.standalone</param.target.type>
     <param.support.packages />
-    <param.web.mcr>false</param.web.mcr>
-    <param.package.mcr>true</param.package.mcr>
+    <param.web.mcr>true</param.web.mcr>
+    <param.package.mcr>false</param.package.mcr>
     <param.no.mcr>false</param.no.mcr>
     <param.web.mcr.name>MyAppInstaller_web</param.web.mcr.name>
     <param.package.mcr.name>MyAppInstaller_mcr</param.package.mcr.name>
@@ -55,7 +55,6 @@ If it is defined, set it to the concatenation of these strings:
       <param.company />
       <param.summary />
       <param.description />
-      <param.screenshot />
       <param.guid />
       <param.installpath.string />
       <param.installpath.combo />
@@ -70,6 +69,8 @@ If it is defined, set it to the concatenation of these strings:
       <param.embed.ctf />
       <param.target.type />
       <param.support.packages />
+      <param.web.mcr />
+      <param.package.mcr />
       <param.no.mcr />
       <param.web.mcr.name />
       <param.package.mcr.name />
@@ -111,34 +112,22 @@ If it is defined, set it to the concatenation of these strings:
       <file>${PROJECT_ROOT}/resetScale.m</file>
     </fileset.depfun>
     <build-deliverables>
-      <file location="${PROJECT_ROOT}/QuRVA/for_testing" name="QuRVA.app" optional="false">/Users/javimazzaf/Documents/work/proyectos/flatMounts/code/QuRVA/for_testing/QuRVA.app</file>
-      <file location="${PROJECT_ROOT}/QuRVA/for_testing" name="readme.txt" optional="true">/Users/javimazzaf/Documents/work/proyectos/flatMounts/code/QuRVA/for_testing/readme.txt</file>
-      <file location="${PROJECT_ROOT}/QuRVA/for_testing" name="splash.png" optional="false">/Users/javimazzaf/Documents/work/proyectos/flatMounts/code/QuRVA/for_testing/splash.png</file>
-      <file location="${PROJECT_ROOT}/QuRVA/for_testing" name="run_QuRVA.sh" optional="false">/Users/javimazzaf/Documents/work/proyectos/flatMounts/code/QuRVA/for_testing/run_QuRVA.sh</file>
+      <file location="${PROJECT_ROOT}/QuRVA/for_testing" name="run_QuRVA.sh" optional="false">/Users/santiago/Dropbox (Biophotonics)/Projects/FlatMounts/code/QuRVA/for_testing/run_QuRVA.sh</file>
+      <file location="${PROJECT_ROOT}/QuRVA/for_testing" name="splash.png" optional="false">/Users/santiago/Dropbox (Biophotonics)/Projects/FlatMounts/code/QuRVA/for_testing/splash.png</file>
+      <file location="${PROJECT_ROOT}/QuRVA/for_testing" name="QuRVA.app" optional="false">/Users/santiago/Dropbox (Biophotonics)/Projects/FlatMounts/code/QuRVA/for_testing/QuRVA.app</file>
+      <file location="${PROJECT_ROOT}/QuRVA/for_testing" name="readme.txt" optional="true">/Users/santiago/Dropbox (Biophotonics)/Projects/FlatMounts/code/QuRVA/for_testing/readme.txt</file>
     </build-deliverables>
     <workflow />
     <matlab>
       <root>/Applications/MATLAB_R2016b.app</root>
       <toolboxes>
-        <toolbox name="fixedpoint" />
         <toolbox name="matlabcoder" />
-        <toolbox name="matlabhdlcoder" />
         <toolbox name="embeddedcoder" />
       </toolboxes>
-      <toolbox>
-        <fixedpoint>
-          <enabled>true</enabled>
-        </fixedpoint>
-      </toolbox>
       <toolbox>
         <matlabcoder>
           <enabled>true</enabled>
         </matlabcoder>
-      </toolbox>
-      <toolbox>
-        <matlabhdlcoder>
-          <enabled>true</enabled>
-        </matlabhdlcoder>
       </toolbox>
       <toolbox>
         <embeddedcoder>
