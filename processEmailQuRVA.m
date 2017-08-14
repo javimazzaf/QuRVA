@@ -26,7 +26,7 @@ try
         AnalysisResult = openExcelReport([rootFolder 'imagesToProcess']);
         
         for itFile=1:numel(fileNamesToProcess)
-            row=find(strcmp(AnalysisResult.FileName, fileNamesToProcess{itFile}))
+            row=find(strcmp(AnalysisResult.FileName, fileNamesToProcess{itFile}),1,'first');
             
             %% Numbers for each email
             thisFlatMountArea=AnalysisResult.FlatMountArea(row);
@@ -40,6 +40,13 @@ try
             [outEmailAddress, outFileName] = parseImageName(fileNamesToProcess{itFile})
             
             %% compose text
+%             outFileName
+%             num2str(thisFlatMountArea)
+%             num2str(thisAVascularArea)
+%             num2str(thisBranchingPoints)
+%             num2str(thisVasculatureLength)
+%             num2str(thisTuftArea)
+%             num2str(thisTuftNumber)
             emailText=['Thanks for using QuRVA' 10 10 'These are the results we have obtained for ' outFileName ':' 10 ...
                 'FlatMount Area = ' num2str(thisFlatMountArea) 10 ...
                 'Avascular Area = ' num2str(thisAVascularArea) 10 ...
@@ -55,9 +62,9 @@ try
             % Open tunnel in the background and keeps it open for at least 10
             % seconds for sendmail to open the port. It will close as soon as
             % the port is released.
-            system('ssh -L 10025:just59.justhost.com:25 ccvmj sleep 10')
+%             system('ssh -f -L 10025:just59.justhost.com:25 ccvmj sleep 10 &')
             % Allow 2 seconds to the port to be opened.
-            pause(2)
+%             pause(2)
             sendmail(outEmailAddress,'Analysis Ready', emailText, ...
                 {fullfile(rootFolder, 'imagesToProcess/TuftImages/', fileNamesToProcess{itFile}),...
                 fullfile(rootFolder, 'imagesToProcess/VasculatureImages/', fileNamesToProcess{itFile})})
