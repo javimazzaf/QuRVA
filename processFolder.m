@@ -129,7 +129,14 @@ try
     resultsTable.TuftNumber        = outTuftNumber';
     resultsTable.EndPoints         = outEndPoints';
     
-    writetable(resultsTable,fullfile(masterFolder, 'Reports', 'AnalysisResult.xls'))
+    tableFileName = fullfile(masterFolder, 'Reports', 'AnalysisResult.xlsx');
+    
+    oldTable = [];
+    if exist(tableFileName,'file')
+        oldTable = readtable(tableFileName);
+    end
+    
+    writetable([oldTable;resultsTable],tableFileName)
     
 catch globalException
     disp(['Error in processFolder. Message: ' globalException.message buildCallStack(globalException)]);

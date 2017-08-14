@@ -1,11 +1,14 @@
 clear
 
-rootFolder='/Users/santiago/Dropbox (Biophotonics)/Projects/FlatMounts/code/eMailQuRVA/';
+addpath('/home/javier/flatMounts/')
+
+rootFolder='/home/javier/qurvaImages/';
 
 %% Email settings
 props = java.lang.System.getProperties;
 props.setProperty('mail.smtp.auth','true');
-setpref('Internet','SMTP_Server','just59.justhost.com');
+% setpref('Internet','SMTP_Server','just59.justhost.com');
+setpref('Internet','SMTP_Server','localhost');
 setpref('Internet','E_mail','qurva@biophotonics.ca');
 setpref('Internet','SMTP_Username','qurva@biophotonics.ca');
 setpref('Internet','SMTP_Password','0pt1mu5QuRVA');
@@ -15,9 +18,9 @@ fileNamesToProcess=getImageList([rootFolder 'imagesToProcess']);
 
 %% process if there's something
 if numel(fileNamesToProcess)>0
-    %processFolder([rootFolder 'imagesToProcess'])
+    processFolder([rootFolder 'imagesToProcess'])
     
-    openExcelReport
+    AnalysisResult = openExcelReport([rootFolder 'imagesToProcess']);
     
     for itFile=1:numel(fileNamesToProcess)
         row=find(strcmp(AnalysisResult.FileName, fileNamesToProcess{itFile}))
@@ -46,19 +49,16 @@ if numel(fileNamesToProcess)>0
         
         
         %% send email
-%         sendmail(outEmailAddress,'Analysis Ready', emailText, ...
-%             [rootFolder '/TuftImages/fileNamesToProcess{itFile}'], [rootFolder '/VasculatureImages/fileNamesToProcess{itFile}'])
-        
+          disp('antes')
+          sendmail(outEmailAddress,'Analysis Ready', emailText, ...
+               {fullfile(rootFolder, 'imagesToProcess/TuftImages/', fileNamesToProcess{itFile}),...
+               fullfile(rootFolder, 'imagesToProcess/VasculatureImages/', fileNamesToProcess{itFile})})
+          disp('despues')
         %% move file to the Already Processed folder
-        movefile([rootFolder 'imagesToProcess/' fileNamesToProcess{itFile}], [rootFolder 'imagesToProcess/imagesAlreadyProcessed'])
+        movefile([rootFolder 'imagesToProcess/' fileNamesToProcess{itFile}], [rootFolder 'imagesToProcess/imagesAlreadyProcessed/' fileNamesToProcess{itFile}])
         
     end
 end
 
-function [outEmailAddress, outFileName]=parseImageName(inFileName)
 
-    atPositions=strfind(inFileName, '@');
-    outEmailAddress=inFileName(1:atPositions(2)-1);
-    outFileName=inFileName(atPositions(3)+1:end);
-end
 
