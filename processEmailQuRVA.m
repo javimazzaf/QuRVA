@@ -63,7 +63,9 @@ try
                 {fullfile(rootFolder, 'imagesToProcess/TuftImages/', fileNamesToProcess{itFile}),...
                 fullfile(rootFolder, 'imagesToProcess/VasculatureImages/', fileNamesToProcess{itFile})})
             
-            sendmail('javier.mazzaferri@gmail.com','QuRVA used', ['Results sent to ' outEmailAddress ' for image ' outFileName])
+            sendmail('javier.mazzaferri@gmail.com','Analysis set to outEmailAddress', emailText, ...
+                {fullfile(rootFolder, 'imagesToProcess/TuftImages/', fileNamesToProcess{itFile}),...
+                fullfile(rootFolder, 'imagesToProcess/VasculatureImages/', fileNamesToProcess{itFile})})
             
             %% move file to the Already Processed folder
             movefile([rootFolder 'imagesToProcess/' fileNamesToProcess{itFile}], [rootFolder 'imagesToProcess/imagesAlreadyProcessed/' fileNamesToProcess{itFile}])
