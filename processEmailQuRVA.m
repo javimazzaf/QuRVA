@@ -7,6 +7,7 @@ rootFolder='/home/javier/qurvaImages/';
 %% Email settings
 props = java.lang.System.getProperties;
 props.setProperty('mail.smtp.auth','true');
+props.setProperty('mail.smtp.port','10025');
 % setpref('Internet','SMTP_Server','just59.justhost.com');
 setpref('Internet','SMTP_Server','localhost');
 setpref('Internet','E_mail','qurva@biophotonics.ca');
@@ -49,11 +50,16 @@ if numel(fileNamesToProcess)>0
         
         
         %% send email
-          disp('antes')
+          
+          % Open tunnel in the background and keeps it open for at least 10
+          % seconds for sendmail to open the port. It will close as soon as
+          % the port is released. 
+          system('ssh -L 10025:just59.justhost.com:25 ccvmj sleep 10')
+          % Allow 2 seconds to the port to be opened.
+          pause(2)
           sendmail(outEmailAddress,'Analysis Ready', emailText, ...
                {fullfile(rootFolder, 'imagesToProcess/TuftImages/', fileNamesToProcess{itFile}),...
                fullfile(rootFolder, 'imagesToProcess/VasculatureImages/', fileNamesToProcess{itFile})})
-          disp('despues')
         %% move file to the Already Processed folder
         movefile([rootFolder 'imagesToProcess/' fileNamesToProcess{itFile}], [rootFolder 'imagesToProcess/imagesAlreadyProcessed/' fileNamesToProcess{itFile}])
         
