@@ -36,6 +36,8 @@ for it = 1:numel(rawFileNames)
     
     magentaMaskOriginal = createMagentaMask(trimedImage);
     
+    magentaMaskOriginal = imfill(magentaMaskOriginal,'holes');
+    
     if ~any(magentaMaskOriginal(:)), continue, end
     
     allMasks = imresize(logical(magentaMaskOriginal), size(thisRawImage));

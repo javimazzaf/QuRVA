@@ -18,8 +18,6 @@ blockSize = [0 0];
 
 for it = 1:numel(myFiles)
     
-    disp(it)
-    
     fname = myFiles{it};
     fname = fname(1:end-4);
     
@@ -33,8 +31,17 @@ for it = 1:numel(myFiles)
     
     validMask = maskNoCenter & thisMask;
     
-    load(fullfile(masterFolder, 'TuftConsensusMasks',myFiles{it}),'allMasks');
-    consensusMask = sum(allMasks, 3) >= consensus.reqVotes;
+    consensusFilePath = fullfile(masterFolder, 'TuftConsensusMasks',myFiles{it});
+    
+    if ~exist(consensusFilePath, 'file'), continue, end
+    
+    load(consensusFilePath,'allMasks');
+    
+    if size(allMasks,3) > 2
+       consensusMask = sum(allMasks, 3) >= consensus.reqVotes;
+    else
+       consensusMask = sum(allMasks, 3) >= 1; % if 1 or 2 evalautors, one vote is enough. 
+    end
     
     retinaDiam(it) = computeRetinaSize(thisMask, thisONCenter);
     
@@ -53,6 +60,7 @@ for it = 1:numel(myFiles)
     data = [data;blockFeatures];
     res  = [res;ones([size(trueBlocks,1),1]);zeros([size(falseBlocks,1),1])];
  
+    disp(it)
 end
 
 % versionInfo.dayTag = datestr(now,'yyyymmdd_HH_MM');
