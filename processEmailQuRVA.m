@@ -2,7 +2,7 @@ clear
 
 try
     
-    addpath('/home/javier/flatMounts/')
+    addpath('/home/javier/flatMounts/stable/')
     
     rootFolder='/home/javier/qurvaImages/';
     
