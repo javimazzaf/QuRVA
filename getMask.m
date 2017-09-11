@@ -14,6 +14,11 @@ sz = round(100 * scl);
 imLP   = mat2gray(filter2(fspecial('gaussian',[sz sz], sz/6),im));
 
 thresh = getThreshold(imLP(:));
+if isempty(thresh)
+    msk = zeros(size(im),'logical');
+    return
+end
+
 msk    = imbinarize(imLP,thresh);
 [msk, cHull] = getBigestObject(msk);
 

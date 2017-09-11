@@ -90,7 +90,10 @@ try
                 %% Save Tuft Images
                 if doSaveImages
                     
-                    adjustedImage = imadjust(redImage,stretchlim(redImage,[0.01 0.99]));
+                    lowSatLevel = 0.01 + sum(redImage(:) == min(redImage(:))) / numel(redImage);
+                    highSatLevel = 0.99 - sum(redImage(:) == max(redImage(:))) / numel(redImage);
+                    
+                    adjustedImage = imadjust(redImage,stretchlim(redImage,[lowSatLevel highSatLevel]));
                     
                     quadNW = imcrop(cat(3, uint8(tuftsMask) .* adjustedImage,adjustedImage, adjustedImage), maskStats.BoundingBox/scaleFactor);
                     quadNE = imcrop(cat(3, adjustedImage, adjustedImage, adjustedImage), maskStats.BoundingBox/scaleFactor);
