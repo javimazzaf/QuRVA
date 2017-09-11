@@ -28,7 +28,7 @@ for it = 1:numel(fileNames)
         if ~fullAuto
           fg = figure;
           warning('Off')
-          imshow(imoverlay(redImage,imdilate(bwperim(thisMask),strel('disk',5)),'m'))
+          imshow(imoverlay(imadjust(redImage,stretchlim(redImage,[0.01 0.97])),imdilate(bwperim(thisMask),strel('disk',5)),'m'))
           warning('On')
         end
         
@@ -38,7 +38,7 @@ for it = 1:numel(fileNames)
                 imshow(redImage,[])
                 thisMask=roipoly(thisImage);
                 warning('Off')
-                imshow(imoverlay(redImage,imdilate(bwperim(thisMask),strel('disk',5)),'m'))
+                imshow(imoverlay(imadjust(redImage,stretchlim(redImage,[0.01 0.97])),imdilate(bwperim(thisMask),strel('disk',5)),'m'))
                 warning('On')
             else
                 save(maskFile, 'thisMask');
@@ -69,7 +69,7 @@ for it = 1:numel(fileNames)
             else                , fg = figure; end
 
             warning('Off')
-            imshow(redImage,[]), hold on
+            imshow(imadjust(redImage,stretchlim(redImage,[0.01 0.97])),[]), hold on
             plot(thisONCenter(1), thisONCenter(2), '*m')
             warning('On')
 
@@ -80,7 +80,7 @@ for it = 1:numel(fileNames)
             
             clf(fg)
             warning('Off')
-            imshow(redImage,[]), hold on
+            imshow(imadjust(redImage,stretchlim(redImage,[0.01 0.97])),[]), hold on
             warning('On')
             title('Click on the center of the optic nerve head')
             [x,y] = ginput(1);

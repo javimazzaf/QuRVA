@@ -17,7 +17,16 @@ thresh = getThreshold(imLP(:));
 msk    = imbinarize(imLP,thresh);
 [msk, cHull] = getBigestObject(msk);
 
+% Refine binarization
 thresh = getThreshold(imLP(cHull));
+
+if isempty(thresh)
+    msk    = imfill(msk,'holes');
+    msk    = logical(imresize(msk, oSize));
+    return
+end
+
+
 msk    = imbinarize(imLP,thresh);
 [msk, ~] = getBigestObject(msk);
 
