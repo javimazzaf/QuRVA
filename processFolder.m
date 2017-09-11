@@ -90,8 +90,10 @@ try
                 %% Save Tuft Images
                 if doSaveImages
                     
-                    quadNW = imcrop(cat(3, uint8(tuftsMask).*redImage,redImage, redImage), maskStats.BoundingBox/scaleFactor);
-                    quadNE = imcrop(cat(3, redImage, redImage, redImage), maskStats.BoundingBox/scaleFactor);
+                    adjustedImage = imadjust(redImage,stretchlim(redImage,[0.01 0.99]));
+                    
+                    quadNW = imcrop(cat(3, uint8(tuftsMask) .* adjustedImage,adjustedImage, adjustedImage), maskStats.BoundingBox/scaleFactor);
+                    quadNE = imcrop(cat(3, adjustedImage, adjustedImage, adjustedImage), maskStats.BoundingBox/scaleFactor);
                     
                     imwrite([quadNW quadNE], fullfile(masterFolder, 'TuftImages', myFiles{it}), 'JPG')
                 end
