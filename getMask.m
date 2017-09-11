@@ -26,7 +26,6 @@ if isempty(thresh)
     return
 end
 
-
 msk    = imbinarize(imLP,thresh);
 [msk, ~] = getBigestObject(msk);
 
