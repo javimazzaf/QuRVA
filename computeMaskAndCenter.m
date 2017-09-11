@@ -36,7 +36,7 @@ for it = 1:numel(fileNames)
             
             if ~fullAuto && strcmp(questdlg('Is the mask correct?', 'Confirmation','Yes','No','Yes'),'No')
                 imshow(imadjust(redImage,stretchlim(redImage,[0.01 0.97])),[])
-                thisMask=roipoly(thisImage);
+                thisMask=roipoly;
                 warning('Off')
                 imshow(imoverlay(imadjust(redImage,stretchlim(redImage,[0.01 0.97])),imdilate(bwperim(thisMask),strel('disk',5)),'m'))
                 warning('On')
