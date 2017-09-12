@@ -21,7 +21,7 @@ for it = 1:numel(imFiles)
     
     id = regexp(fname,'([0-9]+_[a-zA-Z]+)(?=_original\.tif)','match');
     
-    trainFile = fullfile(trainPath,[id '_manual.jpg']);
+    trainFile = fullfile(trainPath,[id{:} '_manual.jpg']);
     trainingMask = imread(trainFile) > 0;
     
     load(fullfile(imPath, 'Masks', imFiles{it}), 'thisMask');
