@@ -31,9 +31,9 @@ for it = 1:numel(imFiles)
     nRows = min([size(trainingMask,1),size(oImage,1), size(thisMask,1)]); 
     nCols = min([size(trainingMask,2),size(oImage,2), size(thisMask,2)]); 
     
-    trainingMask = trainingMask(1:nRows,1:nCols);
-    oImage       = oImage(      1:nRows,1:nCols);
-    thisMask     = thisMask(    1:nRows,1:nCols);
+    trainingMask = resetScale(trainingMask(1:nRows,1:nCols));
+    oImage       = resetScale(oImage(      1:nRows,1:nCols));
+    thisMask     = resetScale(thisMask(    1:nRows,1:nCols));
     
     [~, maskNoCenter] = processMask(thisMask, oImage, thisONCenter);
     
