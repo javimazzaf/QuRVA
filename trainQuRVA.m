@@ -24,8 +24,16 @@ for it = 1:numel(imFiles)
     trainFile = fullfile(trainPath,[id{:} '_manual.jpg']);
     trainingMask = imread(trainFile) > 0;
     
-    load(fullfile(imPath, 'Masks', imFiles{it}), 'thisMask');
-    load(fullfile(imPath, 'ONCenter', imFiles{it}), 'thisONCenter');
+    load(fullfile(imPath, 'Masks', [imFiles{it} '.mat']), 'thisMask');
+    load(fullfile(imPath, 'ONCenter', [imFiles{it} '.mat']), 'thisONCenter');
+    
+    %Adjust sizes
+    nRows = min([size(trainingMask,1),size(oImage,1), size(thisMask,1)]); 
+    nCols = min([size(trainingMask,2),size(oImage,2), size(thisMask,2)]); 
+    
+    trainingMask = trainingMask(1:nRows,1:nCols);
+    oImage       = oImage(      1:nRows,1:nCols);
+    thisMask     = thisMask(    1:nRows,1:nCols);
     
     [~, maskNoCenter] = processMask(thisMask, oImage, thisONCenter);
     
@@ -35,7 +43,7 @@ for it = 1:numel(imFiles)
     
     blockSize(it,:) = ceil(retinaDiam(it) * tufts.blockSizeFraction) * [1 1];
 
-    [blocks, indBlocks] = getBlocks(oImage, blockSize(it,:), offSet);
+    [~, indBlocks] = getBlocks(oImage, blockSize(it,:), offSet);
     
     % Blocks included in consensus
     trueBlocks  = getBlocksInMask(indBlocks, validMask & trainingMask, tufts.blocksInMaskPercentage, offSet);
