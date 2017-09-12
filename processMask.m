@@ -5,6 +5,8 @@ myMask=varargin{1};
 myImage=varargin{2};
 
 maskProps=regionprops(myMask, myImage, 'EquivDiameter', 'WeightedCentroid', 'BoundingBox');
+[~,ix] = max([maskProps(:).EquivDiameter]);
+maskProps = maskProps(ix);
 
 if nargin==3
     thisONCenter=varargin{3};
