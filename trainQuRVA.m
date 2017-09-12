@@ -12,7 +12,7 @@ offSet = [0 0];
 
 blockSize = [0 0];
 
-for it = 8 %1:numel(imFiles)
+for it = 1:numel(imFiles)
     
     fname = imFiles{it};
     
