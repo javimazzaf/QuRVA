@@ -15,7 +15,6 @@ blockSize = [0 0];
 for it = 1:numel(imFiles)
     
     fname = imFiles{it};
-    fname = fname(1:end-4);
     
     oImage = imread(fullfile(imPath, fname));
     oImage = oImage(:,:,1);
