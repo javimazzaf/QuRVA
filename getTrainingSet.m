@@ -1,7 +1,7 @@
 readConfig
 
 %Ensures everything is commited before starting test.
-% [versionInfo.branch, versionInfo.sha] = getGitInfo;
+[versionInfo.branch, versionInfo.sha] = getGitInfo;
 
 myFiles = dir(fullfile(masterFolder, 'TuftConsensusMasks','*.mat'));
 myFiles = {myFiles(:).name};
@@ -63,9 +63,9 @@ for it = 1:numel(myFiles)
     disp(it)
 end
 
-% versionInfo.dayTag = datestr(now,'yyyymmdd_HH_MM');
+versionInfo.dayTag = datestr(now,'yyyymmdd_HH_MM');
 
-save(fullfile(masterFolder, 'trainingSet.mat'),'data','res','blockSize','retinaDiam')
+save(fullfile(masterFolder, 'trainingSet.mat'),'data','res','blockSize','retinaDiam','versionInfo')
 
 
 
