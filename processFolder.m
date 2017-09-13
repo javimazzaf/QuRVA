@@ -20,7 +20,11 @@ try
     mkdir(masterFolder, 'Reports')
     warning('On')
     
-    myFiles = getImageList(masterFolder);
+    if nargin > 1
+        myFiles = varargin{2};
+    else
+        myFiles = getImageList(masterFolder);
+    end
     
     load('model.mat','model')
     
