@@ -20,10 +20,10 @@ if ~exist(modelDir,'dir')
     mkdir(modelDir);
 end
 
-train = false;
-
-if train
-   trainQuRVA(imPath,trainPath,allFiles(1:50),fullfile(modelDir,'trainingSet.mat'),fullfile(modelDir,'model.mat'))
-else
-   processFolder(imPath,allFiles(51:end)); 
-end
+% train = false;
+% 
+% if train
+%    trainQuRVA(imPath,trainPath,allFiles(1:50),fullfile(modelDir,'trainingSet.mat'),fullfile(modelDir,'model.mat'))
+% else
+   processFolder(imPath,allFiles); 
+% end
