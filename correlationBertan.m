@@ -5,11 +5,6 @@ dirsQuRVA = dir(fullfile(baseQuRVA,'*original.tif.mat'));
 %10_A_original.tif.mat
 
 baseSwift = '/Volumes/EyeFolder/Dropbox (Biophotonics)/Deep_learning_Images/OIR/swift/';
-dirsSwift = dir(fullfile(baseSwift, '*manual.jpg'));
-%1_A_manual.jpg
-
-% numberQuRVA = regexp({dirsQuRVA(:).name},'[0-9].+?(?=_[a-zA-Z].original\.tif\.mat)','match');
-% letterQuRVA = regexp({dirsQuRVA(:).name},'(?<=.[0-9]_)[a-zA-Z]+?(?=_.*)','match');
 
 idQuRVA = regexp({dirsQuRVA(:).name},'([0-9]+_[a-zA-Z]+)(?=_original\.tif\.mat)','match');
 
@@ -23,43 +18,43 @@ for k = 1:numel(idQuRVA)
         continue
     end
     
-    fullMask = load(fullfile('/Volumes/EyeFolder/Dropbox (Biophotonics)/Deep_learning_Images/OIR/raw/Masks/',[idQuRVA{k}{:} '_original.tif.mat']),'thisMask');
-    fullMask = fullMask.thisMask;
+    thisMask = load(fullfile('/Volumes/EyeFolder/Dropbox (Biophotonics)/Deep_learning_Images/OIR/raw/Masks/',[idQuRVA{k}{:} '_original.tif.mat']),'thisMask');
+    thisMask = thisMask.thisMask;   
     
+    thisONCenter = load(fullfile('/Volumes/EyeFolder/Dropbox (Biophotonics)/Deep_learning_Images/OIR/raw/ONCenter/',[idQuRVA{k}{:} '_original.tif.mat']),'thisONCenter');
+    thisONCenter = thisONCenter.thisONCenter; 
+        
     maskQurva = load(fileQurva,'tuftsMask');
     maskQurva = maskQurva.tuftsMask;
     
-    maskSwift = resetScale(imread(fileSwift)) > 0;
+    maskSwift = imread(fileSwift);
     
-    fullMask  = resetScale(fullMask);
+    maskQurva = resetScale(maskQurva);
+    maskSwift = resetScale(maskSwift);
+    [thisMask, scaleFactor] = resetScale(thisMask);    
     
-    %Crop it the left if sizes dont match exactly
-    if size(maskQurva,2) < size(maskSwift,2) 
-        maskSwift = maskSwift(:,1:size(maskQurva,2));
-    elseif size(maskQurva,2) > size(maskSwift,2) 
-        maskQurva = maskQurva(:,1:size(maskSwift,2));
-        fullMask  = fullMask(:,1:size(maskSwift,2));
-    end
+    %Adjust sizes
+    nRows = min([size(maskQurva,1),size(maskSwift,1), size(thisMask,1)]); 
+    nCols = min([size(maskQurva,2),size(maskSwift,2), size(thisMask,2)]); 
     
-    if size(maskQurva,1) < size(maskSwift,1) 
-        maskSwift = maskSwift(1:size(maskQurva,1),:);
-    elseif size(maskQurva,1) > size(maskSwift,1) 
-        maskQurva = maskQurva(1:size(maskSwift,1),:);
-        fullMask  = fullMask(1:size(maskSwift,1),:);
-    end    
+    maskQurva = maskQurva(1:nRows,1:nCols);
+    maskSwift = maskSwift(1:nRows,1:nCols) > 0;
+    thisMask  = thisMask( 1:nRows,1:nCols);
     
-    if numel(maskQurva) ~= numel(maskSwift) || numel(fullMask) ~= numel(maskSwift)  
-        continue
-    end
+    thisONCenter = thisONCenter/scaleFactor;
     
-    totalArea = sum(fullMask(:));
+    [~, maskNoCenter] = processMask(thisMask, maskQurva, thisONCenter);
+     
+    validMask = maskNoCenter & thisMask;
     
-    area(k,1) = sum(maskQurva(:)) / totalArea;
-    area(k,2) = sum(maskSwift(:)) / totalArea;
+    totalArea = sum(validMask(:));
+    
+    area(k,1) = sum(maskQurva(:) .* validMask(:)) / totalArea;
+    area(k,2) = sum(maskSwift(:) .* validMask(:)) / totalArea;
     
     disp(k)
-%     imRes = uint8(cat(3,maskSwift & ~maskQurva, maskSwift & maskQurva, ~maskSwift & maskQurva) * 255);
-%     imshow(imoverlay(imRes,imdilate(bwperim(fullMask),strel('disk',5)),'m'))
+    imRes = uint8(cat(3,maskSwift & ~maskQurva, maskSwift & maskQurva, ~maskSwift & maskQurva) * 255);
+    imshow(imoverlay(imRes,imdilate(bwperim(fullMask),strel('disk',5)),'m'))
     
 end
 

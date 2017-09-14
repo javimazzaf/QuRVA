@@ -11,4 +11,4 @@ res = [swiftVars.res;our20Vars.res];
 
 model = fitcdiscr(data,res,'DiscrimType','quadratic','Cost',tufts.classCost,'Prior','empirical');
 
-save(fullfile('../', 'modelAll.mat'),'model','-v7.3')
+save(fullfile('../', 'modelAllCFN20CFP.mat'),'model','-v7.3')
