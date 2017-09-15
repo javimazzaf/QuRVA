@@ -26,6 +26,7 @@ for it = 1:numel(myFiles)
 
     load(fullfile(masterFolder, 'Masks',    myFiles{it}), 'thisMask');
     load(fullfile(masterFolder, 'ONCenter', myFiles{it}), 'thisONCenter');
+    load(fullfile(masterFolder, 'VasculatureNumbers', myFiles{it}),'smoothVessels');
     
     [maskStats, maskNoCenter] = processMask(thisMask, oImage, thisONCenter);
     
@@ -55,7 +56,7 @@ for it = 1:numel(myFiles)
     % Blocks NOT included in consensus
     falseBlocks = getBlocksInMask(indBlocks, validMask & ~consensusMask, tufts.blocksInMaskPercentage, offSet);
 
-    blockFeatures = computeBlockFeatures(oImage,maskNoCenter, thisMask, indBlocks,trueBlocks,falseBlocks, offSet, thisONCenter);
+    blockFeatures = computeBlockFeatures(oImage,maskNoCenter, thisMask, indBlocks,trueBlocks,falseBlocks, offSet, thisONCenter, smoothVessels);
 
     data = [data;blockFeatures];
     res  = [res;ones([size(trueBlocks,1),1]);zeros([size(falseBlocks,1),1])];
