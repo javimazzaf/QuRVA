@@ -28,6 +28,11 @@ for it = 1:numel(myFiles)
     load(fullfile(masterFolder, 'ONCenter', myFiles{it}), 'thisONCenter');
     load(fullfile(masterFolder, 'VasculatureNumbers', myFiles{it}),'smoothVessels');
     
+    [thisMask, scaleFactor] = resetScale(thisMask);
+    smoothVessels     = resetScale(smoothVessels);
+    oImage     = resetScale(oImage);
+    thisONCenter = thisONCenter/scaleFactor;
+    
     [maskStats, maskNoCenter] = processMask(thisMask, oImage, thisONCenter);
     
     validMask = maskNoCenter & thisMask;
@@ -43,6 +48,8 @@ for it = 1:numel(myFiles)
     else
        consensusMask = sum(allMasks, 3) >= 1; % if 1 or 2 evalautors, one vote is enough. 
     end
+    
+    consensusMask     = resetScale(consensusMask);
     
     retinaDiam(it) = computeRetinaSize(thisMask, thisONCenter);
     
