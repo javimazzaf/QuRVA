@@ -73,7 +73,7 @@ end
 
 versionInfo.dayTag = datestr(now,'yyyymmdd_HH_MM');
 
-save(fullfile(masterFolder, 'trainingSet20ours.mat'),'data','res','blockSize','retinaDiam','versionInfo')
+save(fullfile(masterFolder, 'trainingSetSwift.mat'),'data','res','blockSize','retinaDiam','versionInfo')
 
 
 
