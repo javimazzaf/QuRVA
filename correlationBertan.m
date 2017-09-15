@@ -1,17 +1,22 @@
 function correlationBertan
 
-baseQuRVA = '/Volumes/EyeFolder/Dropbox (Biophotonics)/Deep_learning_Images/OIR/raw/TuftNumbers/';
-dirsQuRVA = dir(fullfile(baseQuRVA,'*original.tif.mat'));
-%10_A_original.tif.mat
+imPath = '/Volumes/EyeFolder/Dropbox (Biophotonics)/Deep_learning_Images/OIR/raw/';
+
+allFiles = dir(fullfile(imPath,'Masks','*.mat'));
+allFiles = {allFiles(:).name};
+
+% If the first 50 images where used for training, just use images from 51
+% and on
+allFiles = allFiles(51:end);
+
+idQuRVA = regexp(allFiles,'([0-9]+_[a-zA-Z]+)(?=_original\.tif\.mat)','match');
 
 baseSwift = '/Volumes/EyeFolder/Dropbox (Biophotonics)/Deep_learning_Images/OIR/swift/';
-
-idQuRVA = regexp({dirsQuRVA(:).name},'([0-9]+_[a-zA-Z]+)(?=_original\.tif\.mat)','match');
 
 area = NaN(numel(idQuRVA),2);
 
 for k = 1:numel(idQuRVA)
-    fileQurva = fullfile(baseQuRVA,[idQuRVA{k}{:} '_original.tif.mat']);
+    fileQurva = fullfile(imPath,'TuftNumbers/',[idQuRVA{k}{:} '_original.tif.mat']);
     fileSwift = fullfile(baseSwift,[idQuRVA{k}{:} '_manual.jpg']);
     
     if ~exist(fileQurva,'file') || ~exist(fileSwift,'file') || ~exist(fullfile('/Volumes/EyeFolder/Dropbox (Biophotonics)/Deep_learning_Images/OIR/raw/Masks/',[idQuRVA{k}{:} '_original.tif.mat']),'file')  
@@ -53,8 +58,9 @@ for k = 1:numel(idQuRVA)
     area(k,2) = sum(maskSwift(:) .* validMask(:)) / totalArea;
     
     disp(k)
+    
     imRes = uint8(cat(3,maskSwift & ~maskQurva, maskSwift & maskQurva, ~maskSwift & maskQurva) * 255);
-    imshow(imoverlay(imRes,imdilate(bwperim(fullMask),strel('disk',5)),'m'))
+    imRes = imoverlay(imRes,imdilate(bwperim(validMask),strel('disk',5)),'m');
     
 end
 
