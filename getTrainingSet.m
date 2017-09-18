@@ -26,12 +26,6 @@ for it = 1:numel(myFiles)
 
     load(fullfile(masterFolder, 'Masks',    myFiles{it}), 'thisMask');
     load(fullfile(masterFolder, 'ONCenter', myFiles{it}), 'thisONCenter');
-    load(fullfile(masterFolder, 'VasculatureNumbers', myFiles{it}),'smoothVessels');
-    
-    [thisMask, scaleFactor] = resetScale(thisMask);
-    smoothVessels     = resetScale(smoothVessels);
-    oImage     = resetScale(oImage);
-    thisONCenter = thisONCenter/scaleFactor;
     
     [maskStats, maskNoCenter] = processMask(thisMask, oImage, thisONCenter);
     
@@ -49,8 +43,6 @@ for it = 1:numel(myFiles)
        consensusMask = sum(allMasks, 3) >= 1; % if 1 or 2 evalautors, one vote is enough. 
     end
     
-    consensusMask     = resetScale(consensusMask);
-    
     retinaDiam(it) = computeRetinaSize(thisMask, thisONCenter);
     
     blockSize(it,:) = ceil(retinaDiam(it) * tufts.blockSizeFraction) * [1 1];
@@ -63,7 +55,7 @@ for it = 1:numel(myFiles)
     % Blocks NOT included in consensus
     falseBlocks = getBlocksInMask(indBlocks, validMask & ~consensusMask, tufts.blocksInMaskPercentage, offSet);
 
-    blockFeatures = computeBlockFeatures(oImage,maskNoCenter, thisMask, indBlocks,trueBlocks,falseBlocks, offSet, thisONCenter, smoothVessels);
+    blockFeatures = computeBlockFeatures(oImage,maskNoCenter, thisMask, indBlocks,trueBlocks,falseBlocks, offSet, thisONCenter);
 
     data = [data;blockFeatures];
     res  = [res;ones([size(trueBlocks,1),1]);zeros([size(falseBlocks,1),1])];
@@ -73,7 +65,7 @@ end
 
 versionInfo.dayTag = datestr(now,'yyyymmdd_HH_MM');
 
-save(fullfile(masterFolder, 'trainingSetSwift.mat'),'data','res','blockSize','retinaDiam','versionInfo')
+save(fullfile(masterFolder, 'trainingSet.mat'),'data','res','blockSize','retinaDiam','versionInfo')
 
 
 
