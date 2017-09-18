@@ -14,6 +14,7 @@ y = predict(model, blockFeatures);
 
 goodBlocks = candidateBlocks(y > 0.5,:);
 
+
 tuftsMask = blocksToMask(size(redImage), indBlocks, goodBlocks, [0 0]);
 
 tuftsMask = bwareaopen(tuftsMask,prod(blockSize) + 1);
