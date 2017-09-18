@@ -61,7 +61,7 @@ try
             if doVasculature
                 
                 disp('  Computing vasculature . . .')
-                [vesselSkelMask, brchPts, ~, endPts] = getVacularNetwork(thisMask, redImage);
+                [vesselSkelMask, brchPts, smoothVessels, endPts] = getVacularNetwork(thisMask, redImage);
                 aVascZone = getAvacularZone(thisMask, vesselSkelMask, retinaDiam, thisONCenter);
                 
                 %% Make a nice image
@@ -78,7 +78,7 @@ try
                 end % doSaveImages
                 
                 save(fullfile(masterFolder, 'VasculatureNumbers', [myFiles{it},'.mat']),...
-                    'vesselSkelMask', 'brchPts', 'aVascZone', 'endPts');
+                    'vesselSkelMask', 'brchPts', 'aVascZone', 'endPts','smoothVessels');
                 
                 disp('  Vasculature done.')
                 
@@ -89,7 +89,7 @@ try
                 
                 disp('  Computing tufts . . .')
                 
-                tuftsMask = getTufts(redImage, maskNoCenter, thisMask, thisONCenter, retinaDiam, model);
+                tuftsMask = getTufts(redImage, maskNoCenter, thisMask, thisONCenter, retinaDiam, model, smoothVessels);
                 
                 %% Save Tuft Images
                 if doSaveImages
