@@ -1,4 +1,4 @@
-function blockFeatures = computeBlockFeatures(inIm, maskNoCenter, thisMask, blocksInd,trueBlocks,falseBlocks, offSet, center)
+function blockFeatures = computeBlockFeatures(inIm, maskNoCenter, thisMask, blocksInd,trueBlocks,falseBlocks, offSet, center, smoothVessels)
 
 readConfig
 
@@ -42,6 +42,9 @@ tolRng = range(smoothedIm(logical(maskNoCenter))) * tufts.lbpTolPercentage / 100
 R = 1;
 P = 8;
 blockFeatures = [blockFeatures,computeLBP_M_FeaturesOnBlocks(smoothedIm,R,P,blocksInd,[trueBlocks;falseBlocks],offSet,tolRng)];
+
+% Number of vessel pixels
+blockFeatures = [blockFeatures,computeAvgWithinBlocks(double(smoothVessels),blocksInd,[trueBlocks;falseBlocks], offSet)];
 
 end
 

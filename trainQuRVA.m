@@ -26,14 +26,23 @@ for it = 1:numel(imFiles)
     
     load(fullfile(imPath, 'Masks', [imFiles{it} '.mat']), 'thisMask');
     load(fullfile(imPath, 'ONCenter', [imFiles{it} '.mat']), 'thisONCenter');
+    load(fullfile(imPath, 'VasculatureNumbers', [imFiles{it} '.mat']),'smoothVessels');
     
     %Adjust sizes
-    nRows = min([size(trainingMask,1),size(oImage,1), size(thisMask,1)]); 
-    nCols = min([size(trainingMask,2),size(oImage,2), size(thisMask,2)]); 
+    [thisMask, scaleFactor] = resetScale(thisMask);
+    trainingMask = resetScale(trainingMask);
+    oImage       = resetScale(oImage);
+    smoothVessels= resetScale(smoothVessels);  
     
-    trainingMask = resetScale(trainingMask(1:nRows,1:nCols));
-    oImage       = resetScale(oImage(      1:nRows,1:nCols));
-    thisMask     = resetScale(thisMask(    1:nRows,1:nCols));
+    thisONCenter = thisONCenter/scaleFactor;
+    
+    nRows = min([size(trainingMask,1),size(oImage,1), size(thisMask,1), size(smoothVessels,1)]); 
+    nCols = min([size(trainingMask,2),size(oImage,2), size(thisMask,2), size(smoothVessels,2)]); 
+    
+    trainingMask = trainingMask(1:nRows,1:nCols);
+    oImage       = oImage(      1:nRows,1:nCols);
+    thisMask     = thisMask(    1:nRows,1:nCols);
+    smoothVessels= smoothVessels(1:nRows,1:nCols);
     
     [~, maskNoCenter] = processMask(thisMask, oImage, thisONCenter);
     
@@ -51,7 +60,7 @@ for it = 1:numel(imFiles)
     % Blocks NOT included in consensus
     falseBlocks = getBlocksInMask(indBlocks, validMask & ~trainingMask, tufts.blocksInMaskPercentage, offSet);
 
-    blockFeatures = computeBlockFeatures(oImage,maskNoCenter, thisMask, indBlocks,trueBlocks,falseBlocks, offSet, thisONCenter);
+    blockFeatures = computeBlockFeatures(oImage,maskNoCenter, thisMask, indBlocks,trueBlocks,falseBlocks, offSet, thisONCenter, smoothVessels);
 
     data = [data;blockFeatures];
     res  = [res;ones([size(trueBlocks,1),1]);zeros([size(falseBlocks,1),1])];
