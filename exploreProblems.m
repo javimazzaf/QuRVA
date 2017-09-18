@@ -5,8 +5,8 @@ includePath = '/Users/javimazzaf/Documents/work/matlabCode/imageVisualizationToo
 addpath(includePath);
 cleanObject = onCleanup(@() rmpath(includePath));
 
-imPath = '/Users/javimazzaf/Dropbox (Biophotonics)/Francois/310117TOTM/';
-imName = 'T.M. 0.01 1.tif';
+imPath = '/Volumes/EyeFolder/Dropbox (Biophotonics)/Deep_learning_Images/OIR/raw/';
+imName = '10_C_original.tif';
 
 oriIm = imread(fullfile(imPath,imName));
 [oriIm, ~] = resetScale(oriIm(:,:,1));
