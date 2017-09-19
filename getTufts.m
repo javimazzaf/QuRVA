@@ -16,6 +16,8 @@ goodBlocks = candidateBlocks(y > 0.5,:);
 
 percVessels = computeAvgWithinBlocks(smoothVessels,indBlocks,goodBlocks, [0 0]);
 
+goodBlocks = goodBlocks(percVessels > 0.5,:);
+
 tuftsMask = blocksToMask(size(redImage), indBlocks, goodBlocks, [0 0]);
 
 tuftsMask = bwareaopen(tuftsMask,prod(blockSize) + 1);
