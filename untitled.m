@@ -1,39 +1,59 @@
-% [x, y] = meshgrid(1:256,1:256);
-% 
-% sigma = 4;
-% 
-% 
-% 
-% h = fspecial('log',(2*ceil(2*sz)+1) * [1 1], sigma);
-% 
-% for sz = 1:30
-%     
-%     im = exp( - (x - 128).^2 / 2 / sz^2);
-%     
-%     imshow(imregionalmax(im),[]);
-%     
-% %     h = h / max(h(:));
-%     
-%     imFilt = filter2(h,im);
-% 
-%     plot(im(128,:)), hold on
-% %     plot((1:size(h,2)) - (size(h,2)-1) / 2 + 127, h((size(h,2)-1) / 2 + 1,:))
-%     plot(imFilt(128,:)), hold off
-%     
-%     mx(sz) = max(imFilt(128,:));
-% 
+% function exploreProblems
+
+% Include path for visualization function
+includePath = '/Users/javimazzaf/Documents/work/matlabCode/imageVisualizationTools/';
+addpath(includePath);
+cleanObject = onCleanup(@() rmpath(includePath));
+
+imPath = '../Anonymous/';
+imName = 'Image002.jpg';
+
+% imPath = '/Users/javimazzaf/Dropbox (Biophotonics)/Francois/310117TOTM/';
+% imName = 'T.M. 0.01 2.tif';
+
+
+% imPath = '/Volumes/EyeFolder/Dropbox (Biophotonics)/Deep_learning_Images/OIR/raw/';
+% imName = '1_B_original.tif';
+
+
+oriIm = imread(fullfile(imPath,imName));
+
+oriIm = oriIm(:,:,1);
+
+oriIm  = double(resetScale(oriIm));
+
+% oriIm = imadjust(mat2gray(oriIm));
+oriIm = mat2gray(oriIm);
+
+load(fullfile(imPath,'Masks',[imName '.mat']),'thisMask')
+thisMask  = resetScale(thisMask);
+
+% resIm = cat(3, uint8(tuftsMask) .* oriIm,oriIm, oriIm);
+
+hdisk = fspecial('disk',2) > 0;
+
+mn = filter2(hdisk,oriIm) / sum(hdisk(:)) .* thisMask;
+mn2 = filter2(hdisk,oriIm.^2) / sum(hdisk(:)) .* thisMask;
+
+sd = sqrt(mn2 - mn.^2) .* thisMask;
+
+contrast = sd ./ mn;
+
+hBig = fspecial('disk',10) > 0;
+mnBig = filter2(hBig,oriIm) / sum(hBig(:)) .* thisMask;
+
+
+msk = (contrast < 0.1) & (mnBig > 0.5);
+
+nearObj = bwdist(msk);
+
+mask2 = (contrast < 0.2) & (mnBig > 0.4) & (nearObj < 20);
+
+msk = msk | mask2;
+
+rgb = cat(3, uint8(~msk) .* uint8(oriIm * 255),uint8(oriIm * 255), uint8(oriIm * 255));
+% imshow(imoverlay(oriIm,msk,'m'))
+
+visualizeMultiImages(rgb,{sd;mnBig;contrast;msk},100);
+    
 % end
-% 
-% plot(mx)
-% 
-% % imshow(im,[])
-% 
-
-im = imread('/Users/javimazzaf/Documents/work/proyectos/flatMounts/Anonymous/Image002.jpg');
-im = im(:,:,1);
-% msk = imregionalmax(im);
-% msk = imextendedmax(im,100);
-
-
-
-imshow(imoverlay(im,bwareaopen(msk,3),'m'),[])
