@@ -89,7 +89,7 @@ try
                 
                 disp('  Computing tufts . . .')
                 
-                tuftsMask = getTufts(redImage, maskNoCenter, thisMask, thisONCenter, retinaDiam, model, smoothVessels);
+                tuftsMask = getTufts(redImage, maskNoCenter, thisMask, thisONCenter, retinaDiam, model);
                 
                 %% Save Tuft Images
                 if doSaveImages

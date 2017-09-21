@@ -1,4 +1,4 @@
-function tuftsMask = getTufts(redImage, maskNoCenter, thisMask, thisONCenter, retinaDiam, model, smoothVessels)
+function tuftsMask = getTufts(redImage, maskNoCenter, thisMask, thisONCenter, retinaDiam, model)
 
 readConfig
 
@@ -13,10 +13,6 @@ blockFeatures = computeBlockFeatures(redImage, maskNoCenter, thisMask, indBlocks
 y = predict(model, blockFeatures);
 
 goodBlocks = candidateBlocks(y > 0.5,:);
-
-percVessels = computeAvgWithinBlocks(smoothVessels,indBlocks,goodBlocks, [0 0]);
-
-goodBlocks = goodBlocks(percVessels > 0.5,:);
 
 tuftsMask = blocksToMask(size(redImage), indBlocks, goodBlocks, [0 0]);
 
