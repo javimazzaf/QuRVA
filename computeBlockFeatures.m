@@ -45,7 +45,7 @@ blockFeatures = [blockFeatures,computeLBP_M_FeaturesOnBlocks(smoothedIm,R,P,bloc
 
 % Pixels above local background
 [bgMean,bgStd] = getRobustLocalBackground(globallyNormIm, thisMask);
-countAbovePixels = filter2(ones(50),double(globallyNormIm > (bgMean + 3*bgStd)),'same');
+countAbovePixels = filter2(ones(50),double(globallyNormIm > (bgMean + 3*bgStd)),'same') / 50^2;
 
 blockFeatures = [blockFeatures,computeAvgWithinBlocks(countAbovePixels,blocksInd,[trueBlocks;falseBlocks], offSet)];
 
