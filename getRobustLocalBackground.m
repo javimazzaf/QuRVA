@@ -8,7 +8,7 @@ rawImage = imresize(rawImage,scl);
 thisMask = imresize(thisMask,size(rawImage));
 
 % Prepare raw data
-rawImage = rawImage.*uint8(thisMask);
+rawImage = rawImage .* thisMask;
 rawImageNorm = mat2gray(double(rawImage));
 
 %% Computes typical brightness of healthy vasculature locally
