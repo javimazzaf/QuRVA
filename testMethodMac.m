@@ -7,7 +7,8 @@ maskFiles = {maskFiles(:).name};
 
 allFiles = cellfun(@(x) x(1:end-4),maskFiles,'UniformOutput',false);
 
-processFolder(imPath,allFiles(21:2:end)); 
+processFolder(imPath,allFiles(1:20));
+% processFolder(imPath,allFiles(21:2:end)); 
 
 % rawImage = imread(fullfile(imPath,allFiles{4}));
 % load(fullfile(imPath,'Masks',maskFiles{4}));

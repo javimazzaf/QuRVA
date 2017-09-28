@@ -51,8 +51,8 @@ for k = 1:numel(stats)
     bckgStd(stats(k).PixelIdxList) = stdBck;
 end
 
-bckgAve = imresize(bckgAve,oSize);
-bckgStd = imresize(bckgStd,oSize);
+bckgAve = real(imresize(bckgAve,oSize));
+bckgStd = real(imresize(bckgStd,oSize));
 
 
 
