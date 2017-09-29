@@ -6,10 +6,10 @@ tufts.blocksInMaskPercentage = 25;
 
 load('model.mat','model')
 
-imPath = '../Anonymous/';
-% imPath = '/Users/javimazzaf/Dropbox (Biophotonics)/Francois/310117TOTM/';
+% imPath = '../Anonymous/';
+imPath = '/Users/javimazzaf/Dropbox (Biophotonics)/Francois/310117TOTM/';
 
-imN = 2;
+imN = 1;
 
 maskFiles = dir(fullfile(imPath,'Masks','*.mat'));
 maskFiles = {maskFiles(:).name};
