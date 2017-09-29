@@ -146,8 +146,8 @@ sd(thisMask(:)) = fS(r,c);
 
 % count = rawImageNorm > (ave + 3 * sd);
 
-bckgAve = ave .* thisMask;
-bckgStd = sd .* thisMask;
+bckgAve = real(imresize(ave .* thisMask,oSize));
+bckgStd = real(imresize(sd .* thisMask,oSize));
 
 %%
 
