@@ -6,10 +6,10 @@ tufts.blocksInMaskPercentage = 25;
 
 load('model.mat','model')
 
-% imPath = '../Anonymous/';
-imPath = '/Users/javimazzaf/Dropbox (Biophotonics)/Francois/310117TOTM/';
+imPath = '../Anonymous/';
+% imPath = '/Users/javimazzaf/Dropbox (Biophotonics)/Francois/310117TOTM/';
 
-imN = 1;
+imN = 35;
 
 maskFiles = dir(fullfile(imPath,'Masks','*.mat'));
 maskFiles = {maskFiles(:).name};
@@ -75,6 +75,8 @@ imRGB = cat(3, uint8(tuftsMask) .* adjustedImage,adjustedImage, adjustedImage);
 [bckgAve, bckgStd] = getRobustLocalBackground(double(redImage), thisMask);
 normIm = mat2gray(redImage);
 
+countAbovePixels = filter2(ones(30),double(normIm > (bckgAve + 3*bckgStd)),'same') / 30^2;
+
 figure(1); imshow(imRGB,[])
 
 dc = datacursormode(1);
@@ -100,14 +102,12 @@ feat = blockFeatures(ix,:);
 int  = normIm(cp(2),cp(1));
 bgMn = bckgAve(cp(2),cp(1));
 bgSd = bckgStd(cp(2),cp(1));
+pixAb = countAbovePixels(cp(2),cp(1));
 
-
-
-disp(' Local  | global  |   LOG   |  LBP0   |   LBP9  |  PIX    |  Int    |  bgMn   |  bgSd   |')
+disp(' Local  | global  |   LOG   |  PIX    |  Int    |  bgMn   |  bgSd   |')
 f = '%1.5f';
 disp([num2str(feat(1),f) ' | ' num2str(feat(2),f) ' | '...
-      num2str(feat(3),f) ' | ' num2str(feat(4),f) ' | '...
-      num2str(feat(5),f) ' | ' num2str(feat(6),f) ' | '...
+      num2str(feat(3),f) ' | ' num2str(pixAb,f)   ' | '...
       num2str(int,f)     ' | ' num2str(bgMn,f)    ' | '...
       num2str(bgSd,f)    ' | '])
 figure(1);

@@ -20,7 +20,7 @@ if ~exist(modelDir,'dir')
     mkdir(modelDir);
 end
 
-train = true;
+train = false;
 
 if train
    trainQuRVA(imPath,trainPath,allFiles(1:50),fullfile(modelDir,'trainingSet.mat'),fullfile(modelDir,'model.mat'))
