@@ -15,9 +15,6 @@ y = predict(model, blockFeatures);
 % goodBlocks = candidateBlocks((y > 0.5) & (blockFeatures(:,6) > 0.5),:);
 goodBlocks = candidateBlocks(y > 0.5,:);
 
-% [bgMean,bgStd] = getRobustLocalBackground(globallyNormIm, mask);
-% countAbovePixels = filter2(ones(50),double(globallyNormIm > (bgMean + 3*bgStd)),'same') / 50^2;
-
 % hdisk = fspecial('disk',5) > 0;
 % mn = filter2(hdisk,mat2gray(redImage)) / sum(hdisk(:)) .* thisMask;
 % mn2 = filter2(hdisk,mat2gray(redImage).^2) / sum(hdisk(:)) .* thisMask;
@@ -28,6 +25,14 @@ goodBlocks = candidateBlocks(y > 0.5,:);
 tuftsMask = blocksToMask(size(redImage), indBlocks, goodBlocks, [0 0]);
 
 tuftsMask = bwareaopen(tuftsMask,prod(blockSize) + 1);
+
+%% QC
+[bckgAve, bckgStd] = getRobustLocalBackground(double(redImage), thisMask);
+normIm = mat2gray(redImage);
+
+countAbovePixels = filter2(ones(30),double(normIm > (bckgAve + 3*bckgStd)),'same') / 30^2;
+
+tuftsMask = tuftsMask & (countAbovePixels >= 0.8);
 
 end
 

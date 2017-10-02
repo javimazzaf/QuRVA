@@ -9,7 +9,7 @@ load('model.mat','model')
 imPath = '../Anonymous/';
 % imPath = '/Users/javimazzaf/Dropbox (Biophotonics)/Francois/310117TOTM/';
 
-imN = 35;
+imN = 37;
 
 maskFiles = dir(fullfile(imPath,'Masks','*.mat'));
 maskFiles = {maskFiles(:).name};
@@ -70,12 +70,13 @@ highSatLevel = 0.99 - sum(redImage(:) == max(redImage(:))) / numel(redImage);
 
 adjustedImage = imadjust(redImage,stretchlim(redImage,[lowSatLevel highSatLevel]));
 
-imRGB = cat(3, uint8(tuftsMask) .* adjustedImage,adjustedImage, adjustedImage);
-
 [bckgAve, bckgStd] = getRobustLocalBackground(double(redImage), thisMask);
 normIm = mat2gray(redImage);
 
 countAbovePixels = filter2(ones(30),double(normIm > (bckgAve + 3*bckgStd)),'same') / 30^2;
+
+tuftsMask = tuftsMask & (countAbovePixels >= 0.8);
+imRGB = cat(3, uint8(tuftsMask) .* adjustedImage,adjustedImage, adjustedImage);
 
 figure(1); imshow(imRGB,[])
 
