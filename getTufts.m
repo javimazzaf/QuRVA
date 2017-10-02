@@ -15,8 +15,8 @@ y = predict(model, blockFeatures);
 % goodBlocks = candidateBlocks((y > 0.5) & (blockFeatures(:,6) > 0.5),:);
 goodBlocks = candidateBlocks(y > 0.5,:);
 
-% [bgMean,bgStd] = getRobustLocalBackground(mat2gray(redImage), thisMask);
-% countAbovePixels = filter2(ones(50),double(mat2gray(redImage) > (bgMean + 3*bgStd)),'same') / 50^2;
+% [bgMean,bgStd] = getRobustLocalBackground(globallyNormIm, mask);
+% countAbovePixels = filter2(ones(50),double(globallyNormIm > (bgMean + 3*bgStd)),'same') / 50^2;
 
 % hdisk = fspecial('disk',5) > 0;
 % mn = filter2(hdisk,mat2gray(redImage)) / sum(hdisk(:)) .* thisMask;
