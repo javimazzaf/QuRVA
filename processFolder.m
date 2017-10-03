@@ -94,7 +94,7 @@ try
                 %% Save Tuft Images
                 if doSaveImages
       
-                    adjustedImage = overSaturate(redImage);
+                    adjustedImage = double(overSaturate(redImage));
                     
                     quadNW = imcrop(cat(3, uint8(tuftsMask) .* adjustedImage,adjustedImage, adjustedImage), maskStats.BoundingBox/scaleFactor);
                     quadNE = imcrop(cat(3, adjustedImage, adjustedImage, adjustedImage), maskStats.BoundingBox/scaleFactor);
