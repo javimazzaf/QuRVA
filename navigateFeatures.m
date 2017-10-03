@@ -8,8 +8,10 @@ load('model.mat','model')
 
 imPath = '../Anonymous/';
 % imPath = '/Users/javimazzaf/Dropbox (Biophotonics)/Francois/310117TOTM/';
+% imPath = '/Volumes/EyeFolder/Dropbox (Biophotonics)/Deep_learning_Images/OIR/raw/';
 
-imN = 37;
+
+imN = 3;
 
 maskFiles = dir(fullfile(imPath,'Masks','*.mat'));
 maskFiles = {maskFiles(:).name};
@@ -70,49 +72,56 @@ highSatLevel = 0.99 - sum(redImage(:) == max(redImage(:))) / numel(redImage);
 
 adjustedImage = imadjust(redImage,stretchlim(redImage,[lowSatLevel highSatLevel]));
 
-[bckgAve, bckgStd] = getRobustLocalBackground(double(redImage), thisMask);
-normIm = mat2gray(redImage);
+normIm = overSaturate(redImage);
 
-countAbovePixels = filter2(ones(30),double(normIm > (bckgAve + 3*bckgStd)),'same') / 30^2;
+[bckgAve, bckgStd] = getRobustLocalBackground(normIm, thisMask);
+
+normIm = mat2gray(normIm);
+
+mskAbove = double(normIm > (bckgAve + 3*bckgStd));
+
+countAbovePixels = filter2(ones(30),mskAbove,'same') / 30^2;
 
 tuftsMask = tuftsMask & (countAbovePixels >= 0.8);
 imRGB = cat(3, uint8(tuftsMask) .* adjustedImage,adjustedImage, adjustedImage);
 
-figure(1); imshow(imRGB,[])
+visualizeMultiImages(imRGB,{normIm;bckgAve;mskAbove;countAbovePixels},100);
 
-dc = datacursormode(1);
-
-set(dc,'UpdateFcn',@onUpdate,'DisplayStyle','datatip',...
-    'SnapToDataVertex','off','Enable','on'); 
-
-% set(0,'DefaultFigureWindowStyle','normal')
+% figure(1); imshow(imRGB,[])
 % 
-function txt = onUpdate(~,event_obj)
-% Customizes text of data tips
-
-cp = get(event_obj,'Position');
-txt = {['row: ',num2str(cp(2))],...
-	   ['col: ',num2str(cp(1))]};
-   
-bRow = floor(cp(2) ./ blockSize(2)) + 1; 
-bCol = floor(cp(1) ./ blockSize(1)) + 1; 
-
-ix = find((candidateBlocks(:,1) == bRow) & (candidateBlocks(:,2) == bCol));
-feat = blockFeatures(ix,:);
-
-int  = normIm(cp(2),cp(1));
-bgMn = bckgAve(cp(2),cp(1));
-bgSd = bckgStd(cp(2),cp(1));
-pixAb = countAbovePixels(cp(2),cp(1));
-
-disp(' Local  | global  |   LOG   |  PIX    |  Int    |  bgMn   |  bgSd   |')
-f = '%1.5f';
-disp([num2str(feat(1),f) ' | ' num2str(feat(2),f) ' | '...
-      num2str(feat(3),f) ' | ' num2str(pixAb,f)   ' | '...
-      num2str(int,f)     ' | ' num2str(bgMn,f)    ' | '...
-      num2str(bgSd,f)    ' | '])
-figure(1);
-   
-end
+% dc = datacursormode(1);
+% 
+% set(dc,'UpdateFcn',@onUpdate,'DisplayStyle','datatip',...
+%     'SnapToDataVertex','off','Enable','on'); 
+% 
+% 
+% function txt = onUpdate(~,event_obj)
+% % Customizes text of data tips
+% 
+% cp = get(event_obj,'Position');
+% txt = {['row: ',num2str(cp(2))],...
+% 	   ['col: ',num2str(cp(1))]};
+%    
+% bRow = floor(cp(2) ./ blockSize(2)) + 1; 
+% bCol = floor(cp(1) ./ blockSize(1)) + 1; 
+% 
+% ix = find((candidateBlocks(:,1) == bRow) & (candidateBlocks(:,2) == bCol));
+% feat = blockFeatures(ix,:);
+% 
+% int  = normIm(cp(2),cp(1));
+% bgMn = bckgAve(cp(2),cp(1));
+% bgSd = bckgStd(cp(2),cp(1));
+% pixAb = countAbovePixels(cp(2),cp(1));
+% 
+% disp(' Local  | global  |   LOG   |  PIX    |  Int    |  bgMn   |  bgSd   |')
+% f = '%1.5f';
+% disp([num2str(feat(1),f) ' | ' num2str(feat(2),f) ' | '...
+%       num2str(feat(3),f) ' | ' num2str(pixAb,f)   ' | '...
+%       num2str(int,f)     ' | ' num2str(bgMn,f)    ' | '...
+%       num2str(bgSd,f)    ' | '])
+%   
+% figure(1);
+%    
+% end
 
 end

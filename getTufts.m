@@ -27,12 +27,25 @@ tuftsMask = blocksToMask(size(redImage), indBlocks, goodBlocks, [0 0]);
 tuftsMask = bwareaopen(tuftsMask,prod(blockSize) + 1);
 
 %% QC
-[bckgAve, bckgStd] = getRobustLocalBackground(double(redImage), thisMask);
-normIm = mat2gray(redImage);
+normIm = overSaturate(redImage);
 
-countAbovePixels = filter2(ones(30),double(normIm > (bckgAve + 3*bckgStd)),'same') / 30^2;
+[bckgAve, bckgStd] = getRobustLocalBackground(normIm, thisMask);
+
+normIm = mat2gray(normIm);
+
+mskAbove = double(normIm > (bckgAve + 3*bckgStd));
+
+countAbovePixels = filter2(ones(30),mskAbove,'same') / 30^2;
 
 tuftsMask = tuftsMask & (countAbovePixels >= 0.8);
+
+%% QC
+% [bckgAve, bckgStd] = getRobustLocalBackground(double(redImage), thisMask);
+% normIm = mat2gray(redImage);
+% 
+% countAbovePixels = filter2(ones(30),double(normIm > (bckgAve + 3*bckgStd)),'same') / 30^2;
+% 
+% tuftsMask = tuftsMask & (countAbovePixels >= 0.8);
 
 end
 

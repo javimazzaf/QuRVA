@@ -8,8 +8,8 @@ rawImage = imresize(rawImage,scl);
 thisMask = imresize(thisMask,size(rawImage));
 
 % Prepare raw data
-rawImage = rawImage .* thisMask;
-rawImageNorm = mat2gray(double(rawImage));
+rawImage(~thisMask) = 0;
+rawImageNorm = mat2gray(rawImage);
 
 % %% Testing
 % N = 10; 
@@ -123,7 +123,7 @@ bck2Sum   = filter2(ker, rawImageNorm.^2 .* weights,'same');
 bckWsum   = filter2(ker, weights,'same');
 
 bckgAve = bckSum ./ bckWsum;
-bckgStd = sqrt(bck2Sum ./ bckWsum - bckgAve.^2);
+bckgStd = real(sqrt(bck2Sum ./ bckWsum - bckgAve.^2));
 
 
 [r,c] = find(weights > 0);
