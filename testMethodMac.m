@@ -1,5 +1,6 @@
 % imPath = '../Anonymous/';
-imPath = '/Users/javimazzaf/Dropbox (Biophotonics)/Francois/310117TOTM/';
+% imPath = '/Users/javimazzaf/Dropbox (Biophotonics)/Francois/310117TOTM/';
+imPath = '/Volumes/EyeFolder/Dropbox (Biophotonics)/Deep_learning_Images/OIR/raw/';
 
 
 maskFiles = dir(fullfile(imPath,'Masks','*.mat'));
