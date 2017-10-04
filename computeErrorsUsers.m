@@ -26,8 +26,8 @@ for it=1:numel(myFiles)
     
     % Each Evaluator
     for itUsers=1:size(allMasks,3)
-        FPothers(itUsers+1,it) = sum(sum(allMasks(:,:,itUsers) > consensusMask));
-        FNothers(itUsers+1,it) = sum(sum(allMasks(:,:,itUsers) < consensusMask));
+        FPothers(itUsers,it) = sum(sum(allMasks(:,:,itUsers) > consensusMask));
+        FNothers(itUsers,it) = sum(sum(allMasks(:,:,itUsers) < consensusMask));
     end
     
     % Each Swift
@@ -35,11 +35,11 @@ for it=1:numel(myFiles)
         
         %Check if I got zeros because the user did not analyze this image
         if max(max(swiftMasks(:,:,itSwift))) == 0
-            FPothers(itUsers+1+itSwift,it) = NaN;
-            FNothers(itUsers+1+itSwift,it) = NaN;
+            FPothers(itUsers+itSwift,it) = NaN;
+            FNothers(itUsers+itSwift,it) = NaN;
         else
-            FPothers(itUsers+1+itSwift,it) = sum(sum(swiftMasks(:,:,itSwift) > consensusMask));
-            FNothers(itUsers+1+itSwift,it) = sum(sum(swiftMasks(:,:,itSwift) < consensusMask));  
+            FPothers(itUsers+itSwift,it) = sum(sum(swiftMasks(:,:,itSwift) > consensusMask));
+            FNothers(itUsers+itSwift,it) = sum(sum(swiftMasks(:,:,itSwift) < consensusMask));  
         end
         
     end
