@@ -3,6 +3,8 @@ function [nBetterFP, nBetterFN] = compareTuftAutoQDA
 % loads local parameters
 readConfig;
 
+resDir = fullfile(masterFolder, 'Global');
+
 %Ensures everything is commited before starting test.
 [versionInfo.branch, versionInfo.sha] = getGitInfo;
 
