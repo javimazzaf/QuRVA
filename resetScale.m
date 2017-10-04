@@ -9,7 +9,7 @@ newSize(ix) = 4096;
 
 layer1   = imresize(inImage(:,:,1),newSize);
 
-if size(sz) == 3
+if numel(sz) == 3
     
     outImage = zeros([size(layer1) sz(3)]);
     outImage(:,:,1) = layer1;
