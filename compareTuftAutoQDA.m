@@ -1,5 +1,9 @@
 function [nBetterFP, nBetterFN] = compareTuftAutoQDA
 
+codeDirectory = './PaperCode/';
+addpath(codeDirectory);
+toDelete = onCleanup(@() rmpath(codeDirectory));
+
 % loads local parameters
 readConfig;
 
