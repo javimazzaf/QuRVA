@@ -10,9 +10,10 @@ readConfig;
 myFiles = dir(fullfile(masterFolder, 'TuftNumbers','*.mat'));
 myFiles = {myFiles(:).name};
 
-load(fullfile(masterFolder,'comparisonOthers.mat'),'FPothers','FNothers','FPoOthers','FNoOthers')
-
-%% Load results
+aux = load(fullfile(masterFolder,'comparisonOthers.mat'),'FPothers','FNothers','versionInfo');
+FPothers = aux.FPothers;
+FNothers = aux.FNothers;
+versionInfo.Others = aux.versionInfo;
 
 nPix = [];
 nObj = [];
@@ -22,6 +23,7 @@ for it=1:numel(myFiles)
     
     load(fullfile(masterFolder, 'TuftNumbers', myFiles{it}),'tuftsMask','evaluationVersInfo','trainingSetVersInfo');
     load(fullfile(masterFolder, 'TuftConsensusMasks',myFiles{it}),'allMasks')
+    allMasks = resetScale(allMasks);
     consensusMask = sum(allMasks, 3) >= consensus.reqVotes;
 
     nPix(it) = sum(consensusMask(:) > 0);
