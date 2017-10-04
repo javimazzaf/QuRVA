@@ -19,12 +19,15 @@ offSet = [0 0];
 
 blockSize = [0 0];
 
-for it = 1:14 %numel(myFiles)
+for it = 1:numel(myFiles)
     
     disp(it)
     
     fname = myFiles{it};
     fname = fname(1:end-4);
+    
+    consensusFilePath = fullfile(masterFolder, 'TuftConsensusMasks',myFiles{it});
+    if ~exist(consensusFilePath, 'file'), continue, end
     
     oImage = imread(fullfile(masterFolder, fname));
     oImage = oImage(:,:,1);
@@ -36,7 +39,7 @@ for it = 1:14 %numel(myFiles)
     
     validMask = maskNoCenter & thisMask;
     
-    load(fullfile(masterFolder, 'TuftConsensusMasks',myFiles{it}),'allMasks');
+    load(consensusFilePath,'allMasks');
     consensusMask = sum(allMasks, 3) >= consensus.reqVotes;
 
     retinaDiam(it) = computeRetinaSize(thisMask, thisONCenter);
@@ -53,10 +56,15 @@ for it = 1:14 %numel(myFiles)
 
     blockFeatures = computeBlockFeatures(oImage,maskNoCenter, thisMask, indBlocks,trueBlocks,falseBlocks, offSet, thisONCenter);
       
-    if it <=7
+    if it <= 7
         data1 = [data1;blockFeatures];
         res1 = [res1;ones([size(trueBlocks,1),1]);zeros([size(falseBlocks,1),1])];
-    else
+    elseif it <= 14
+        data2 = [data2;blockFeatures];
+        res2 = [res2;ones([size(trueBlocks,1),1]);zeros([size(falseBlocks,1),1])];
+    else %14-20
+        data1 = [data1;blockFeatures];
+        res1 = [res1;ones([size(trueBlocks,1),1]);zeros([size(falseBlocks,1),1])];
         data2 = [data2;blockFeatures];
         res2 = [res2;ones([size(trueBlocks,1),1]);zeros([size(falseBlocks,1),1])];
     end

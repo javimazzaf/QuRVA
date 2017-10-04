@@ -1,5 +1,5 @@
 - [DONE] incorporar el metodo de machine learning en la funcion getTufts para que se calculen los tufts desde processFolder
-- Hacer que calcule automaticamente el centroide y la mascara si no existe el archivo.
+- [DONE] Hacer que calcule automaticamente el centroide y la mascara si no existe el archivo.
 - [DONE] getAvascularZone: En lugar de volver a calcular EquivDiam, hacer que use retinalDiamenter, y thisONcenter, 
                     que se calculan en processFolder y también se usan para los tufts. 
 
