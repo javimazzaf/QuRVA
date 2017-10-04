@@ -1,14 +1,28 @@
+% *************************************************************************
+% Parameters (optional): If not included it uses the default behaviour
+% varargin{1} = masterFolder (string with folder path) default: config.ini
+% varargin{2} = myFiles (particular file names in a cellarray): default: files in master folder 
+% varargin{3} = model (object containint QDA object): default model.mat in current folder
+% varargin{3} = doConsensusImages : default false
+% *************************************************************************
+
 function processFolder(varargin)
 
 try
     %% Settings and folders
     readConfig
     
-    if nargin>0
-        masterFolder=varargin{1};
-    else
-        masterFolder = uigetdir('', 'Select folder');
-    end
+    if nargin > 0, masterFolder=varargin{1};
+    else,          masterFolder = uigetdir('', 'Select folder'); end
+    
+    if nargin > 1, myFiles = varargin{2};
+    else,          myFiles = getImageList(masterFolder); end
+    
+    if nargin > 2, model = varargin{3}; 
+    else,          load('model.mat','model'); end
+    
+    if nargin > 3, doConsensusImages = varargin{4}; 
+    else,          doConsensusImages = false; end
     
     warning('Off')
     mkdir(masterFolder, 'Masks')
@@ -18,15 +32,7 @@ try
     mkdir(masterFolder, 'VasculatureNumbers')
     mkdir(masterFolder, 'ONCenter')
     mkdir(masterFolder, 'Reports')
-    warning('On')
-    
-    if nargin > 1
-        myFiles = varargin{2};
-    else
-        myFiles = getImageList(masterFolder);
-    end
-    
-    load('model.mat','model')
+    warning('On')    
     
     %% Prepare mask and Center
     computeMaskAndCenter(masterFolder, myFiles,computeMaskAndCenterAutomatically);
@@ -91,15 +97,59 @@ try
                 
                 tuftsMask = getTufts(redImage, maskNoCenter, thisMask, thisONCenter, retinaDiam, model);
                 
-                %% Save Tuft Images
+                % *** Save Tuft Images ***
                 if doSaveImages
-      
+                    
                     adjustedImage = uint8(overSaturate(redImage) * 255);
+                    cropRect      = maskStats.BoundingBox/scaleFactor;
                     
-                    quadNW = imcrop(cat(3, uint8(tuftsMask) .* adjustedImage,adjustedImage, adjustedImage), maskStats.BoundingBox/scaleFactor);
-                    quadNE = imcrop(cat(3, adjustedImage, adjustedImage, adjustedImage), maskStats.BoundingBox/scaleFactor);
+                    % Build image top quadrants
+                    quadNW = cat(3, uint8(tuftsMask) .* adjustedImage,adjustedImage, adjustedImage);
+                    quadNE = cat(3, adjustedImage, adjustedImage, adjustedImage);
                     
-                    imwrite([quadNW quadNE], fullfile(masterFolder, 'TuftImages', myFiles{it}), 'JPG')
+                    quadNW = imcrop(quadNW, cropRect);
+                    quadNE = imcrop(quadNE, cropRect);
+                    
+                    resultImage = [quadNW quadNE];
+                    
+                    % Add consensus panel
+                    if doConsensusImages 
+                        
+                        % Create Image for all voters
+                        load(fullfile(masterFolder,'TuftConsensusMasks',[myFiles{it} '.mat']),'allMasks')
+                        consensusMask = sum(allMasks, 3) >= consensus.reqVotes;
+                        
+                        votesImageRed   = 0.5 * adjustedImage;
+                        votesImageGreen = 0.5 * adjustedImage;
+                        votesImageBlue  = 0.5 * adjustedImage;
+                        
+                        myColors = prism;
+                        
+                        for ii=1:size(allMasks, 3)
+                            thisMask = resetScale(allMasks(:,:,ii));
+                            thisObserver = bwperim(thisMask);
+                            votesImageRed(  thisObserver~=0) = uint8(myColors(ii,1) * 255);
+                            votesImageGreen(thisObserver~=0) = uint8(myColors(ii,2) * 255);
+                            votesImageBlue( thisObserver~=0) = uint8(myColors(ii,3) * 255);
+                        end
+                        
+                        consensusMask = resetScale(consensusMask);
+                        
+                        % Build image bottom quadrants
+                        quadSW = imoverlay(imoverlay(imoverlay(adjustedImage, uint8(tuftsMask-consensusMask>0)*255, 'm'), uint8(tuftsMask-consensusMask<0)*255, 'y'), uint8(and(consensusMask, tuftsMask))*255, 'g');
+                        quadSE = cat(3, resetScale(votesImageRed), resetScale(votesImageGreen), resetScale(votesImageBlue));
+                        
+                        % Crop bottom quadrants
+                        quadSW = imcrop(quadSW, cropRect);
+                        quadSE = imcrop(quadSE, cropRect);
+                        
+                        resultImage = [resultImage; quadSW quadSE];
+                        
+                    end
+                    
+                    % Save image
+                    imwrite(resultImage, fullfile(masterFolder, 'TuftImages', myFiles{it}), 'JPG')
+                    
                 end
                 
                 save(fullfile(masterFolder, 'TuftNumbers', [myFiles{it} '.mat']), 'tuftsMask');

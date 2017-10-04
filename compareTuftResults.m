@@ -18,6 +18,7 @@ for it=1:numel(myFiles)
     
     load(fullfile(masterFolder, 'TuftNumbers', myFiles{it}),'tuftsMask');
     load(fullfile(masterFolder, 'TuftConsensusMasks',myFiles{it}),'consensusMask','allMasks','orMask')
+    thisMask     = resetScale(thisMask);
     
     areaVotos(it) = sum(consensusMask(:));
     
