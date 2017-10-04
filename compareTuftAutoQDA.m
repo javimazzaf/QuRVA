@@ -47,13 +47,13 @@ FN = [ FN ; FNothers];
 %% Make barplots
 fg=figure;
 makeNiceBarFigure(FP, 'FP pixels',false)
-makeFigureTight(fg)
+% makeFigureTight(fg)
 imFP = print('-RGBImage');
 imwrite(imFP,fullfile(resDir,'FP.png'),'png','Comment',['Comparison Version: ' versionInfo.branch ' | ' versionInfo.sha])
 
 fg=figure;
 makeNiceBarFigure(FN, 'FN pixels',false)
-makeFigureTight(fg)
+% makeFigureTight(fg)
 imFN = print('-RGBImage');
 imwrite(imFN,fullfile(resDir,'FN.png'),'png','Comment',['Comparison Version: ' versionInfo.branch ' | ' versionInfo.sha])
 
@@ -67,13 +67,13 @@ FNrel = FN./nPix*100;
 
 fg=figure;
 makeNiceBarFigure(FPrel, 'FP pixels [%]',false)
-makeFigureTight(fg)
+% makeFigureTight(fg)
 imFPp = print('-RGBImage');
 imwrite(imFPp,fullfile(resDir,'FPperc.png'),'png','Comment',['Comparison Version: ' versionInfo.branch ' | ' versionInfo.sha])
 
 fg=figure;
 makeNiceBarFigure(FNrel, 'FN pixels [%]',false)
-makeFigureTight(fg)
+% makeFigureTight(fg)
 imFNp = print('-RGBImage');
 imwrite(imFNp,fullfile(resDir,'FNperc.png'),'png','Comment',['Comparison Version: ' versionInfo.branch ' | ' versionInfo.sha])
 
@@ -86,14 +86,14 @@ allErrorRel = FNrel + FPrel;
 
 fg=figure;
 makeUserDistributionFigure(allErrorRel,'Error pixels [%]',true)
-makeFigureTight(fg)
+% makeFigureTight(fg)
 imRGB = print('-RGBImage');
 imwrite(imRGB,fullfile(resDir,'errorsPerMethod.png'),'png','Comment',['Comparison Version: ' versionInfo.branch ' | ' versionInfo.sha])
 
 %% Make AllErrors bar plot only users grouped by Image
 fg = figure;
 makeJustUsersFigure(allErrorRel(2:7,:),'Error [%]');
-makeFigureTight(fg)
+% makeFigureTight(fg)
 aux = allErrorRel(2:7,:);
 disp(['MeanUserError: ' num2str(mean(aux(:)))])
 disp(['MedianUserError: ' num2str(median(aux(:)))])
