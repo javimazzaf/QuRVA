@@ -13,7 +13,9 @@ idQuRVA = regexp(allFiles,'([0-9]+_[a-zA-Z]+)(?=_original\.tif\.mat)','match');
 
 baseSwift = '/Volumes/EyeFolder/Dropbox (Biophotonics)/Deep_learning_Images/OIR/swift/';
 
-area = NaN(numel(idQuRVA),2);
+% Columns: 1(QuRVA), 2(Swift), 3(Intersection), 4(Union), 5(Just QuRVA),
+% 6(Just Swift), 7(dilated QuRVA)
+area = NaN(numel(idQuRVA),7);
 
 for k = 1:numel(idQuRVA)
     fileQurva = fullfile(imPath,'TuftNumbers/',[idQuRVA{k}{:} '_original.tif.mat']);
@@ -54,23 +56,51 @@ for k = 1:numel(idQuRVA)
     
     totalArea = sum(validMask(:));
     
-    area(k,1) = sum(maskQurva(:) .* validMask(:)) / totalArea;
-    area(k,2) = sum(maskSwift(:) .* validMask(:)) / totalArea;
-    
+    area(k,1) = sum(maskQurva(validMask(:))) / totalArea;
+    area(k,2) = sum(maskSwift(validMask(:))) / totalArea;
+    area(k,3) = sum(maskQurva(validMask(:))  & maskSwift(validMask(:))) / totalArea;
+    area(k,4) = sum(maskQurva(validMask(:))  | maskSwift(validMask(:))) / totalArea;
+    area(k,5) = sum(maskQurva(validMask(:))  & ~maskSwift(validMask(:))) / totalArea;
+    area(k,6) = sum(~maskQurva(validMask(:)) & maskSwift(validMask(:))) / totalArea;    
     disp(k)
     
-    imRes = uint8(cat(3,maskSwift & ~maskQurva, maskSwift & maskQurva, ~maskSwift & maskQurva) * 255);
-    imRes = imoverlay(imRes,imdilate(bwperim(validMask),strel('disk',5)),'m');
+    dilatedMask = imdilate(maskQurva,strel('disk',10));
+    area(k,7) = sum(dilatedMask(validMask(:))) / totalArea;
+    
+    
+%     imRes = uint8(cat(3,maskSwift & ~maskQurva, maskSwift & maskQurva, ~maskSwift & maskQurva) * 255);
+%     imRes = imoverlay(imRes,imdilate(bwperim(validMask),strel('disk',5)),'m');
+%     
+%     imwrite(imRes,fullfile(imPath,'../correlations/',[idQuRVA{k}{:} '.png']),'png');
     
 end
 
-area(isnan(area(:,1)) | isnan(area(:,2)),:) = [];
+area(isnan(area(:,1)) | isnan(area(:,2)) | isnan(area(:,3)) | isnan(area(:,4)),:) = [];
 
 save('../compareSwiftQurva_Bertan.mat', 'area')
 
 %% Plot
 load('../compareSwiftQurva_Bertan.mat', 'area')
 
-plot(area(:,1),area(:,2),'.k')
+% [R,P] = corrcoef(area(:,1),area(:,2))
 
-[R,P] = corrcoef(area(:,1),area(:,2))
+% plot(area(:,1),area(:,2),'.k')
+% xlabel('Area QuRVA [%]')
+% ylabel('Area Swift [%]')
+% % title()
+
+figure;
+areaSim = area(:,1) + area(:,1) .* randn(size(area(:,1))) * 0.7;
+plot(area(:,1),areaSim,'.k')
+[R,P] = corrcoef(area(:,1),areaSim)
+
+% figure;
+% plot(area(:,1),area(:,7),'.k')
+% xlabel('Area QuRVA [%]')
+% ylabel('Area QuRVA dilated [%]')
+% [R2,P2] = corrcoef(area(:,1),area(:,7))
+% title(['R=' num2str(R2(1,2)) '(p=' num2str(P2(1,2)) ')'])
+
+
+
+% figure; bar(area');
