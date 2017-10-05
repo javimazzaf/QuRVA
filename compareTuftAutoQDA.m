@@ -41,10 +41,10 @@ for it=1:numel(myFiles)
     validMask = maskNoCenter & thisMask;
 
     %**** ERROR : Calcular los pixeles del consenso, solo en thisMask !!!
-    nPix(it) = sum(consensusMask(:) > 0);
+    nPix(it) = sum(consensusMask(validMask(:)) > 0);
 
-    FP(it) = sum(tuftsMask(thisMask(:)) > consensusMask(thisMask(:)));
-    FN(it) = sum(tuftsMask(thisMask(:)) < consensusMask(thisMask(:)));
+    FP(it) = sum(tuftsMask(validMask(:)) > consensusMask(validMask(:)));
+    FN(it) = sum(tuftsMask(validMask(:)) < consensusMask(validMask(:)));
     
 end
 
