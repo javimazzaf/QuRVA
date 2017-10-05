@@ -40,6 +40,7 @@ for it=1:numel(myFiles)
     
     validMask = maskNoCenter & thisMask;
 
+    %**** ERROR : Calcular los pixeles del consenso, solo en thisMask !!!
     nPix(it) = sum(consensusMask(:) > 0);
 
     FP(it) = sum(tuftsMask(thisMask(:)) > consensusMask(thisMask(:)));
@@ -53,7 +54,19 @@ FN = [ FN ; FNothers];
 save(fullfile(masterFolder,'comparisonAll.mat'),'FP','FN','nPix','versionInfo');
 
 %% 
+readConfig;
 load(fullfile(masterFolder,'comparisonAll.mat'),'FP','FN','nPix','versionInfo');
+
+FPrel = FP./nPix*100;
+FNrel = FN./nPix*100;
+
+allErrorRel = FNrel + FPrel;
+
+frmt = '%03.1f';
+disp( 'Error QuRVA |  FN[%]  |  FP[%]  |  TOTAL[%] ')
+disp(['            |' num2str(nanmedian(FNrel(1,:)),frmt)...
+                '     |' num2str(nanmedian(FPrel(1,:)),frmt)...
+                '     |' num2str(nanmedian(allErrorRel(1,:)),frmt)])
 
 % %% Make barplots
 % fg=figure;
@@ -73,9 +86,6 @@ load(fullfile(masterFolder,'comparisonAll.mat'),'FP','FN','nPix','versionInfo');
 
 %% Make relative barPlots
 
-FPrel = FP./nPix*100;
-FNrel = FN./nPix*100;
-%%
 fg=figure;
 makeNiceBarFigure(FPrel, 'FP pixels [%]',false)
 % makeFigureTight(fg)
@@ -92,14 +102,6 @@ imAll = cat(2,imFPp,imFNp);
 imwrite(imAll,fullfile(resDir,'allStatsPerc.png'),'png','Comment',['Comparison Version: ' versionInfo.branch ' | ' versionInfo.sha])
 
 %% Make AllErrors bar plot grouped by method/user
-
-allErrorRel = FNrel + FPrel;
-
-frmt = '%04.0f';
-disp( 'Error QuRVA |  FN[%]  |  FP[%]  |  TOTAL[%] ')
-disp(['            |' num2str(nanmedian(FNrel(1,:)),frmt)...
-                 ' |' num2str(nanmedian(FPrel(1,:)),frmt)...
-                 ' |' num2str(nanmedian(allErrorRel(1,:)),frmt)])
 
 fg=figure;
 makeUserDistributionFigure(allErrorRel,'Error pixels [%]',true)
