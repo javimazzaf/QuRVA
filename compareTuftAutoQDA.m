@@ -50,32 +50,32 @@ end
 FP = [ FP ; FPothers];
 FN = [ FN ; FNothers];
 
-save(fullfile(masterFolder,'comparisonAll.mat'),'FP','FN','versionInfo');
+save(fullfile(masterFolder,'comparisonAll.mat'),'FP','FN','nPix','versionInfo');
 
 %% 
-load(fullfile(masterFolder,'comparisonAll.mat'),'FP','FN','versionInfo');
+load(fullfile(masterFolder,'comparisonAll.mat'),'FP','FN','nPix','versionInfo');
 
-%% Make barplots
-fg=figure;
-makeNiceBarFigure(FP, 'FP pixels',false)
-% makeFigureTight(fg)
-imFP = print('-RGBImage');
-imwrite(imFP,fullfile(resDir,'FP.png'),'png','Comment',['Comparison Version: ' versionInfo.branch ' | ' versionInfo.sha])
-
-fg=figure;
-makeNiceBarFigure(FN, 'FN pixels',false)
-% makeFigureTight(fg)
-imFN = print('-RGBImage');
-imwrite(imFN,fullfile(resDir,'FN.png'),'png','Comment',['Comparison Version: ' versionInfo.branch ' | ' versionInfo.sha])
-
-imAll = cat(1, cat(2,imFP,imFN));
-imwrite(imAll,fullfile(resDir,'allStats.png'),'png','Comment',['Comparison Version: ' versionInfo.branch ' | ' versionInfo.sha])
+% %% Make barplots
+% fg=figure;
+% makeNiceBarFigure(FP, 'FP pixels',false)
+% % makeFigureTight(fg)
+% imFP = print('-RGBImage');
+% imwrite(imFP,fullfile(resDir,'FP.png'),'png','Comment',['Comparison Version: ' versionInfo.branch ' | ' versionInfo.sha])
+% 
+% fg=figure;
+% makeNiceBarFigure(FN, 'FN pixels',false)
+% % makeFigureTight(fg)
+% imFN = print('-RGBImage');
+% imwrite(imFN,fullfile(resDir,'FN.png'),'png','Comment',['Comparison Version: ' versionInfo.branch ' | ' versionInfo.sha])
+% 
+% imAll = cat(1, cat(2,imFP,imFN));
+% imwrite(imAll,fullfile(resDir,'allStats.png'),'png','Comment',['Comparison Version: ' versionInfo.branch ' | ' versionInfo.sha])
 
 %% Make relative barPlots
 
 FPrel = FP./nPix*100;
 FNrel = FN./nPix*100;
-
+%%
 fg=figure;
 makeNiceBarFigure(FPrel, 'FP pixels [%]',false)
 % makeFigureTight(fg)
@@ -95,7 +95,11 @@ imwrite(imAll,fullfile(resDir,'allStatsPerc.png'),'png','Comment',['Comparison V
 
 allErrorRel = FNrel + FPrel;
 
-disp(['MedianQuRVAError: ' num2str(nanmedian(allErrorRel(1,:)))])
+frmt = '%04.0f';
+disp( 'Error QuRVA |  FN[%]  |  FP[%]  |  TOTAL[%] ')
+disp(['            |' num2str(nanmedian(FNrel(1,:)),frmt)...
+                 ' |' num2str(nanmedian(FPrel(1,:)),frmt)...
+                 ' |' num2str(nanmedian(allErrorRel(1,:)),frmt)])
 
 fg=figure;
 makeUserDistributionFigure(allErrorRel,'Error pixels [%]',true)
