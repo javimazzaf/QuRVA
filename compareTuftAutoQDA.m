@@ -1,4 +1,4 @@
-function [nBetterFP, nBetterFN] = compareTuftAutoQDA
+function compareTuftAutoQDA
 
 codeDirectory = './PaperCode/';
 addpath(codeDirectory);
@@ -50,6 +50,11 @@ end
 FP = [ FP ; FPothers];
 FN = [ FN ; FNothers];
 
+save(fullfile(masterFolder,'comparisonAll.mat'),'FP','FN','versionInfo');
+
+%% 
+load(fullfile(masterFolder,'comparisonAll.mat'),'FP','FN','versionInfo');
+
 %% Make barplots
 fg=figure;
 makeNiceBarFigure(FP, 'FP pixels',false)
@@ -89,6 +94,8 @@ imwrite(imAll,fullfile(resDir,'allStatsPerc.png'),'png','Comment',['Comparison V
 %% Make AllErrors bar plot grouped by method/user
 
 allErrorRel = FNrel + FPrel;
+
+disp(['MedianQuRVAError: ' num2str(nanmedian(allErrorRel(1,:)))])
 
 fg=figure;
 makeUserDistributionFigure(allErrorRel,'Error pixels [%]',true)
