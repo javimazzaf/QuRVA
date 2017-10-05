@@ -19,7 +19,7 @@ offSet = [0 0];
 
 blockSize = [0 0];
 
-for it = 1:numel(myFiles)
+for it = 1:14 %numel(myFiles)
     
     disp(it)
     
@@ -62,7 +62,7 @@ for it = 1:numel(myFiles)
     elseif it <= 14
         data2 = [data2;blockFeatures];
         res2 = [res2;ones([size(trueBlocks,1),1]);zeros([size(falseBlocks,1),1])];
-    else %14-20
+    else %15-20
         data1 = [data1;blockFeatures];
         res1 = [res1;ones([size(trueBlocks,1),1]);zeros([size(falseBlocks,1),1])];
         data2 = [data2;blockFeatures];
