@@ -105,6 +105,7 @@ imwrite(imAll,fullfile(resDir,'allStatsPerc.png'),'png','Comment',['Comparison V
 
 fg=figure;
 makeUserDistributionFigure(allErrorRel,'Error pixels [%]',true)
+ylim([0 prctile(allErrorRel(:),97.4)])
 % makeFigureTight(fg)
 imRGB = print('-RGBImage');
 imwrite(imRGB,fullfile(resDir,'errorsPerMethod.png'),'png','Comment',['Comparison Version: ' versionInfo.branch ' | ' versionInfo.sha])
