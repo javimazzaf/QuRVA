@@ -16,7 +16,7 @@ offSet = [0 0];
 
 blockSize = [0 0];
 
-for it = 1:14 %numel(myFiles)
+for it = 1:numel(myFiles)
     
     fname = myFiles{it};
     fname = fname(1:end-4);
