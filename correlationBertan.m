@@ -1,6 +1,10 @@
 function correlationBertan
 
-imPath = '/Volumes/EyeFolder/Dropbox (Biophotonics)/Deep_learning_Images/OIR/raw/';
+% baseDir = '/Volumes/EyeFolder/';
+baseDir = '~/';
+
+% imPath = '/Volumes/EyeFolder/Dropbox (Biophotonics)/Deep_learning_Images/OIR/raw/';
+imPath = fullfile(baseDir,'Dropbox (Biophotonics)/Deep_learning_Images/OIR/raw/');
 
 allFiles = dir(fullfile(imPath,'Masks','*.mat'));
 allFiles = {allFiles(:).name};
@@ -11,7 +15,7 @@ allFiles = allFiles(51:end);
 
 idQuRVA = regexp(allFiles,'([0-9]+_[a-zA-Z]+)(?=_original\.tif\.mat)','match');
 
-baseSwift = '/Volumes/EyeFolder/Dropbox (Biophotonics)/Deep_learning_Images/OIR/swift/';
+baseSwift = fullfile(baseDir, 'Dropbox (Biophotonics)/Deep_learning_Images/OIR/swift/');
 
 % Columns: 1(QuRVA), 2(Swift), 3(Intersection), 4(Union), 5(Just QuRVA),
 % 6(Just Swift), 7(dilated QuRVA)
@@ -21,14 +25,14 @@ for k = 1:numel(idQuRVA)
     fileQurva = fullfile(imPath,'TuftNumbers/',[idQuRVA{k}{:} '_original.tif.mat']);
     fileSwift = fullfile(baseSwift,[idQuRVA{k}{:} '_manual.jpg']);
     
-    if ~exist(fileQurva,'file') || ~exist(fileSwift,'file') || ~exist(fullfile('/Volumes/EyeFolder/Dropbox (Biophotonics)/Deep_learning_Images/OIR/raw/Masks/',[idQuRVA{k}{:} '_original.tif.mat']),'file')  
+    if ~exist(fileQurva,'file') || ~exist(fileSwift,'file') || ~exist(fullfile(baseDir, 'Dropbox (Biophotonics)/Deep_learning_Images/OIR/raw/Masks/',[idQuRVA{k}{:} '_original.tif.mat']),'file')  
         continue
     end
     
-    thisMask = load(fullfile('/Volumes/EyeFolder/Dropbox (Biophotonics)/Deep_learning_Images/OIR/raw/Masks/',[idQuRVA{k}{:} '_original.tif.mat']),'thisMask');
+    thisMask = load(fullfile(baseDir, 'Dropbox (Biophotonics)/Deep_learning_Images/OIR/raw/Masks/',[idQuRVA{k}{:} '_original.tif.mat']),'thisMask');
     thisMask = thisMask.thisMask;   
     
-    thisONCenter = load(fullfile('/Volumes/EyeFolder/Dropbox (Biophotonics)/Deep_learning_Images/OIR/raw/ONCenter/',[idQuRVA{k}{:} '_original.tif.mat']),'thisONCenter');
+    thisONCenter = load(fullfile(baseDir, 'Dropbox (Biophotonics)/Deep_learning_Images/OIR/raw/ONCenter/',[idQuRVA{k}{:} '_original.tif.mat']),'thisONCenter');
     thisONCenter = thisONCenter.thisONCenter; 
         
     maskQurva = load(fileQurva,'tuftsMask');
@@ -82,17 +86,17 @@ save('../compareSwiftQurva_Bertan.mat', 'area')
 %% Plot
 load('../compareSwiftQurva_Bertan.mat', 'area')
 
-% [R,P] = corrcoef(area(:,1),area(:,2))
+[R,P] = corrcoef(area(:,1),area(:,2))
 
-% plot(area(:,1),area(:,2),'.k')
-% xlabel('Area QuRVA [%]')
-% ylabel('Area Swift [%]')
+plot(area(:,1),area(:,2),'.k')
+xlabel('Area QuRVA [%]')
+ylabel('Area Swift [%]')
 % % title()
 
-figure;
-areaSim = area(:,1) + area(:,1) .* randn(size(area(:,1))) * 0.7;
-plot(area(:,1),areaSim,'.k')
-[R,P] = corrcoef(area(:,1),areaSim)
+% figure;
+% areaSim = area(:,1) + area(:,1) .* randn(size(area(:,1))) * 0.7;
+% plot(area(:,1),areaSim,'.k')
+% [R,P] = corrcoef(area(:,1),areaSim)
 
 % figure;
 % plot(area(:,1),area(:,7),'.k')

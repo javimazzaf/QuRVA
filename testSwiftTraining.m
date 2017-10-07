@@ -14,7 +14,7 @@ maskFiles = {maskFiles(:).name};
 
 allFiles = cellfun(@(x) x(1:end-4),maskFiles,'UniformOutput',false);
 
-train = true;
+train = false;
 
 if train
     trainPath = fullfile(basePath,'Dropbox (Biophotonics)/Deep_learning_Images/OIR/swift/');
@@ -28,5 +28,5 @@ if train
     trainQuRVA(imPath,trainPath,allFiles(1:50),fullfile(modelDir,'trainingSet.mat'),fullfile(modelDir,'model.mat'))
 else
     %    processFolder(imPath,allFiles(51:23:end));
-    processFolder(imPath,allFiles(1:end));
+    processFolder(imPath,allFiles(51:end));
 end
