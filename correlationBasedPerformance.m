@@ -43,7 +43,7 @@ for it=1:numel(myFiles)
         swiftMask = swiftMasks(:,:,itUsers);
         sumSwift  = sum(swiftMask(validMask(:)));
         if sumSwift ~= 0
-            manualAreas(it,itUsers,2) = sum(swiftMask(validMask(:)));
+            manualAreas(it,itUsers,2) = sumSwift;
         else
             manualAreas(it,itUsers,2) = NaN;
         end
