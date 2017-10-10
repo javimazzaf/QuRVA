@@ -1,7 +1,7 @@
 function correlationBertan
 
-% baseDir = '/Volumes/EyeFolder/';
-baseDir = '~/';
+baseDir = '/Volumes/EyeFolder/';
+% baseDir = '~/';
 
 % imPath = '/Volumes/EyeFolder/Dropbox (Biophotonics)/Deep_learning_Images/OIR/raw/';
 imPath = fullfile(baseDir,'Dropbox (Biophotonics)/Deep_learning_Images/OIR/raw/');
@@ -92,6 +92,9 @@ plot(area(:,1),area(:,2),'.k')
 xlabel('Area QuRVA [%]')
 ylabel('Area Swift [%]')
 % % title()
+
+figure;
+bar(area(:,[5,6,3])')
 
 % figure;
 % areaSim = area(:,1) + area(:,1) .* randn(size(area(:,1))) * 0.7;
