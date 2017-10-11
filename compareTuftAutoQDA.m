@@ -23,7 +23,7 @@ versionInfo.Others = aux.versionInfo;
 
 nPix = [];
 
-for it=1:numel(myFiles)
+for it=[1:3,5:6,9:12,14] %1:numel(myFiles)
     disp(myFiles{it});
     
     load(fullfile(masterFolder, 'TuftNumbers', myFiles{it}),'tuftsMask');
