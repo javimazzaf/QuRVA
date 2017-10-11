@@ -23,7 +23,10 @@ versionInfo.Others = aux.versionInfo;
 
 nPix = [];
 
-for it=[1:3,5:6,9:12,14] %1:numel(myFiles)
+imSet = [1:3,5:6,9:12,14];
+% imSet = 1:numel(myFiles);
+
+for it=imSet 
     disp(myFiles{it});
     
     load(fullfile(masterFolder, 'TuftNumbers', myFiles{it}),'tuftsMask');
@@ -48,8 +51,8 @@ for it=[1:3,5:6,9:12,14] %1:numel(myFiles)
     
 end
 
-FP = [ FP ; FPothers];
-FN = [ FN ; FNothers];
+FP = [ FP ; FPothers(imSet,:)];
+FN = [ FN ; FNothers(imSet,:)];
 
 save(fullfile(masterFolder,'comparisonAll.mat'),'FP','FN','nPix','versionInfo');
 
