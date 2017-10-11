@@ -19,7 +19,7 @@ offSet = [0 0];
 
 blockSize = [0 0];
 
-for it = 1:numel(myFiles)
+for it = 1:14 %numel(myFiles)
     
     disp(it)
     

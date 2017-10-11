@@ -16,6 +16,7 @@ for it=1:numel(myFiles)
     disp(myFiles{it});
     
     load(fullfile(masterFolder, 'TuftNumbers', myFiles{it}),'tuftsMask');
+    tuftsMask = resetScale(tuftsMask);
     
     load(fullfile(masterFolder,'manualAndSwiftMasks',myFiles{it}), 'manualMasks','swiftMasks','users')
 
@@ -35,6 +36,8 @@ for it=1:numel(myFiles)
     
     consensusArea(it) = sum(consensusMask(validMask(:)));
     
+    quRVAArea(it) = sum(tuftsMask(validMask(:)));
+    
     % Each Evaluator
     for itUsers=1:size(manualMasks,3)
         manualMask = manualMasks(:,:,itUsers);
@@ -51,5 +54,21 @@ for it=1:numel(myFiles)
 
 end
 
+% Save
+save(fullfile(masterFolder,'manualSwiftCorrelation.mat'), 'consensusArea', 'manualAreas', 'quRVAArea', 'users')
 
+%% Plots
+readConfig;
+load(fullfile(masterFolder,'manualSwiftCorrelation.mat'), 'consensusArea', 'manualAreas', 'quRVAArea', 'users')
+
+usuario1 = 2;
+usuario2 = 4;
+% manSwift = 1;
+
+set1 = manualAreas(:,usuario1,1);
+set2 = manualAreas(:,usuario2,2);
+
+[R,P] = corrcoef(set1,set2)
+
+plot(set1,set2,'.k')
 
