@@ -65,8 +65,11 @@ usuario1 = 2;
 usuario2 = 4;
 % manSwift = 1;
 
-set1 = manualAreas(:,usuario1,1);
-set2 = manualAreas(:,usuario2,2);
+set1 = consensusArea(:);
+set2 = quRVAArea(:);
+
+% set1 = manualAreas(:,usuario1,1);
+% set2 = manualAreas(:,usuario2,2);
 
 [R,P] = corrcoef(set1,set2)
 
