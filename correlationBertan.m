@@ -93,8 +93,8 @@ xlabel('Area QuRVA [%]')
 ylabel('Area Swift [%]')
 % % title()
 
-figure;
-bar(area(:,[5,6,3])')
+% figure;
+% bar(area(:,[5,6,3])')
 
 % figure;
 % areaSim = area(:,1) + area(:,1) .* randn(size(area(:,1))) * 0.7;

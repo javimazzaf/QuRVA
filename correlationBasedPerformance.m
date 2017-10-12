@@ -55,21 +55,24 @@ for it=1:numel(myFiles)
 end
 
 % Save
-save(fullfile(masterFolder,'manualSwiftCorrelation.mat'), 'consensusArea', 'manualAreas', 'quRVAArea', 'users')
+save(fullfile(masterFolder,'manualSwiftCorrelation.mat'), 'consensusArea', 'manualAreas', 'quRVAArea', 'users','versionInfo')
 
 %% Plots
 readConfig;
 load(fullfile(masterFolder,'manualSwiftCorrelation.mat'), 'consensusArea', 'manualAreas', 'quRVAArea', 'users')
 
-usuario1 = 2;
-usuario2 = 4;
+imSet = [1:3,5:6,9:12,14];
+% imSet = (1:14);
+
+usuario1 = 7;
+usuario2 = 6;
 % manSwift = 1;
 
-set1 = consensusArea(:);
-set2 = quRVAArea(:);
+set1 = consensusArea(imSet);
+set2 = quRVAArea(imSet);
 
-% set1 = manualAreas(:,usuario1,1);
-% set2 = manualAreas(:,usuario2,2);
+% set1 = manualAreas(imSet,usuario1,1);
+% set2 = manualAreas(imSet,usuario2,2);
 
 [R,P] = corrcoef(set1,set2)
 

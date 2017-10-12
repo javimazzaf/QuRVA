@@ -51,8 +51,8 @@ for it=imSet
     
 end
 
-FP = [ FP ; FPothers(imSet,:)];
-FN = [ FN ; FNothers(imSet,:)];
+FP = [ FP(imSet) ; FPothers(:,imSet)];
+FN = [ FN(imSet) ; FNothers(:,imSet)];
 
 save(fullfile(masterFolder,'comparisonAll.mat'),'FP','FN','nPix','versionInfo');
 
