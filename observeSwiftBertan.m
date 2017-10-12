@@ -1,14 +1,20 @@
 function observeSwiftBertan
 
-resDir = '/Volumes/EyeFolder/Dropbox (Biophotonics)/Deep_learning_Images/OIR/visualSwift/';
+if ismac
+   baseDir = '/Volumes/EyeFolder/';
+else
+   baseDir = '~/'; 
+end
+
+resDir = fullfile(baseDir,'Dropbox (Biophotonics)/Deep_learning_Images/OIR/visualSwift/');
 if ~exist('resDir','dir')
     mkdir(resDir);
 end
 
-baseOrig = '/Volumes/EyeFolder/Dropbox (Biophotonics)/Deep_learning_Images/OIR/raw/';
+baseOrig = fullfile(baseDir,'Dropbox (Biophotonics)/Deep_learning_Images/OIR/raw/');
 dirsOrig = dir(fullfile(baseOrig,'*original.tif'));
 
-baseSwift = '/Volumes/EyeFolder/Dropbox (Biophotonics)/Deep_learning_Images/OIR/swift/';
+baseSwift = fullfile(baseDir,'Dropbox (Biophotonics)/Deep_learning_Images/OIR/swift/');
 
 id = regexp({dirsOrig(:).name},'([0-9]+_[a-zA-Z]+)(?=_original\.tif)','match');
 
