@@ -55,7 +55,7 @@ for k = 1:numel(id)
     thisMask  = thisMask(1:nRows,1:nCols);
     tuftsMask = tuftsMask(1:nRows,1:nCols);
     
-    [~, maskNoCenter] = processMask(thisMask, consensusMask, thisONCenter);
+    [~, maskNoCenter] = processMask(thisMask, tuftsMask, thisONCenter);
     
     validMask = maskNoCenter & thisMask;
     
