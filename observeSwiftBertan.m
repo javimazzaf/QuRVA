@@ -15,48 +15,66 @@ id = regexp({dirsOrig(:).name},'([0-9]+_[a-zA-Z]+)(?=_original\.tif)','match');
 for k = 1:numel(id)
     fileOrig  = fullfile(baseOrig,[id{k}{:} '_original.tif']);
     fileSwift = fullfile(baseSwift,[id{k}{:} '_manual.jpg']);
+    fileQuRVA = fullfile(baseOrig,'TuftNumbers',[id{k}{:} '_original.tif.mat']);
+    fileMask  = fullfile(baseOrig,'Masks',[id{k}{:} '_original.tif.mat']);
+    fileCenter  = fullfile(baseOrig,'ONCenter',[id{k}{:} '_original.tif.mat']);
     
-    if ~exist(fileOrig,'file') || ~exist(fileSwift,'file')
+    if ~exist(fileOrig,'file') || ~exist(fileSwift,'file') ||...
+       ~exist(fileQuRVA,'file') || ~exist(fileMask,'file')     
         continue
     end
     
     imOrig = imread(fileOrig);
     imOrig = imOrig(:,:,1);
+    load(fileQuRVA,'tuftsMask');
+    load(fileMask,'thisMask');
     
-    mask = imread(fileSwift) > 0;
+    load(fileCenter, 'thisONCenter');
     
-    %Crop it to the top-left if sizes dont match exactly
-    if size(imOrig,2) < size(mask,2)
-        mask = mask(:,1:size(imOrig,2));
-    elseif size(imOrig,2) > size(mask,2)
-        imOrig = imOrig(:,1:size(mask,2));
-    end
+    maskSwift = imread(fileSwift) > 0;
     
-    if size(imOrig,1) < size(mask,1)
-        mask = mask(1:size(imOrig,1),:);
-    elseif size(imOrig,1) > size(mask,1)
-        imOrig = imOrig(1:size(mask,1),:);
-    end
+    %Adjust sizes    
+    imOrig     = resetScale(imOrig);
+    maskSwift  = resetScale(maskSwift);
+    thisMask   = resetScale(thisMask);
+    [tuftsMask,scaleFactor]  = resetScale(tuftsMask);
+    
+    thisONCenter = thisONCenter/scaleFactor;  
+    
+    nRows = min([size(imOrig,1),size(maskSwift,1), size(thisMask,1), size(tuftsMask,1)]); 
+    nCols = min([size(imOrig,2),size(maskSwift,2), size(thisMask,2), size(tuftsMask,2)]); 
+    
+    imOrig    = imOrig(1:nRows,1:nCols);
+    maskSwift = maskSwift(1:nRows,1:nCols);
+    thisMask  = thisMask(1:nRows,1:nCols);
+    tuftsMask = tuftsMask(1:nRows,1:nCols);
+    
+    [~, maskNoCenter] = processMask(thisMask, consensusMask, thisONCenter);
+    
+    validMask = maskNoCenter & thisMask;
+    
+    TP =  maskSwift &  tuftsMask;
+    FP = ~maskSwift &  tuftsMask;
+    FN =  maskSwift & ~tuftsMask;
+    
+    restMask = ~TP & ~FP & ~ FN & thisMask;
     
     lowSatLevel = 0.01 + sum(imOrig(:) == min(imOrig(:))) / numel(imOrig);
     highSatLevel = 0.99 - sum(imOrig(:) == max(imOrig(:))) / numel(imOrig);
     
     adjustedImage = imadjust(imOrig,stretchlim(imOrig,[lowSatLevel highSatLevel]));
     
-    quadNW = cat(3, uint8(mask) .* adjustedImage,adjustedImage, adjustedImage);
+    grayIm  = uint8(restMask) .* adjustedImage;
+    
+    r = uint8(FP) .* adjustedImage + grayIm;
+    g = uint8(TP) .* adjustedImage + grayIm;
+    b = uint8(FN) .* adjustedImage + grayIm;
+    
+    quadNW = cat(3, r, g, b);
+    quadNW = imoverlay(quadNW,imdilate(bwperim(validMask),strel('disk',3)),'m');
+    
     quadNE = cat(3, adjustedImage, adjustedImage, adjustedImage);
     
     imwrite([quadNW quadNE], fullfile(resDir,[id{k}{:} '.jpg']), 'JPG')
     
 end
-
-area(isnan(area(:,1)) | isnan(area(:,2)),:) = [];
-
-save('../compareSwiftQurva_Bertan.mat', 'area')
-
-%% Plot
-load('../compareSwiftQurva_Bertan.mat', 'area')
-
-plot(area(:,1),area(:,2),'.k')
-
-[R,P] = corrcoef(area(:,1),area(:,2))
