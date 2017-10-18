@@ -67,7 +67,7 @@ for it = 1:numel(imFiles)
     data = [data;blockFeatures];
     res  = [res;ones([size(trueBlocks,1),1]);zeros([size(falseBlocks,1),1])];
  
-    imRGB = cat(3,uint8(~trainingMask) .* sImage,sImage,sImage);
+    imRGB = cat(3,uint8(~trainingMask) .* uint8(sImage * 255), uint8(sImage * 255), uint8(sImage * 255));
     imRGB = imoverlay(imRGB,imdilate(bwperim(validMask),strel('disk',3)),'m');
     
     imwrite(imRGB,fullfile(verifDir,fname));
