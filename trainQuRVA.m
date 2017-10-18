@@ -70,7 +70,7 @@ for it = 1:numel(imFiles)
     imRGB = cat(3,uint8(~trainingMask) .* uint8(sImage * 255), uint8(sImage * 255), uint8(sImage * 255));
     imRGB = imoverlay(imRGB,imdilate(bwperim(validMask),strel('disk',3)),'m');
     
-    imwrite(imRGB,fullfile(verifDir,fname));
+    imwrite(imRGB,fullfile(verifDir,[fname(1:end-3) 'jpg']));
     
     disp(it)
 end
