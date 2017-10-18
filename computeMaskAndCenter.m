@@ -8,6 +8,8 @@ if ~exist('fullAuto','var'), fullAuto = false; end
 
 for it = 1:numel(fileNames)
     
+    clear thisMask fg
+    
     % Compute mask and Center fileNames
     maskFile   = fullfile(masterFolder, 'Masks', [fileNames{it} '.mat']);
     centerFile = fullfile(masterFolder, 'ONCenter', [fileNames{it} '.mat']);  
@@ -65,23 +67,28 @@ for it = 1:numel(fileNames)
                 break
             end
             
-            if exist('fg','var'), clf(fg)
-            else                , fg = figure; end
+            if ~exist('fg','var')
+                fg = figure; 
 
-            warning('Off')
-            imshow(imadjust(redImage,stretchlim(redImage,[0.01 0.97])),[]), hold on
+                warning('Off')
+                imshow(imoverlay(imadjust(redImage,stretchlim(redImage,[0.01 0.97])),imdilate(bwperim(thisMask),strel('disk',5)),'m'))
+                warning('On')
+            end
+            
+            hold on
+            
             plot(thisONCenter(1), thisONCenter(2), '*m')
-            warning('On')
-
+            
             if strcmp(questdlg('Should center of the optic nerve head be here?', 'Confirmation','Yes','No','Yes'),'Yes')
                 save(centerFile, 'thisONCenter');
                 break
             end
             
-            clf(fg)
-            warning('Off')
-            imshow(imadjust(redImage,stretchlim(redImage,[0.01 0.97])),[]), hold on
-            warning('On')
+%             clf(fg)
+%             warning('Off')
+%             imshow(imoverlay(imadjust(redImage,stretchlim(redImage,[0.01 0.97])),imdilate(bwperim(thisMask),strel('disk',5)),'m')), hold on
+%             imshow(imadjust(redImage,stretchlim(redImage,[0.01 0.97])),[]), hold on
+%             warning('On')
             title('Click on the center of the optic nerve head')
             [x,y] = ginput(1);
             thisONCenter=round([x y]);
