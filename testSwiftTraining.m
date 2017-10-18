@@ -14,7 +14,7 @@ maskFiles = {maskFiles(:).name};
 
 allFiles = cellfun(@(x) x(1:end-4),maskFiles,'UniformOutput',false);
 
-train = false;
+train = true;
 
 if train
     trainPath = fullfile(basePath,'Dropbox (Biophotonics)/Deep_learning_Images/OIR/swift/');

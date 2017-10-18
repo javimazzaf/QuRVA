@@ -19,6 +19,8 @@ baseSwift = fullfile(baseDir,'Dropbox (Biophotonics)/Deep_learning_Images/OIR/sw
 id = regexp({dirsOrig(:).name},'([0-9]+_[a-zA-Z]+)(?=_original\.tif)','match');
 
 for k = 1:numel(id)
+    disp(k)
+    
     fileOrig  = fullfile(baseOrig,[id{k}{:} '_original.tif']);
     fileSwift = fullfile(baseSwift,[id{k}{:} '_manual.jpg']);
     fileQuRVA = fullfile(baseOrig,'TuftNumbers',[id{k}{:} '_original.tif.mat']);
@@ -39,12 +41,14 @@ for k = 1:numel(id)
     
     maskSwift = imread(fileSwift) > 0;
     
+    imshow(imoverlay(imadjust(imOrig),bwperim(thisMask),'m'),[]), hold on
+    plot(thisONCenter(1),thisONCenter(2),'*g')
     %Adjust sizes    
     imOrig     = resetScale(imOrig);
     maskSwift  = resetScale(maskSwift);
-    thisMask   = resetScale(thisMask);
-    [tuftsMask,scaleFactor]  = resetScale(tuftsMask);
-    
+    tuftsMask  = resetScale(tuftsMask);
+    [thisMask, scaleFactor] = resetScale(thisMask);
+   
     thisONCenter = thisONCenter/scaleFactor;  
     
     nRows = min([size(imOrig,1),size(maskSwift,1), size(thisMask,1), size(tuftsMask,1)]); 

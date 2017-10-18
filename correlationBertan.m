@@ -21,7 +21,8 @@ baseSwift = fullfile(baseDir, 'Dropbox (Biophotonics)/Deep_learning_Images/OIR/s
 % 6(Just Swift), 7(dilated QuRVA)
 area = NaN(numel(idQuRVA),7);
 
-for k = 1:numel(idQuRVA)
+for k = 1:100 %numel(idQuRVA)
+    disp(k)
     fileQurva = fullfile(imPath,'TuftNumbers/',[idQuRVA{k}{:} '_original.tif.mat']);
     fileSwift = fullfile(baseSwift,[idQuRVA{k}{:} '_manual.jpg']);
     
@@ -34,13 +35,15 @@ for k = 1:numel(idQuRVA)
     
     thisONCenter = load(fullfile(baseDir, 'Dropbox (Biophotonics)/Deep_learning_Images/OIR/raw/ONCenter/',[idQuRVA{k}{:} '_original.tif.mat']),'thisONCenter');
     thisONCenter = thisONCenter.thisONCenter; 
+    
+    load(fullfile(imPath,'VasculatureNumbers/',[idQuRVA{k}{:} '_original.tif.mat']),'smoothVessels');
         
     maskQurva = load(fileQurva,'tuftsMask');
     maskQurva = maskQurva.tuftsMask;
     
-    maskSwift = imread(fileSwift);
+    maskSwift = imread(fileSwift) > 100;
     
-    maskQurva = resetScale(maskQurva);
+    maskQurva = resetScale(maskQurva & smoothVessels);
     maskSwift = resetScale(maskSwift);
     [thisMask, scaleFactor] = resetScale(thisMask);    
     
@@ -49,7 +52,7 @@ for k = 1:numel(idQuRVA)
     nCols = min([size(maskQurva,2),size(maskSwift,2), size(thisMask,2)]); 
     
     maskQurva = maskQurva(1:nRows,1:nCols);
-    maskSwift = maskSwift(1:nRows,1:nCols) > 0;
+    maskSwift = maskSwift(1:nRows,1:nCols);
     thisMask  = thisMask( 1:nRows,1:nCols);
     
     thisONCenter = thisONCenter/scaleFactor;
