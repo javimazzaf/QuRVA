@@ -12,12 +12,21 @@ offSet = [0 0];
 
 blockSize = [0 0];
 
+[modelDir,~,~] = fileparts(fileModel);
+
+verifDir = fullfile(modelDir,'verification');
+if ~exist(verifDir,'dir'), mkdir(verifDir), end
+
 for it = 1:numel(imFiles)
     
     fname = imFiles{it};
     
     oImage = imread(fullfile(imPath, fname));
     oImage = oImage(:,:,1);
+    %% Make 8 bits
+    if strcmp(class(oImage), 'uint16')
+        oImage = uint8(double(oImage)/65535*255);
+    end
     
     id = regexp(fname,'([0-9]+_[a-zA-Z]+)(?=_original\.tif)','match');
     
@@ -35,7 +44,9 @@ for it = 1:numel(imFiles)
     oImage       = resetScale(oImage(      1:nRows,1:nCols));
     thisMask     = resetScale(thisMask(    1:nRows,1:nCols));
     
-    [~, maskNoCenter] = processMask(thisMask, oImage, thisONCenter);
+    sImage = overSaturate(oImage);
+    
+    [~, maskNoCenter] = processMask(thisMask, sImage, thisONCenter);
     
     validMask = maskNoCenter & thisMask;
     
@@ -43,7 +54,7 @@ for it = 1:numel(imFiles)
     
     blockSize(it,:) = ceil(retinaDiam(it) * tufts.blockSizeFraction) * [1 1];
 
-    [~, indBlocks] = getBlocks(oImage, blockSize(it,:), offSet);
+    [~, indBlocks] = getBlocks(sImage, blockSize(it,:), offSet);
     
     % Blocks included in consensus
     trueBlocks  = getBlocksInMask(indBlocks, validMask & trainingMask, tufts.blocksInMaskPercentage, offSet);
@@ -51,11 +62,16 @@ for it = 1:numel(imFiles)
     % Blocks NOT included in consensus
     falseBlocks = getBlocksInMask(indBlocks, validMask & ~trainingMask, tufts.blocksInMaskPercentage, offSet);
 
-    blockFeatures = computeBlockFeatures(oImage,maskNoCenter, thisMask, indBlocks,trueBlocks,falseBlocks, offSet, thisONCenter);
+    blockFeatures = computeBlockFeatures(sImage,maskNoCenter, thisMask, indBlocks,trueBlocks,falseBlocks, offSet, thisONCenter);
 
     data = [data;blockFeatures];
     res  = [res;ones([size(trueBlocks,1),1]);zeros([size(falseBlocks,1),1])];
  
+    imRGB = cat(3,uint8(~trainingMask) .* sImage,sImage,sImage);
+    imRGB = imoverlay(imRGB,imdilate(bwperim(validMask),strel('disk',3)),'m');
+    
+    imwrite(imRGB,fullfile(verifDir,fname));
+    
     disp(it)
 end
 
