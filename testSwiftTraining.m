@@ -1,8 +1,8 @@
 %Training a model using several swift images from Bertan
 
 if ismac
-%     basePath = '/Volumes/EyeFolder/';
-    basePath = '/Users/javimazzaf/';
+    basePath = '/Volumes/EyeFolder/';
+%     basePath = '/Users/javimazzaf/';
 elseif isunix
     basePath = '~/';
 end
