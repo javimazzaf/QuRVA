@@ -12,4 +12,4 @@ res = [swiftVars.res;our20Vars.res];
 model = fitcdiscr(data,res,'DiscrimType','quadratic','Cost',tufts.classCost,'Prior','empirical');
 
 save('model.mat','model','-v7.3')
-% save('/Volumes/EyeFolder/flatMounts/development/model.mat','model','-v7.3')
+save('/Volumes/EyeFolder/flatMounts/development/model.mat','model','-v7.3')

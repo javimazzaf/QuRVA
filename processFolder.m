@@ -95,7 +95,8 @@ try
                 
                 disp('  Computing tufts . . .')
                 
-                tuftsMask = getTufts(redImage, maskNoCenter, thisMask, thisONCenter, retinaDiam, model);
+%                 tuftsMask = getTufts(redImage, maskNoCenter, thisMask, thisONCenter, retinaDiam, model);
+                tuftsMask = getTufts(overSaturate(redImage), maskNoCenter, thisMask, thisONCenter, retinaDiam, model);
                 
                 % *** Save Tuft Images ***
                 if doSaveImages
