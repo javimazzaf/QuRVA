@@ -56,6 +56,8 @@ for it = 1:numel(myFiles)
     oImage       = resetScale(oImage(      1:nRows,1:nCols));
     thisMask     = resetScale(thisMask(    1:nRows,1:nCols));
     validMask     = resetScale(validMask(    1:nRows,1:nCols));
+    maskNoCenter  = resetScale(maskNoCenter(    1:nRows,1:nCols));
+    
     
     sImage = overSaturate(oImage);
     
