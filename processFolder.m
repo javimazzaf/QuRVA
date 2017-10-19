@@ -108,6 +108,8 @@ try
                     quadNW = cat(3, uint8(tuftsMask) .* adjustedImage,adjustedImage, adjustedImage);
                     quadNE = cat(3, adjustedImage, adjustedImage, adjustedImage);
                     
+                    quadNW = imoverlay(quadNW,imdilate(bwperim(thisMask & maskNoCenter),strel('disk',3)),'m');
+                    
                     quadNW = imcrop(quadNW, cropRect);
                     quadNE = imcrop(quadNE, cropRect);
                     

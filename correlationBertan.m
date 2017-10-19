@@ -20,7 +20,7 @@ baseSwift = fullfile(baseDir, 'Dropbox (Biophotonics)/Deep_learning_Images/OIR/s
 % 6(Just Swift), 7(dilated QuRVA), 8(QuRVA-smoothVessels)
 area = NaN(numel(idQuRVA),8);
 
-for k = 208 %1:numel(idQuRVA)
+for k = 1:numel(idQuRVA)
 
     fileQurva = fullfile(imPath,'TuftNumbers/',[idQuRVA{k}{:} '_original.tif.mat']);
     fileSwift = fullfile(baseSwift,[idQuRVA{k}{:} '_manual.jpg']);
