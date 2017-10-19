@@ -39,10 +39,10 @@ for k = 1:numel(id)
     
     load(fileCenter, 'thisONCenter');
     
-    maskSwift = imread(fileSwift) > 0;
+    maskSwift = imread(fileSwift) > 100;
     
-    imshow(imoverlay(imadjust(imOrig),bwperim(thisMask),'m'),[]), hold on
-    plot(thisONCenter(1),thisONCenter(2),'*g')
+%     imshow(imoverlay(imadjust(imOrig),bwperim(thisMask),'m'),[]), hold on
+%     plot(thisONCenter(1),thisONCenter(2),'*g')
     %Adjust sizes    
     imOrig     = resetScale(imOrig);
     maskSwift  = resetScale(maskSwift);
