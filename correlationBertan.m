@@ -3,7 +3,6 @@ function correlationBertan
 baseDir = '/Volumes/EyeFolder/';
 % baseDir = '~/';
 
-% imPath = '/Volumes/EyeFolder/Dropbox (Biophotonics)/Deep_learning_Images/OIR/raw/';
 imPath = fullfile(baseDir,'Dropbox (Biophotonics)/Deep_learning_Images/OIR/raw/');
 
 allFiles = dir(fullfile(imPath,'Masks','*.mat'));
@@ -18,11 +17,11 @@ idQuRVA = regexp(allFiles,'([0-9]+_[a-zA-Z]+)(?=_original\.tif\.mat)','match');
 baseSwift = fullfile(baseDir, 'Dropbox (Biophotonics)/Deep_learning_Images/OIR/swift/');
 
 % Columns: 1(QuRVA), 2(Swift), 3(Intersection), 4(Union), 5(Just QuRVA),
-% 6(Just Swift), 7(dilated QuRVA)
-area = NaN(numel(idQuRVA),7);
+% 6(Just Swift), 7(dilated QuRVA), 8(QuRVA-smoothVessels)
+area = NaN(numel(idQuRVA),8);
 
-for k = 1:100 %numel(idQuRVA)
-    disp(k)
+for k = 208 %1:numel(idQuRVA)
+
     fileQurva = fullfile(imPath,'TuftNumbers/',[idQuRVA{k}{:} '_original.tif.mat']);
     fileSwift = fullfile(baseSwift,[idQuRVA{k}{:} '_manual.jpg']);
     
@@ -43,17 +42,19 @@ for k = 1:100 %numel(idQuRVA)
     
     maskSwift = imread(fileSwift) > 100;
     
-    maskQurva = resetScale(maskQurva & smoothVessels);
+    smoothVessels = resetScale(smoothVessels);
+    maskQurva = resetScale(maskQurva);
     maskSwift = resetScale(maskSwift);
-    [thisMask, scaleFactor] = resetScale(thisMask);    
+    [thisMask, scaleFactor] = resetScale(thisMask);   
     
     %Adjust sizes
     nRows = min([size(maskQurva,1),size(maskSwift,1), size(thisMask,1)]); 
     nCols = min([size(maskQurva,2),size(maskSwift,2), size(thisMask,2)]); 
     
-    maskQurva = maskQurva(1:nRows,1:nCols);
-    maskSwift = maskSwift(1:nRows,1:nCols);
-    thisMask  = thisMask( 1:nRows,1:nCols);
+    maskQurva     = maskQurva(1:nRows,1:nCols);
+    maskSwift     = maskSwift(1:nRows,1:nCols);
+    thisMask      = thisMask( 1:nRows,1:nCols);
+    smoothVessels = smoothVessels(1:nRows,1:nCols);
     
     thisONCenter = thisONCenter/scaleFactor;
     
@@ -74,6 +75,9 @@ for k = 1:100 %numel(idQuRVA)
     dilatedMask = imdilate(maskQurva,strel('disk',10));
     area(k,7) = sum(dilatedMask(validMask(:))) / totalArea;
     
+    maskQurvaSmoothVessels = maskQurva & smoothVessels;
+    area(k,8) = sum(maskQurvaSmoothVessels(validMask(:))) / totalArea;
+    
     
 %     imRes = uint8(cat(3,maskSwift & ~maskQurva, maskSwift & maskQurva, ~maskSwift & maskQurva) * 255);
 %     imRes = imoverlay(imRes,imdilate(bwperim(validMask),strel('disk',5)),'m');
@@ -82,12 +86,12 @@ for k = 1:100 %numel(idQuRVA)
     
 end
 
-area(isnan(area(:,1)) | isnan(area(:,2)) | isnan(area(:,3)) | isnan(area(:,4)),:) = [];
-
 save('../compareSwiftQurva_Bertan.mat', 'area')
 
 %% Plot
 load('../compareSwiftQurva_Bertan.mat', 'area')
+
+area(any(isnan(area)')',:) = [];
 
 [R,P] = corrcoef(area(:,1),area(:,2))
 

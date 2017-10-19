@@ -46,7 +46,7 @@ for it = 1:numel(imFiles)
     
     sImage = overSaturate(oImage);
     
-    [~, maskNoCenter] = processMask(thisMask, sImage, thisONCenter);
+    [~, maskNoCenter] = processMask(thisMask, oImage, thisONCenter);
     
     validMask = maskNoCenter & thisMask;
     
@@ -54,15 +54,16 @@ for it = 1:numel(imFiles)
     
     blockSize(it,:) = ceil(retinaDiam(it) * tufts.blockSizeFraction) * [1 1];
 
-    [~, indBlocks] = getBlocks(sImage, blockSize(it,:), offSet);
+    [~, indBlocks] = getBlocks(oImage, blockSize(it,:), offSet);
     
     % Blocks included in consensus
     trueBlocks  = getBlocksInMask(indBlocks, validMask & trainingMask, tufts.blocksInMaskPercentage, offSet);
     
     % Blocks NOT included in consensus
     falseBlocks = getBlocksInMask(indBlocks, validMask & ~trainingMask, tufts.blocksInMaskPercentage, offSet);
-
-    blockFeatures = computeBlockFeatures(sImage,maskNoCenter, thisMask, indBlocks,trueBlocks,falseBlocks, offSet, thisONCenter);
+    
+    blockFeatures = computeBlockFeatures(oImage,maskNoCenter, thisMask, indBlocks,trueBlocks,falseBlocks, offSet, thisONCenter);
+%     blockFeatures = computeBlockFeatures(sImage,maskNoCenter, thisMask, indBlocks,trueBlocks,falseBlocks, offSet, thisONCenter);
 
     data = [data;blockFeatures];
     res  = [res;ones([size(trueBlocks,1),1]);zeros([size(falseBlocks,1),1])];
