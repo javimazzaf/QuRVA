@@ -1,5 +1,7 @@
 function correlationBertan
 
+readConfig
+
 baseDir = '/Volumes/EyeFolder/';
 % baseDir = '~/';
 
@@ -10,7 +12,7 @@ allFiles = {allFiles(:).name};
 
 % If the first 50 images where used for training, just use images from 51
 % and on
-allFiles = allFiles(51:end);
+% allFiles = allFiles(51:end);
 
 idQuRVA = regexp(allFiles,'([0-9]+_[a-zA-Z]+)(?=_original\.tif\.mat)','match');
 
@@ -91,16 +93,6 @@ save('../compareSwiftQurva_Bertan.mat', 'area','idQuRVA','allFiles')
 %% Plot
 excludeBroken = {'1_E';'5_D';'34_G';'34_Q';'34_J'};
 
-excludeTraining = {...
-'10_A';'10_B';'10_C';'10_D';'10_E';'10_G';'10_H';'11_A';'11_B';...
-'11_C';'11_D';'11_E';'11_F';'11_G';'11_H';'12_A';'12_B';'12_C';...
-'12_D';'12_E';'12_F';'13_B';'13_C';'13_D';'13_E';'13_F';'13_G';...
-'13_H';'13_I';'13_J';'14_A';'14_B';'14_C';'14_D';'14_E';'14_F';...
-'14_G';'14_H';'14_I';'15_A';'15_B';'15_C';'15_D';'15_E';'16_A';...
-'16_B';'16_C';'16_D';'16_E';'16_F';...
-...
-'9_F';'23_G';'23_J';'2_A';'19_F';'33_I';'25_E';'25_L';'23_I';'2_B';'4_I';'9_A'};
-
 excludeSwift = {...
 '23_F';'29_B';'29_D';'29_E';'29_H';'29_I';'29_J';...
 '29_L';'29_N';'29_O';'31_A';'32_A';'32_B';'32_G';'33_A';'33_B';...
@@ -111,8 +103,6 @@ excludeSwift = {...
 '36_G';'35_B';'34_I';'36_B';'36_H';'36_A';'36_E';'36_D'...
 };
 
-excludePerhaps = {...
-    };
 
 % excludeDoubt = {...
 % '6_C';'6_F';'9_C';'17_C';'23_K';'25_H';'25_J';...
@@ -121,7 +111,7 @@ excludePerhaps = {...
 % '34_P';'29_G';'29_K'};
 
 
-exclude = [excludeBroken;excludeTraining;excludeSwift];
+exclude = [excludeBroken;trainingImages;excludeSwift];
 
 % area(any(isnan(area)')',:) = [];
 % 
@@ -153,8 +143,8 @@ exclude = [excludeBroken;excludeTraining;excludeSwift];
 
 load('../compareSwiftQurva_Bertan.mat', 'area','idQuRVA','allFiles')
 % 
-% testMsk = ismember([idQuRVA{:}],excludeSwift');
-% plot(area(testMsk,1),area(testMsk,2),'*b')
+% testMsk = ismember([idQuRVA{:}],keepPerhaps');
+% plot(area(testMsk,1),area(testMsk,2),'or')
 % 
 % %%
 

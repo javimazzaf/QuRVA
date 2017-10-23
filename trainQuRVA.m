@@ -73,7 +73,7 @@ for it = 1:numel(imFiles)
     
     imwrite(imRGB,fullfile(verifDir,[fname(1:end-3) 'jpg']));
     
-    disp(it)
+    disp([num2str(it) ': ' fname])
 end
 
 versionInfo.dayTag = datestr(now,'yyyymmdd_HH_MM');
