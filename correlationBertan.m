@@ -2,6 +2,11 @@ function correlationBertan
 
 readConfig
 
+funcName = mfilename;
+
+%Ensures everything is commited before starting test.
+[versionInfo.branch, versionInfo.sha] = getGitInfo;
+
 baseDir = '/Volumes/EyeFolder/';
 % baseDir = '~/';
 
@@ -88,9 +93,12 @@ for k = 1:numel(idQuRVA)
     
 end
 
-save('../compareSwiftQurva_Bertan.mat', 'area','idQuRVA','allFiles')
+save('../compareSwiftQurva_Bertan.mat', 'area','idQuRVA','allFiles','funcName','versionInfo')
 
 %% Plot
+
+readConfig
+
 excludeBroken = {'1_E';'5_D';'34_G';'34_Q';'34_J'};
 
 excludeSwift = {...
@@ -99,11 +107,10 @@ excludeSwift = {...
 '33_E';'33_F';'33_H';'33_J';'34_D';'34_H';...
 '35_A';'35_C';'36_C';...
 '37_B';'37_C';'37_D';'37_E';'37_G';'32_C';'29_C';...
-'33_C';'34_C';'34_E';'34_R';...
-'36_G';'35_B';'34_I';'36_B';'36_H';'36_A';'36_E';'36_D'...
+'33_C';'34_C';'34_E';'34_R'...
 };
 
-
+% '35_B';'36_G';'34_I';'36_D';'36_E';'36_A';'36_H';'36_B'
 % excludeDoubt = {...
 % '6_C';'6_F';'9_C';'17_C';'23_K';'25_H';'25_J';...
 % '26_F';'28_D';'28_H';'28_J';'29_F';'31_D';'31_E';'32_D';'33_G';...
@@ -142,11 +149,11 @@ exclude = [excludeBroken;trainingImages;excludeSwift];
 % idQuRVA = regexp(allFiles,'([0-9]+_[a-zA-Z]+)(?=_original\.tif\.mat)','match');
 
 load('../compareSwiftQurva_Bertan.mat', 'area','idQuRVA','allFiles')
-% 
-% testMsk = ismember([idQuRVA{:}],keepPerhaps');
+% % 
+% testMsk = ismember([idQuRVA{:}],excludeSwift');
 % plot(area(testMsk,1),area(testMsk,2),'or')
-% 
-% %%
+
+%
 
 validMsk = ~ismember([idQuRVA{:}],exclude');
 validMsk = validMsk & ~any(isnan(area)');
