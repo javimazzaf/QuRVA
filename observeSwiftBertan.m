@@ -18,7 +18,7 @@ baseSwift = fullfile(baseDir,'Dropbox (Biophotonics)/Deep_learning_Images/OIR/sw
 
 id = regexp({dirsOrig(:).name},'([0-9]+_[a-zA-Z]+)(?=_original\.tif)','match');
 
-for k = 1:50 %numel(id)
+for k = 1:numel(id)
     disp(k)
     
     fileOrig  = fullfile(baseOrig,[id{k}{:} '_original.tif']);
