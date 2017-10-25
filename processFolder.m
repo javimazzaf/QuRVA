@@ -1,7 +1,7 @@
 % *************************************************************************
 % Parameters (optional): If not included it uses the default behaviour
 % varargin{1} = masterFolder (string with folder path) default: config.ini
-% varargin{2} = myFiles (particular file names in a cellarray): default: files in master folder 
+% varargin{2} = myFiles (particular file names in a cellarray): default: files in master folder
 % varargin{3} = model (object containint QDA object): default model.mat in current folder
 % varargin{3} = doConsensusImages : default false
 % *************************************************************************
@@ -15,13 +15,13 @@ try
     if nargin > 0, masterFolder=varargin{1};
     else,          masterFolder = uigetdir('', 'Select folder'); end
     
-    if nargin > 1, myFiles = varargin{2};
+    if nargin > 1, myFiles = varargin{2}; 
     else,          myFiles = getImageList(masterFolder); end
     
-    if nargin > 2, model = varargin{3}; 
+    if nargin > 2, model = varargin{3};
     else,          load('model.mat','model'); end
     
-    if nargin > 3, doConsensusImages = varargin{4}; 
+    if nargin > 3, doConsensusImages = varargin{4};
     else,          doConsensusImages = false; end
     
     warning('Off')
@@ -32,10 +32,20 @@ try
     mkdir(masterFolder, 'VasculatureNumbers')
     mkdir(masterFolder, 'ONCenter')
     mkdir(masterFolder, 'Reports')
-    warning('On')    
+    warning('On')
     
     %% Prepare mask and Center
     computeMaskAndCenter(masterFolder, myFiles,computeMaskAndCenterAutomatically);
+    
+    myFiles = myFiles(:);
+    
+    outFlatMountArea     = zeros(size(myFiles));
+    outBranchingPoints   = outFlatMountArea;
+    outAVascularArea     = outFlatMountArea;
+    outVasculatureLength = outFlatMountArea;
+    outTuftArea          = outFlatMountArea;
+    outTuftNumber        = outFlatMountArea;
+    outEndPoints         = outFlatMountArea;
     
     %% Do loop
     for it=1:numel(myFiles)
@@ -64,6 +74,9 @@ try
             thisONCenter = thisONCenter/scaleFactor;
             retinaDiam   = computeRetinaSize(thisMask, thisONCenter);
             
+            % For Results
+            outFlatMountArea(it)     = sum(thisMask(:));
+            
             if doVasculature
                 
                 disp('  Computing vasculature . . .')
@@ -88,6 +101,12 @@ try
                 
                 disp('  Vasculature done.')
                 
+                % For Results
+                outBranchingPoints(it)   = sum(brchPts(:));
+                outAVascularArea(it)     = sum(aVascZone(:));
+                outVasculatureLength(it) = sum(vesselSkelMask(:));
+                outEndPoints(it)         = sum(endPts(:));
+                
             end % doVasculature
             
             %% Analyze tufts
@@ -96,7 +115,7 @@ try
                 disp('  Computing tufts . . .')
                 
                 tuftsMask = getTufts(redImage, maskNoCenter, thisMask, thisONCenter, retinaDiam, model);
-%                 tuftsMask = getTufts(overSaturate(redImage), maskNoCenter, thisMask, thisONCenter, retinaDiam, model);
+                %                 tuftsMask = getTufts(overSaturate(redImage), maskNoCenter, thisMask, thisONCenter, retinaDiam, model);
                 
                 % *** Save Tuft Images ***
                 if doSaveImages
@@ -116,7 +135,7 @@ try
                     resultImage = [quadNW quadNE];
                     
                     % Add consensus panel
-                    if doConsensusImages 
+                    if doConsensusImages
                         
                         % Create Image for all voters
                         load(fullfile(masterFolder,'TuftConsensusMasks',[myFiles{it} '.mat']),'allMasks')
@@ -157,17 +176,13 @@ try
                 
                 save(fullfile(masterFolder, 'TuftNumbers', [myFiles{it} '.mat']), 'tuftsMask');
                 
+                % For Results
+                outTuftArea(it)          = sum(tuftsMask(:));
+                outTuftNumber(it)        = max(max(bwlabel(tuftsMask)));
+                
                 disp('  Tufts done.')
                 
             end % doTufts
-            
-            outFlatMountArea(it)     = sum(thisMask(:));
-            outBranchingPoints(it)   = sum(brchPts(:));
-            outAVascularArea(it)     = sum(aVascZone(:));
-            outVasculatureLength(it) = sum(vesselSkelMask(:));
-            outTuftArea(it)          = sum(tuftsMask(:));
-            outTuftNumber(it)        = max(max(bwlabel(tuftsMask)));
-            outEndPoints(it)         = sum(endPts(:));
             
             disp(['Done: ' myFiles{it}])
             
@@ -179,27 +194,50 @@ try
     end
     
     resultsTable                   = table;
-    resultsTable.FileName          = myFiles';
-    resultsTable.FlatMountArea     = outFlatMountArea';
-    resultsTable.BranchingPoints   = outBranchingPoints';
-    resultsTable.AVascularArea     = outAVascularArea';
-    resultsTable.VasculatureLength = outVasculatureLength';
-    resultsTable.TuftArea          = outTuftArea';
-    resultsTable.TuftNumber        = outTuftNumber';
-    resultsTable.EndPoints         = outEndPoints';
+    resultsTable.FileName          = myFiles;
+    resultsTable.FlatMountArea     = outFlatMountArea;
+    resultsTable.BranchingPoints   = outBranchingPoints;
+    resultsTable.AVascularArea     = outAVascularArea;
+    resultsTable.VasculatureLength = outVasculatureLength;
+    resultsTable.TuftArea          = outTuftArea;
+    resultsTable.TuftNumber        = outTuftNumber;
+    resultsTable.EndPoints         = outEndPoints;
     
-    tableFileName = fullfile(masterFolder, 'Reports', 'AnalysisResult.xlsx');
-    
-    oldTable = [];
-    if exist(tableFileName,'file')
-        oldTable = readtable(tableFileName);
-    end
-    
-    writetable([oldTable;resultsTable],tableFileName)
+    add2Table(masterFolder,resultsTable);
     
 catch globalException
     disp(['Error in processFolder. Message: ' globalException.message buildCallStack(globalException)]);
 end
 
+end
+
+% Adds table2Add at the end of the table in the last csv file found in the
+% Reports Folder. If there is an error, it creates a new file with today's
+% date.
+function add2Table(masterFolder,table2Add)
+% Takes the last file
+tablePath = fullfile(masterFolder, 'Reports');
+tableFiles = dir(fullfile(tablePath,'*.csv'));
+tableFiles = sort({tableFiles(:).name});
+
+if isempty(tableFiles), tableFileName = fullfile(masterFolder, 'Reports', 'AnalysisResult.csv');
+else,                   tableFileName = fullfile(masterFolder, 'Reports', tableFiles{end});
+end
+
+oldTable = [];
+
+if exist(tableFileName,'file')
+    try
+        oldTable = readtable(tableFileName);
+    catch
+        [tablePath,fname,fext] = fileparts(tableFileName);
+        newFname = [fname datestr(now,'yyyymmdd_HHMMSS') fext];
+        disp(['Failed opening ' fname '.' fext '. Creating new file: ' newFname]);
+        
+        tableFileName = fullfile(tablePath,newFname);
+    end
+end
+
+writetable([oldTable;table2Add],tableFileName)
 end
 

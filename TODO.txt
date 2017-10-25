@@ -1,5 +1,5 @@
-1 - Add new model and make sure it gives good results in all image sets
-2 - fix excel bug
+[OK] - Add new model and make sure it gives good results in all image sets
+[OK] - fix excel bug
 3 - Make sure QuRVA online works
 4 - Clean files and keep only those needed
 5 - Check QuRVA online still works
