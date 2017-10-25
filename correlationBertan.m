@@ -110,50 +110,10 @@ excludeSwift = {...
 '33_C';'34_C';'34_E';'34_R'...
 };
 
-% '35_B';'36_G';'34_I';'36_D';'36_E';'36_A';'36_H';'36_B'
-% excludeDoubt = {...
-% '6_C';'6_F';'9_C';'17_C';'23_K';'25_H';'25_J';...
-% '26_F';'28_D';'28_H';'28_J';'29_F';'31_D';'31_E';'32_D';'33_G';...
-% '34_A';'34_B';'34_K';'34_L';'34_M';'34_N';'34_O';...
-% '34_P';'29_G';'29_K'};
-
 
 exclude = [excludeBroken;trainingImages;excludeSwift];
 
-% area(any(isnan(area)')',:) = [];
-% 
-% set1 = area(:,1);
-% set2 = area(:,2);
-% 
-% f = fit(set1,set2,'poly1');
-% fitSet2 = f(set1);
-% 
-% dist = abs(set2 - fitSet2);
-% 
-% [dist, ix] = sort(dist,'descend');
-% set1 = set1(ix);
-% set2 = set2(ix);
-% fitSet2 = f(set1);
-
-%Seleccion
-% nGood = 170;
-% set1    = set1(end-nGood+1:end);
-% set2    = set2(end-nGood+1:end);
-% fitSet2 = fitSet2(end-nGood+1:end);
-
-% baseDir = '/Volumes/EyeFolder/';
-% imPath = fullfile(baseDir,'Dropbox (Biophotonics)/Deep_learning_Images/OIR/raw/');
-% allFiles = dir(fullfile(imPath,'Masks','*.mat'));
-% allFiles = {allFiles(:).name};
-% allFiles = allFiles(51:end);
-% idQuRVA = regexp(allFiles,'([0-9]+_[a-zA-Z]+)(?=_original\.tif\.mat)','match');
-
-load('../compareSwiftQurva_Bertan.mat', 'area','idQuRVA','allFiles')
-% % 
-% testMsk = ismember([idQuRVA{:}],excludeSwift');
-% plot(area(testMsk,1),area(testMsk,2),'or')
-
-%
+load('../compareSwiftQurva_Bertan.mat', 'area','idQuRVA','allFiles','funcName','versionInfo')
 
 validMsk = ~ismember([idQuRVA{:}],exclude');
 validMsk = validMsk & ~any(isnan(area)');
@@ -169,25 +129,35 @@ f = fit(set1,set2,'poly1');
 fitSet2 = f(set1);
 
 [R,P] = corrcoef(set1,set2);
-disp(['R=' num2str(R(1,2),'%0.3f') ' - p=' num2str(P(1,2),'%0.3f')]);
+disp(['R=' num2str(R(1,2),'%0.3f') ' - p=' num2str(P(1,2),'%0.10f')]);
 
-plot(set1,set2,'.k'), hold on
-plot(set1,fitSet2,'-r')
-xlabel('Area QuRVA [%]')
-ylabel('Area Swift [%]')
+fg = figure;
+plot(set1,set2,'ok','MarkerSize',4,'MarkerEdgeColor',[0 0.2 .9],'MarkerFaceColor',[0 0.5 1]), hold on
+plot(set1,fitSet2,'-','LineWidth',2,'Color',[1 0.3 0])
+set(gca,'FontSize',16,'LineWidth',2,'XTick',0:0.05:0.15,'YTick',0:0.05:0.15)
+xlim([0 0.16])
+ylim([0 0.16])
+xlabel('Area QuRVA / RA')
+ylabel('Area Swift\_NV / RA')
 
-% 
-% 
-% disp('===================================================================')
-% for k = 1:10
-%     ix = find((round(area(:,1)*1E4)/1E4 == round(set1(k)*1E4)/1E4) & (round(area(:,2)*1E4)/1E4 == round(set2(k)*1E4)/1E4));
-%     disp([allFiles{ix} 9 '|' 9 num2str(area(ix,3)) '|' 9 num2str(area(ix,5)) '|' 9 num2str(area(ix,6))])
-% end
-% disp('-------------------------------------------------------------------')
-% for k = numel(set1):-1:numel(set1)-4
-%     ix = find((round(area(:,1)*1E4)/1E4 == round(set1(k)*1E4)/1E4) & (round(area(:,2)*1E4)/1E4 == round(set2(k)*1E4)/1E4));
-%     disp([allFiles{ix} 9 '|' 9 num2str(area(ix,3)) '|' 9 num2str(area(ix,5)) '|' 9 num2str(area(ix,6))])
-% end
+ci = confint(f,0.95);
+
+fitText = { 'y = m \cdot x + b';...
+           ['m = ' num2str(f.p1,'%0.2f') ' \pm ' num2str(abs(ci(1,1)-ci(2,1))/2,'%0.2f')];...
+           ['b = ' num2str(f.p2,'%0.2f') ' \pm ' num2str(abs(ci(1,2)-ci(2,2))/2,'%0.2f')]};
+
+text(0.1,0.03,fitText,'FontSize',16)
+
+imComment =  ['Function used to create image:' funcName '. '...
+              'Soft git version: '...
+              'Branch: ' versionInfo.branch '. '...
+              'Sha: ' versionInfo.sha '. '...
+              'QuRVA used model trained with our 20 anonymous images and: '...
+              strjoin(trainingImages,'|')
+              ];
+      
+figure2HQpng(fg,'../compareSwiftQurva_Bertan.png',imComment);
+
 
 
 
