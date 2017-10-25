@@ -1,5 +1,7 @@
-- [DONE] incorporar el metodo de machine learning en la funcion getTufts para que se calculen los tufts desde processFolder
-- [DONE] Hacer que calcule automaticamente el centroide y la mascara si no existe el archivo.
-- [DONE] getAvascularZone: En lugar de volver a calcular EquivDiam, hacer que use retinalDiamenter, y thisONcenter, 
-                    que se calculan en processFolder y también se usan para los tufts. 
+1 - Add new model and make sure it gives good results in all image sets
+2 - fix excel bug
+3 - Make sure QuRVA online works
+4 - Clean files and keep only those needed
+5 - Check QuRVA online still works
+6 - Make compiled sotware.
 

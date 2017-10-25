@@ -1,4 +1,12 @@
-function trainQuRVA(imPath,trainPath,imFiles,fileTrainingSet,fileModel)
+% We used for generating the training set from
+% Bertan Images.
+%
+% imPath: path where raw images are stored
+% trainPath: path where segmented masks are stored
+% imFiles: selection of images used to train
+% fileTrainingSet: file name where to store the training set
+
+function computeBertanTrainingSet(imPath,trainPath,imFiles,fileTrainingSet)
 
 readConfig
 
@@ -63,7 +71,6 @@ for it = 1:numel(imFiles)
     falseBlocks = getBlocksInMask(indBlocks, validMask & ~trainingMask, tufts.blocksInMaskPercentage, offSet);
     
     blockFeatures = computeBlockFeatures(oImage,maskNoCenter, thisMask, indBlocks,trueBlocks,falseBlocks, offSet, thisONCenter);
-%     blockFeatures = computeBlockFeatures(sImage,maskNoCenter, thisMask, indBlocks,trueBlocks,falseBlocks, offSet, thisONCenter);
 
     data = [data;blockFeatures];
     res  = [res;ones([size(trueBlocks,1),1]);zeros([size(falseBlocks,1),1])];
@@ -79,9 +86,5 @@ end
 versionInfo.dayTag = datestr(now,'yyyymmdd_HH_MM');
 
 save(fileTrainingSet,'data','res','blockSize','retinaDiam','versionInfo')
-
-model = fitcdiscr(data,res,'DiscrimType','quadratic','Cost',tufts.classCost,'Prior','empirical');
-
-save(fileModel,'model','-v7.3')
 
 end
