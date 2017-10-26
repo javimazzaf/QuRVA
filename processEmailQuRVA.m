@@ -25,8 +25,12 @@ try
         
         AnalysisResult = openReport([rootFolder 'imagesToProcess']);
         
-        for itFile=1:numel(fileNamesToProcess)
-            row=find(strcmp(AnalysisResult.FileName, fileNamesToProcess{itFile}),1,'first');
+        if isempty(AnalysisResult), error('No results found in %s.',[rootFolder 'imagesToProcess']); end
+        
+        for itFile = 1:numel(fileNamesToProcess)
+            
+            % Get Last results for the image
+            row = find(strcmp(AnalysisResult.FileName, fileNamesToProcess{itFile}),1,'last');
             
             %% Numbers for each email
             thisFlatMountArea     = AnalysisResult.FlatMountArea(row);
@@ -40,13 +44,6 @@ try
             [outEmailAddress, outFileName] = parseImageName(fileNamesToProcess{itFile});
             
             %% compose text
-%             outFileName
-%             num2str(thisFlatMountArea)
-%             num2str(thisAVascularArea)
-%             num2str(thisBranchingPoints)
-%             num2str(thisVasculatureLength)
-%             num2str(thisTuftArea)
-%             num2str(thisTuftNumber)
             emailText=['Thanks for using QuRVA' 10 10 'These are the results we have obtained for ' outFileName ':' 10 ...
                 'FlatMount Area = ' num2str(thisFlatMountArea) 10 ...
                 'Avascular Area = ' num2str(thisAVascularArea) 10 ...
