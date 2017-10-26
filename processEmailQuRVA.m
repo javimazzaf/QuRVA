@@ -23,21 +23,21 @@ try
     if numel(fileNamesToProcess)>0
         processFolder([rootFolder 'imagesToProcess'])
         
-        AnalysisResult = openExcelReport([rootFolder 'imagesToProcess']);
+        AnalysisResult = openReport([rootFolder 'imagesToProcess']);
         
         for itFile=1:numel(fileNamesToProcess)
             row=find(strcmp(AnalysisResult.FileName, fileNamesToProcess{itFile}),1,'first');
             
             %% Numbers for each email
-            thisFlatMountArea=AnalysisResult.FlatMountArea(row);
-            thisAVascularArea=AnalysisResult.AVascularArea(row);
-            thisBranchingPoints=AnalysisResult.BranchingPoints(row);
-            thisVasculatureLength=AnalysisResult.VasculatureLength(row);
-            thisTuftArea=AnalysisResult.TuftArea(row);
-            thisTuftNumber=AnalysisResult.TuftNumber(row);
+            thisFlatMountArea     = AnalysisResult.FlatMountArea(row);
+            thisAVascularArea     = AnalysisResult.AVascularArea(row);
+            thisBranchingPoints   = AnalysisResult.BranchingPoints(row);
+            thisVasculatureLength = AnalysisResult.VasculatureLength(row);
+            thisTuftArea          = AnalysisResult.TuftArea(row);
+            thisTuftNumber        = AnalysisResult.TuftNumber(row);
             
             %% Parse fileName
-            [outEmailAddress, outFileName] = parseImageName(fileNamesToProcess{itFile})
+            [outEmailAddress, outFileName] = parseImageName(fileNamesToProcess{itFile});
             
             %% compose text
 %             outFileName
@@ -53,7 +53,7 @@ try
                 'Number of branching points = ' num2str(thisBranchingPoints) 10 ...
                 'Vasculature full length = ' num2str(thisVasculatureLength) 10 ...
                 'Tufts area = ' num2str(thisTuftArea) 10 ...
-                'Total number of tusft = ' num2str(thisTuftNumber) 10 10 ...
+                'Total number of tufts = ' num2str(thisTuftNumber) 10 10 ...
                 'You can request a copy of the software to process multiple images at once locally' 10 ...
                 'Please cite this paper:'];
             
