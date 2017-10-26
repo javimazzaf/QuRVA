@@ -1,6 +1,6 @@
 [OK] - Add new model and make sure it gives good results in all image sets
 [OK] - fix excel bug
-3 - Make sure QuRVA online works
+[OK] - Make sure QuRVA online works
 4 - Clean files and keep only those needed
 5 - Check QuRVA online still works
 6 - Make compiled sotware.
