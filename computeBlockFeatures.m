@@ -41,7 +41,7 @@ blockFeatures = [blockFeatures,computeAvgWithinBlocks(log60,blocksInd,[trueBlock
 tolRng = range(smoothedIm(logical(maskNoCenter))) * tufts.lbpTolPercentage / 100; % The tolerance for LPBs is 5% of total image range within valid mask
 R = 1;
 P = 8;
-blockFeatures = [blockFeatures,computeLBP_M_FeaturesOnBlocks(smoothedIm,R,P,blocksInd,[trueBlocks;falseBlocks],offSet,tolRng)];
+blockFeatures = [blockFeatures,computeLBPfeaturesOnBlocks(smoothedIm,R,P,blocksInd,[trueBlocks;falseBlocks],offSet,tolRng)];
 
 end
 

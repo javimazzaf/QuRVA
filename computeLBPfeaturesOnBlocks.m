@@ -1,4 +1,4 @@
-function features = computeLBP_M_FeaturesOnBlocks(inIm,R,P,blocksInd,selBlocks, offSet, tolRng)
+function features = computeLBPfeaturesOnBlocks(inIm,R,P,blocksInd,selBlocks, offSet, tolRng)
 
 ixFeat = [1,10];
 

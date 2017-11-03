@@ -62,8 +62,7 @@ for it=1:14
     if doTufts
         
         if exist('smoothVessels', 'var')
-            %[tuftsMask, thickMask]=getTufts(thisMask, redImage, maskNoCenter, smoothVessels);
-            tuftsMask=getTuftsConvNet(thisMask, redImage, maskNoCenter, smoothVessels);
+            [tuftsMask, thickMask]=getTufts(thisMask, redImage, maskNoCenter, smoothVessels);
 
         else
             %[tuftsMask, thickMask]=getTufts(thisMask, redImage, maskNoCenter);
