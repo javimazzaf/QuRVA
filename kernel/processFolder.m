@@ -47,11 +47,23 @@ try
     outTuftNumber        = outFlatMountArea;
     outEndPoints         = outFlatMountArea;
     
+    h = waitbar(0,'quRVA processing',...
+                  'CreateCancelBtn',...
+                  'setappdata(gcbf,''stop'',1)',...
+                  'WindowStyle','modal',...
+                  'Name','QuRVA');
+
+    cleanObj = onCleanup(@()delete(h));    
+    
     %% Do loop
     for it=1:numel(myFiles)
         try
+            %Check stop signal
+            if getappdata(h,'stop') == 1, return, end
+            
             %% Verbose current Image
-            disp(['Processing: ' myFiles{it}])
+            disp(logit(masterFolder, ['Processing: ' myFiles{it}]))
+            waitbar(it/numel(myFiles),h,sprintf('%0.0f%% Processed. Starting %s.',100*it/numel(myFiles),myFiles{it}))
             
             %% Read image
             thisImage=imread(fullfile(masterFolder, myFiles{it}));
@@ -79,7 +91,10 @@ try
             
             if doVasculature
                 
-                disp('  Computing vasculature . . .')
+                disp(logit(masterFolder, '  Computing vasculature . . .'))
+                if getappdata(h,'stop') == 1, return, end 
+                waitbar(it/numel(myFiles),h,sprintf('%0.0f%% Processed. Computing vasculature of %s.',100*it/numel(myFiles),myFiles{it}))
+                
                 [vesselSkelMask, brchPts, smoothVessels, endPts] = getVacularNetwork(thisMask, redImage);
                 aVascZone = getAvacularZone(thisMask, vesselSkelMask, retinaDiam, thisONCenter);
                 
@@ -99,7 +114,7 @@ try
                 save(fullfile(masterFolder, 'VasculatureNumbers', [myFiles{it},'.mat']),...
                     'vesselSkelMask', 'brchPts', 'aVascZone', 'endPts','smoothVessels');
                 
-                disp('  Vasculature done.')
+                disp(logit(masterFolder, '  Vasculature done.'))
                 
                 % For Results
                 outBranchingPoints(it)   = sum(brchPts(:));
@@ -112,7 +127,9 @@ try
             %% Analyze tufts
             if doTufts
                 
-                disp('  Computing tufts . . .')
+                disp(logit(masterFolder, '  Computing tufts . . .'))
+                if getappdata(h,'stop') == 1, return, end 
+                waitbar(it/numel(myFiles),h,sprintf('%0.0f%% Processed. Computing tufts of %s.',100*it/numel(myFiles),myFiles{it}))
                 
                 tuftsMask = getTufts(redImage, maskNoCenter, thisMask, thisONCenter, retinaDiam, model);
                 %                 tuftsMask = getTufts(overSaturate(redImage), maskNoCenter, thisMask, thisONCenter, retinaDiam, model);
@@ -180,14 +197,17 @@ try
                 outTuftArea(it)          = sum(tuftsMask(:));
                 outTuftNumber(it)        = max(max(bwlabel(tuftsMask)));
                 
-                disp('  Tufts done.')
+                disp(logit(masterFolder, '  Tufts done.'))
                 
             end % doTufts
             
-            disp(['Done: ' myFiles{it}])
+            disp(logit(masterFolder, ['Done: ' myFiles{it}]))
+            if getappdata(h,'stop') == 1, return, end 
+            waitbar(it/numel(myFiles),h,sprintf('%0.0f%% Processed. Done %s.',100*it/numel(myFiles),myFiles{it}))
             
         catch loopException
-            disp(['Error in processFolder(image ' myFiles{it} '). Message: ' loopException.message buildCallStack(loopException)]);
+            disp(logit(masterFolder, ['Error in processFolder(image ' myFiles{it} '). Message: ' loopException.message buildCallStack(loopException)]))
+            waitbar(it/numel(myFiles),h,sprintf('%0.0f%% Processed. Error on %s.',100*it/numel(myFiles),myFiles{it}))
             continue
         end
         
@@ -206,8 +226,12 @@ try
     add2Table(masterFolder,resultsTable);
     
 catch globalException
-    disp(['Error in processFolder. Message: ' globalException.message buildCallStack(globalException)]);
+    disp(logit(masterFolder, ['Error in processFolder. Message: ' globalException.message buildCallStack(globalException)]))
 end
+
+delete(h)
+
+msgbox('Done','QuRVA','modal') 
 
 end
 
@@ -232,7 +256,7 @@ if exist(tableFileName,'file')
     catch
         [tablePath,fname,fext] = fileparts(tableFileName);
         newFname = [fname datestr(now,'yyyymmdd_HHMMSS') fext];
-        disp(['Failed opening ' fname '.' fext '. Creating new file: ' newFname]);
+        disp(logit(masterFolder, ['Failed opening ' fname '.' fext '. Creating new file: ' newFname]))
         
         tableFileName = fullfile(tablePath,newFname);
     end

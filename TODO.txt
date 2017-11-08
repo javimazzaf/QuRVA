@@ -3,5 +3,6 @@
 [OK] - Make sure QuRVA online works
 [OK] - Clean files and keep only those needed
 [OK] - Check QuRVA online still works
-6 - Make compiled sotware.
+[OK] - Make compiled sotware.
+- Make process folder interactive
 
