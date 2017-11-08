@@ -16,7 +16,10 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="splashScreen.svg">
+   sodipodi:docname="splashScreen.svg"
+   inkscape:export-filename="/Users/javimazzaf/Dropbox (Biophotonics)/Privado/work/proyectos/flatMounts/code/project/splashScreen.png"
+   inkscape:export-xdpi="299.85147"
+   inkscape:export-ydpi="299.85147">
   <defs
      id="defs4">
     <clipPath
@@ -66,7 +69,9 @@
      inkscape:groupmode="layer"
      id="layer1">
     <g
-       id="g4234">
+       id="g4234"
+       inkscape:export-xdpi="150"
+       inkscape:export-ydpi="150">
       <image
          transform="translate(43.51738,-6.3878724)"
          clip-path="url(#clipPath4193)"
