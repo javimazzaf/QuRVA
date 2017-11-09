@@ -9,13 +9,24 @@
 function processFolder(varargin)
 
 try
+    disp('Initialization (wait).')
+    hWbar = waitbar(0,'Initialization (wait).',...
+        'CreateCancelBtn',...
+        'setappdata(gcbf,''stop'',1)',...
+        'WindowStyle','modal',...
+        'Name','QuRVA');
+    
+    cleaning.wWbar = onCleanup(@()delete(hWbar));
+    
+    movegui(hWbar,'northwest')
+    
     %% Settings and folders
     readConfig
     
     if nargin > 0, masterFolder=varargin{1};
     else,          masterFolder = uigetdir('', 'Select folder'); end
     
-    if nargin > 1, myFiles = varargin{2}; 
+    if nargin > 1, myFiles = varargin{2};
     else,          myFiles = getImageList(masterFolder); end
     
     if nargin > 2, model = varargin{3};
@@ -23,6 +34,9 @@ try
     
     if nargin > 3, doConsensusImages = varargin{4};
     else,          doConsensusImages = false; end
+    
+    disp(logit(masterFolder, 'Creating folders . . .'))
+    waitbar(0,hWbar,'Creating folders . . .')
     
     warning('Off')
     mkdir(masterFolder, 'Masks')
@@ -35,7 +49,9 @@ try
     warning('On')
     
     %% Prepare mask and Center
-    computeMaskAndCenter(masterFolder, myFiles,computeMaskAndCenterAutomatically);
+    disp(logit(masterFolder, 'Creating Masks and centers . . .'))
+    waitbar(0,hWbar,'Creating Masks and centers . . .')
+    computeMaskAndCenter(masterFolder, myFiles,computeMaskAndCenterAutomatically, hWbar);
     
     myFiles = myFiles(:);
     
@@ -47,23 +63,20 @@ try
     outTuftNumber        = outFlatMountArea;
     outEndPoints         = outFlatMountArea;
     
-    h = waitbar(0,'quRVA processing',...
-                  'CreateCancelBtn',...
-                  'setappdata(gcbf,''stop'',1)',...
-                  'WindowStyle','modal',...
-                  'Name','QuRVA');
-
-    cleanObj = onCleanup(@()delete(h));    
+    if getappdata(hWbar,'stop') == 1, return, end
+    
+    disp(logit(masterFolder, 'Processing started . . .'))
+    waitbar(0,hWbar,'Processing started . . .')
     
     %% Do loop
     for it=1:numel(myFiles)
         try
             %Check stop signal
-            if getappdata(h,'stop') == 1, return, end
+            if getappdata(hWbar,'stop') == 1, return, end
             
             %% Verbose current Image
             disp(logit(masterFolder, ['Processing: ' myFiles{it}]))
-            waitbar(it/numel(myFiles),h,sprintf('%0.0f%% Processed. Starting %s.',100*it/numel(myFiles),myFiles{it}))
+            waitbar((it-1)/numel(myFiles),hWbar,sprintf('%0.0f%% Processed. Starting %s.',100*(it-1)/numel(myFiles),myFiles{it}))
             
             %% Read image
             thisImage=imread(fullfile(masterFolder, myFiles{it}));
@@ -92,8 +105,8 @@ try
             if doVasculature
                 
                 disp(logit(masterFolder, '  Computing vasculature . . .'))
-                if getappdata(h,'stop') == 1, return, end 
-                waitbar(it/numel(myFiles),h,sprintf('%0.0f%% Processed. Computing vasculature of %s.',100*it/numel(myFiles),myFiles{it}))
+                if getappdata(hWbar,'stop') == 1, return, end
+                waitbar((it-1)/numel(myFiles),hWbar,sprintf('%0.0f%% Processed. Computing vasculature of %s.',100*(it-1)/numel(myFiles),myFiles{it}))
                 
                 [vesselSkelMask, brchPts, smoothVessels, endPts] = getVacularNetwork(thisMask, redImage);
                 aVascZone = getAvacularZone(thisMask, vesselSkelMask, retinaDiam, thisONCenter);
@@ -128,8 +141,8 @@ try
             if doTufts
                 
                 disp(logit(masterFolder, '  Computing tufts . . .'))
-                if getappdata(h,'stop') == 1, return, end 
-                waitbar(it/numel(myFiles),h,sprintf('%0.0f%% Processed. Computing tufts of %s.',100*it/numel(myFiles),myFiles{it}))
+                if getappdata(hWbar,'stop') == 1, return, end
+                waitbar((it-1)/numel(myFiles),hWbar,sprintf('%0.0f%% Processed. Computing tufts of %s.',100*(it-1)/numel(myFiles),myFiles{it}))
                 
                 tuftsMask = getTufts(redImage, maskNoCenter, thisMask, thisONCenter, retinaDiam, model);
                 %                 tuftsMask = getTufts(overSaturate(redImage), maskNoCenter, thisMask, thisONCenter, retinaDiam, model);
@@ -202,16 +215,18 @@ try
             end % doTufts
             
             disp(logit(masterFolder, ['Done: ' myFiles{it}]))
-            if getappdata(h,'stop') == 1, return, end 
-            waitbar(it/numel(myFiles),h,sprintf('%0.0f%% Processed. Done %s.',100*it/numel(myFiles),myFiles{it}))
+            if getappdata(hWbar,'stop') == 1, return, end
+            waitbar((it-1)/numel(myFiles),hWbar,sprintf('%0.0f%% Processed. Done %s.',100*(it-1)/numel(myFiles),myFiles{it}))
             
         catch loopException
             disp(logit(masterFolder, ['Error in processFolder(image ' myFiles{it} '). Message: ' loopException.message buildCallStack(loopException)]))
-            waitbar(it/numel(myFiles),h,sprintf('%0.0f%% Processed. Error on %s.',100*it/numel(myFiles),myFiles{it}))
+            waitbar((it-1)/numel(myFiles),hWbar,sprintf('%0.0f%% Processed. Error on %s.',100*(it-1)/numel(myFiles),myFiles{it}))
             continue
         end
         
     end
+    
+    waitbar(1,hWbar,'Saving results . . .')
     
     resultsTable                   = table;
     resultsTable.FileName          = myFiles;
@@ -229,7 +244,7 @@ catch globalException
     disp(logit(masterFolder, ['Error in processFolder. Message: ' globalException.message buildCallStack(globalException)]))
 end
 
-msgbox('Done','QuRVA','modal') 
+msgbox('Done','QuRVA','modal')
 
 end
 
