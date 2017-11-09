@@ -229,8 +229,6 @@ catch globalException
     disp(logit(masterFolder, ['Error in processFolder. Message: ' globalException.message buildCallStack(globalException)]))
 end
 
-delete(h)
-
 msgbox('Done','QuRVA','modal') 
 
 end
