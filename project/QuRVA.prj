@@ -1,19 +1,19 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
-  <configuration build-checksum="4155990798" file="/Users/javimazzaf/Dropbox (Biophotonics)/Privado/work/proyectos/flatMounts/code/project/QuRVA.prj" location="/Users/javimazzaf/Dropbox (Biophotonics)/Privado/work/proyectos/flatMounts/code/project" name="QuRVA" preferred-package-location="/Users/javimazzaf/Dropbox (Biophotonics)/Privado/work/proyectos/flatMounts/code/project/QuRVA/for_redistribution" preferred-package-type="package.type.app" target="target.ezdeploy.standalone" target-name="Application Compiler">
+  <configuration file="/Users/javimazzaf/Dropbox (Biophotonics)/Privado/work/proyectos/flatMounts/code/project/QuRVA.prj" location="/Users/javimazzaf/Dropbox (Biophotonics)/Privado/work/proyectos/flatMounts/code/project" name="QuRVA" target="target.ezdeploy.standalone" target-name="Application Compiler">
     <param.appname>QuRVA</param.appname>
     <param.icon />
     <param.icons />
     <param.version>1.0</param.version>
     <param.authnamewatermark>Javier Mazzaferri, Santiago Costantino</param.authnamewatermark>
-    <param.email>javier.mazzaferri@gmail.com, santiago.costantino@umontreal.ca</param.email>
-    <param.company>Hopital Maisonneuve-Rosemont, Montréal</param.company>
-    <param.summary>Quantitative retinal vascular assessment</param.summary>
-    <param.description>A machine learning approach to segment and characterize vascular tufts, delineate the whole vasculature network, and identify and analyze avascular regions.</param.description>
+    <param.email>javier.mazzaferri@gmail.com</param.email>
+    <param.company>Hospital Maisonneuve-Rosemont</param.company>
+    <param.summary />
+    <param.description />
     <param.screenshot>${PROJECT_ROOT}/splashScreen.png</param.screenshot>
     <param.guid />
-    <param.installpath.string>/Hopital_Maisonneuve-Rosemont,_Montréal/QuRVA/</param.installpath.string>
+    <param.installpath.string>/HMR/QuRVA/</param.installpath.string>
     <param.installpath.combo>option.installpath.systemwideapp</param.installpath.combo>
-    <param.logo />
+    <param.logo>${PROJECT_ROOT}/splashScreen.png</param.logo>
     <param.install.notes>In the following directions, replace MR by the directory where MATLAB or the MATLAB Runtime is installed on the target machine.
 
 If the environment variable DYLD_LIBRARY_PATH is undefined, set it to the following string:
@@ -32,8 +32,8 @@ ${DYLD_LIBRARY_PATH}:MR/v93/runtime/maci64:MR/v93/sys/os/maci64:MR/v93/bin/maci6
     <param.user.defined.mcr.options />
     <param.target.type>subtarget.standalone</param.target.type>
     <param.support.packages />
-    <param.web.mcr>false</param.web.mcr>
-    <param.package.mcr>true</param.package.mcr>
+    <param.web.mcr>true</param.web.mcr>
+    <param.package.mcr>false</param.package.mcr>
     <param.no.mcr>false</param.no.mcr>
     <param.web.mcr.name>MyAppInstaller_web</param.web.mcr.name>
     <param.package.mcr.name>MyAppInstaller_mcr</param.package.mcr.name>
@@ -49,10 +49,10 @@ ${DYLD_LIBRARY_PATH}:MR/v93/runtime/maci64:MR/v93/sys/os/maci64:MR/v93/bin/maci6
       <param.icon />
       <param.icons />
       <param.version />
+      <param.summary />
+      <param.description />
       <param.guid />
-      <param.installpath.string />
       <param.installpath.combo />
-      <param.logo />
       <param.target.install.notes />
       <param.intermediate />
       <param.files.only />
@@ -62,6 +62,8 @@ ${DYLD_LIBRARY_PATH}:MR/v93/runtime/maci64:MR/v93/sys/os/maci64:MR/v93/bin/maci6
       <param.user.defined.mcr.options />
       <param.target.type />
       <param.support.packages />
+      <param.web.mcr />
+      <param.package.mcr />
       <param.no.mcr />
       <param.web.mcr.name />
       <param.package.mcr.name />
@@ -102,6 +104,7 @@ ${DYLD_LIBRARY_PATH}:MR/v93/runtime/maci64:MR/v93/sys/os/maci64:MR/v93/bin/maci6
       <file>/Users/javimazzaf/Dropbox (Biophotonics)/Privado/work/proyectos/flatMounts/code/kernel/getVacularNetwork.m</file>
       <file>/Users/javimazzaf/Dropbox (Biophotonics)/Privado/work/proyectos/flatMounts/code/kernel/getmapping.m</file>
       <file>/Users/javimazzaf/Dropbox (Biophotonics)/Privado/work/proyectos/flatMounts/code/kernel/localBrightness.m</file>
+      <file>/Users/javimazzaf/Dropbox (Biophotonics)/Privado/work/proyectos/flatMounts/code/kernel/logit.m</file>
       <file>/Users/javimazzaf/Dropbox (Biophotonics)/Privado/work/proyectos/flatMounts/code/kernel/makeNiceVascularImage.m</file>
       <file>/Users/javimazzaf/Dropbox (Biophotonics)/Privado/work/proyectos/flatMounts/code/kernel/model.mat</file>
       <file>/Users/javimazzaf/Dropbox (Biophotonics)/Privado/work/proyectos/flatMounts/code/kernel/overSaturate.m</file>
@@ -155,7 +158,7 @@ ${DYLD_LIBRARY_PATH}:MR/v93/runtime/maci64:MR/v93/sys/os/maci64:MR/v93/bin/maci6
       <vista>false</vista>
       <linux>false</linux>
       <solaris>false</solaris>
-      <osver>10.13</osver>
+      <osver>10.13.1</osver>
       <os32>false</os32>
       <os64>true</os64>
       <arch>maci64</arch>
