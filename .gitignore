@@ -2,3 +2,6 @@
 *.mat
 config.ini
 untrackedTesting
+project/QuRVA/*.png
+project/QuRVA
+project/QuRVA/*
