@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
-  <configuration file="/Users/javimazzaf/Dropbox (Biophotonics)/Privado/work/proyectos/flatMounts/code/project/QuRVA.prj" location="/Users/javimazzaf/Dropbox (Biophotonics)/Privado/work/proyectos/flatMounts/code/project" name="QuRVA" target="target.ezdeploy.standalone" target-name="Application Compiler">
+  <configuration build-checksum="2895965754" file="/Users/javimazzaf/Dropbox (Biophotonics)/Privado/work/proyectos/flatMounts/code/project/QuRVA.prj" location="/Users/javimazzaf/Dropbox (Biophotonics)/Privado/work/proyectos/flatMounts/code/project" name="QuRVA" preferred-package-location="/Users/javimazzaf/Dropbox (Biophotonics)/Privado/work/proyectos/flatMounts/code/project/QuRVA/for_redistribution" preferred-package-type="package.type.app" target="target.ezdeploy.standalone" target-name="Application Compiler">
     <param.appname>QuRVA</param.appname>
     <param.icon />
     <param.icons />
