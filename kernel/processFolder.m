@@ -9,7 +9,8 @@
 function processFolder(varargin)
 
 try
-    logDir = getExecutablePath;
+    
+    logDir = '~/';
     
     disp('Initialization (wait).')
     hWbar = waitbar(0,'Initialization (wait).',...
@@ -18,11 +19,13 @@ try
         'WindowStyle','modal',...
         'Name','QuRVA');
     
+    setappdata(hWbar,'stop',0);
+    
     cleaning.wWbar = onCleanup(@()delete(hWbar));
     
     movegui(hWbar,'northwest')
     
-    %% Settings and folders
+    % Settings and folders
     readConfig
     
     if nargin > 0, masterFolder=varargin{1};
@@ -37,8 +40,6 @@ try
     if nargin > 3, doConsensusImages = varargin{4};
     else,          doConsensusImages = false; end
     
-    if ~isdeployed, logDir = masterFolder; end
-    
     disp(logit(logDir, 'Creating folders . . .'))
     waitbar(0,hWbar,'Creating folders . . .')
     
@@ -52,10 +53,9 @@ try
     mkdir(masterFolder, 'Reports')
     warning('On')
     
-    %%
     maxRadius = getDiameterFromInput;
     
-    %% Prepare mask and Center
+    % Prepare mask and Center
     disp(logit(logDir, 'Creating Masks and centers . . .'))
     waitbar(0,hWbar,'Creating Masks and centers . . .')
     computeMaskAndCenter(masterFolder, myFiles,computeMaskAndCenterAutomatically, hWbar);
@@ -75,26 +75,26 @@ try
     disp(logit(logDir, 'Processing started . . .'))
     waitbar(0,hWbar,'Processing started . . .')
     
-    %% Do loop
+    % Do loop
     for it=1:numel(myFiles)
         try
             %Check stop signal
             if getappdata(hWbar,'stop') == 1, return, end
             
-            %% Verbose current Image
+            % Verbose current Image
             disp(logit(logDir, ['Processing: ' myFiles{it}]))
             waitbar((it-1)/numel(myFiles),hWbar,sprintf('%0.0f%% Processed. Starting %s.',100*(it-1)/numel(myFiles),myFiles{it}))
             
-            %% Read image
+            % Read image
             thisImage=imread(fullfile(masterFolder, myFiles{it}));
             redImage=thisImage(:,:,1);
             
-            %% Make 8 bits
+            % Make 8 bits
             if strcmp(class(redImage), 'uint16')
                 redImage=uint8(double(redImage)/65535*255);
             end
             
-            %% Load Mask and Center
+            % Load Mask and Center
             load(fullfile(masterFolder, 'Masks',    [myFiles{it} '.mat']), 'thisMask');
             load(fullfile(masterFolder, 'ONCenter', [myFiles{it} '.mat']), 'thisONCenter');
             
@@ -118,7 +118,7 @@ try
                 [vesselSkelMask, brchPts, smoothVessels, endPts] = getVacularNetwork(thisMask, redImage);
                 aVascZone = getAvacularZone(thisMask, vesselSkelMask, retinaDiam, thisONCenter);
                 
-                %% Make a nice image
+                % Make a nice image
                 if doSaveImages
                     
                     leftHalf=cat(3, redImage, redImage, redImage);
@@ -144,7 +144,7 @@ try
                 
             end % doVasculature
             
-            %% Analyze tufts
+            % Analyze tufts
             if doTufts
                 
                 disp(logit(logDir, '  Computing tufts . . .'))
