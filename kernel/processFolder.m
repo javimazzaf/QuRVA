@@ -10,8 +10,6 @@ function processFolder(varargin)
 
 try
     
-    logDir = '~/';
-    
     disp('Initialization (wait).')
     hWbar = waitbar(0,'Initialization (wait).',...
         'CreateCancelBtn',...
@@ -39,6 +37,8 @@ try
     
     if nargin > 3, doConsensusImages = varargin{4};
     else,          doConsensusImages = false; end
+    
+    logDir = masterFolder;    
     
     disp(logit(logDir, 'Creating folders . . .'))
     waitbar(0,hWbar,'Creating folders . . .')

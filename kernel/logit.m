@@ -25,7 +25,7 @@ function outText = logit(dname,inText)
 
 try
     
-    fname = fullfile(dname,['log' datestr(now,'yyyymmdd') '.txt']);
+    fname = fullfile(dname,['quRVA' datestr(now,'yyyymmdd') '.log']);
     
     fid = fopen(fname,'a');
     
