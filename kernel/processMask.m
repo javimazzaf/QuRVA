@@ -1,4 +1,4 @@
-function [maskProps, maskNoCenter, thisONCenter]=processMask(varargin)
+function [maskProps, maskNoCenter, thisONCenter] = processMask(varargin)
 
 readConfig
 
@@ -10,9 +10,14 @@ maskProps=regionprops(myMask, myImage, 'EquivDiameter', 'WeightedCentroid', 'Bou
 maskProps = maskProps(ix);
 
 rMin = maskProps.EquivDiameter/2 *tufts.circMask.min;
-rMax = maskProps.EquivDiameter/2 *tufts.circMask.max;
 
-if nargin==3
+if nargin >= 4
+    rMax = maskProps.EquivDiameter/2 * varargin{4};
+else
+    rMax = maskProps.EquivDiameter/2 * tufts.circMask.max;
+end
+
+if nargin>=3
     thisONCenter=varargin{3};
 
     newCenterCircleMask=createCircularMask(size(myMask, 1), size(myMask, 2),...

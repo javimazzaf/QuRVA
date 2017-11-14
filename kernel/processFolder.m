@@ -9,6 +9,8 @@
 function processFolder(varargin)
 
 try
+    logDir = getExecutablePath;
+    
     disp('Initialization (wait).')
     hWbar = waitbar(0,'Initialization (wait).',...
         'CreateCancelBtn',...
@@ -35,7 +37,9 @@ try
     if nargin > 3, doConsensusImages = varargin{4};
     else,          doConsensusImages = false; end
     
-    disp(logit(masterFolder, 'Creating folders . . .'))
+    if ~isdeployed, logDir = masterFolder; end
+    
+    disp(logit(logDir, 'Creating folders . . .'))
     waitbar(0,hWbar,'Creating folders . . .')
     
     warning('Off')
@@ -48,8 +52,11 @@ try
     mkdir(masterFolder, 'Reports')
     warning('On')
     
+    %%
+    maxRadius = getDiameterFromInput;
+    
     %% Prepare mask and Center
-    disp(logit(masterFolder, 'Creating Masks and centers . . .'))
+    disp(logit(logDir, 'Creating Masks and centers . . .'))
     waitbar(0,hWbar,'Creating Masks and centers . . .')
     computeMaskAndCenter(masterFolder, myFiles,computeMaskAndCenterAutomatically, hWbar);
     
@@ -65,7 +72,7 @@ try
     
     if getappdata(hWbar,'stop') == 1, return, end
     
-    disp(logit(masterFolder, 'Processing started . . .'))
+    disp(logit(logDir, 'Processing started . . .'))
     waitbar(0,hWbar,'Processing started . . .')
     
     %% Do loop
@@ -75,7 +82,7 @@ try
             if getappdata(hWbar,'stop') == 1, return, end
             
             %% Verbose current Image
-            disp(logit(masterFolder, ['Processing: ' myFiles{it}]))
+            disp(logit(logDir, ['Processing: ' myFiles{it}]))
             waitbar((it-1)/numel(myFiles),hWbar,sprintf('%0.0f%% Processed. Starting %s.',100*(it-1)/numel(myFiles),myFiles{it}))
             
             %% Read image
@@ -91,7 +98,7 @@ try
             load(fullfile(masterFolder, 'Masks',    [myFiles{it} '.mat']), 'thisMask');
             load(fullfile(masterFolder, 'ONCenter', [myFiles{it} '.mat']), 'thisONCenter');
             
-            [maskStats, maskNoCenter] = processMask(thisMask, redImage, thisONCenter);
+            [maskStats, maskNoCenter] = processMask(thisMask, redImage, thisONCenter, maxRadius);
             
             [redImage, scaleFactor] = resetScale(redImage);
             thisMask     = resetScale(thisMask);
@@ -104,7 +111,7 @@ try
             
             if doVasculature
                 
-                disp(logit(masterFolder, '  Computing vasculature . . .'))
+                disp(logit(logDir, '  Computing vasculature . . .'))
                 if getappdata(hWbar,'stop') == 1, return, end
                 waitbar((it-1)/numel(myFiles),hWbar,sprintf('%0.0f%% Processed. Computing vasculature of %s.',100*(it-1)/numel(myFiles),myFiles{it}))
                 
@@ -127,7 +134,7 @@ try
                 save(fullfile(masterFolder, 'VasculatureNumbers', [myFiles{it},'.mat']),...
                     'vesselSkelMask', 'brchPts', 'aVascZone', 'endPts','smoothVessels');
                 
-                disp(logit(masterFolder, '  Vasculature done.'))
+                disp(logit(logDir, '  Vasculature done.'))
                 
                 % For Results
                 outBranchingPoints(it)   = sum(brchPts(:));
@@ -140,7 +147,7 @@ try
             %% Analyze tufts
             if doTufts
                 
-                disp(logit(masterFolder, '  Computing tufts . . .'))
+                disp(logit(logDir, '  Computing tufts . . .'))
                 if getappdata(hWbar,'stop') == 1, return, end
                 waitbar((it-1)/numel(myFiles),hWbar,sprintf('%0.0f%% Processed. Computing tufts of %s.',100*(it-1)/numel(myFiles),myFiles{it}))
                 
@@ -210,16 +217,16 @@ try
                 outTuftArea(it)          = sum(tuftsMask(:));
                 outTuftNumber(it)        = max(max(bwlabel(tuftsMask)));
                 
-                disp(logit(masterFolder, '  Tufts done.'))
+                disp(logit(logDir, '  Tufts done.'))
                 
             end % doTufts
             
-            disp(logit(masterFolder, ['Done: ' myFiles{it}]))
+            disp(logit(logDir, ['Done: ' myFiles{it}]))
             if getappdata(hWbar,'stop') == 1, return, end
             waitbar((it-1)/numel(myFiles),hWbar,sprintf('%0.0f%% Processed. Done %s.',100*(it-1)/numel(myFiles),myFiles{it}))
             
         catch loopException
-            disp(logit(masterFolder, ['Error in processFolder(image ' myFiles{it} '). Message: ' loopException.message buildCallStack(loopException)]))
+            disp(logit(logDir, ['Error in processFolder(image ' myFiles{it} '). Message: ' loopException.message buildCallStack(loopException)]))
             waitbar((it-1)/numel(myFiles),hWbar,sprintf('%0.0f%% Processed. Error on %s.',100*(it-1)/numel(myFiles),myFiles{it}))
             continue
         end
@@ -241,40 +248,11 @@ try
     add2Table(masterFolder,resultsTable);
     
 catch globalException
-    disp(logit(masterFolder, ['Error in processFolder. Message: ' globalException.message buildCallStack(globalException)]))
+    disp(logit(logDir, ['Error in processFolder. Message: ' globalException.message buildCallStack(globalException)]))
 end
 
 msgbox('Done','QuRVA','modal')
 
 end
 
-% Adds table2Add at the end of the table in the last csv file found in the
-% Reports Folder. If there is an error, it creates a new file with today's
-% date.
-function add2Table(masterFolder,table2Add)
-% Takes the last file
-tablePath = fullfile(masterFolder, 'Reports');
-tableFiles = dir(fullfile(tablePath,'*.csv'));
-tableFiles = sort({tableFiles(:).name});
-
-if isempty(tableFiles), tableFileName = fullfile(masterFolder, 'Reports', 'AnalysisResult.csv');
-else,                   tableFileName = fullfile(masterFolder, 'Reports', tableFiles{end});
-end
-
-oldTable = [];
-
-if exist(tableFileName,'file')
-    try
-        oldTable = readtable(tableFileName);
-    catch
-        [tablePath,fname,fext] = fileparts(tableFileName);
-        newFname = [fname datestr(now,'yyyymmdd_HHMMSS') fext];
-        disp(logit(masterFolder, ['Failed opening ' fname '.' fext '. Creating new file: ' newFname]))
-        
-        tableFileName = fullfile(tablePath,newFname);
-    end
-end
-
-writetable([oldTable;table2Add],tableFileName)
-end
 
