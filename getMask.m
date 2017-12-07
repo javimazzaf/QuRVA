@@ -1,42 +1,34 @@
 function msk = getMask(im)
 
-im(im(:) >= 0.99 * max(im(:))) = 0;
+im = mat2gray(im);
 
-oSize = size(im);
-
-scl = 500 / max(oSize);
-
-% Scale down to speed up the processing
-im = imresize(double(im), scl);
-
-sz = round(100 * scl);
+sz = 100;
 
 imLP   = mat2gray(filter2(fspecial('gaussian',[sz sz], sz/6),im));
 
-thresh = getThreshold(imLP(:));
-if isempty(thresh)
-    msk = zeros(size(im),'logical');
-    return
-end
+thresh = graythresh(imLP(:));
 
 msk    = imbinarize(imLP,thresh);
-[msk, cHull] = getBigestObject(msk);
 
-% Refine binarization
-thresh = getThreshold(imLP(cHull));
+msk  = imfill(msk,'holes');
 
-if isempty(thresh)
-    msk    = imfill(msk,'holes');
-    msk    = logical(imresize(msk, oSize));
-    return
-end
+perim = bwperim(msk);
 
-msk    = imbinarize(imLP,thresh);
-[msk, ~] = getBigestObject(msk);
+[y,x] = find(perim);
 
-msk    = imfill(msk,'holes');
+dt = delaunayTriangulation(x,y);
 
-% Back to original size
-msk    = logical(imresize(msk, oSize));
+k = convexHull(dt);
+
+chCol = dt.Points(k,1);
+chRow = dt.Points(k,2);
+
+% [xq,yq] = meshgrid(1:size(msk,2),1:size(msk,1)); 
+
+BW = poly2mask(chCol,chRow,size(msk,1),size(msk,2));
+
+% poly = inpolygon(xq,yq,chCol,chRow);
+% 
+% bw = activecontour(A,mask)
 
 end
