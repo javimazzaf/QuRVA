@@ -1,1 +1,0 @@
-- analyzing a simple way to get the mask: robust histogram selection of threshold. then stepwise convexhull.
