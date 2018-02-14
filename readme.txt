@@ -1,7 +1,12 @@
 QuRVA
 -----
 
-This code will be realeased as soon.
+This algorithm is described in :
+A machine learning approach for automated assessment of retinal vasculature in the oxygen induced retinopathy model
+Javier Mazzaferri, Bruno Larrivee, Bertan Cakir, Przemyslaw Sapieha, Santiago Costantino 
+Scientific Reports, 2018
+
+The main function is processFolder.m
 
 % Copyright (C) 2018 Javier Mazzaferri and Santiago Costantino 
 % <javier.mazzaferri@gmail.com>

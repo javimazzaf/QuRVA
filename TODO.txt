@@ -1,8 +1,11 @@
-- Move files needed for processing to kernel folder
-- Clean code and put gpl statement in each file
+[DONE] - Move files needed for processing to kernel folder
+- Go through TODO comments on files to fix them
+- Clean code
+- Put gpl statement in each file
 - verify it works fine
 - separate trining and estimiation files inside kernel
 - write a readme with instructions
 - Assign version number
+- List Matlab version and toolbox dependencies
 - Publish (only after accepted for publication)
 
