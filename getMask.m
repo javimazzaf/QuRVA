@@ -1,5 +1,7 @@
 function msk = getMask(im)
 
+readConfig
+
 im(im(:) >= 0.99 * max(im(:))) = 0;
 
 oSize = size(im);
@@ -9,7 +11,7 @@ scl = 500 / max(oSize);
 % Scale down to speed up the processing
 im = imresize(double(im), scl);
 
-sz = round(100 * scl);
+sz = round(max(size(im)) * maskParams.smoothingSizeFraction);
 
 imLP   = mat2gray(filter2(fspecial('gaussian',[sz sz], sz/6),im));
 

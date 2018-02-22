@@ -6,6 +6,8 @@ A machine learning approach for automated assessment of retinal vasculature in t
 Javier Mazzaferri, Bruno Larrivee, Bertan Cakir, Przemyslaw Sapieha, Santiago Costantino 
 Scientific Reports, 2018
 
+upload compiled version to biophotonics and link it in this documentation.
+
 The main function is processFolder.m
 
 % Copyright (C) 2018 Javier Mazzaferri and Santiago Costantino 

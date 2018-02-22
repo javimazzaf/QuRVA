@@ -1,6 +1,8 @@
 [DONE] - Move files needed for processing to kernel folder
 - Go through TODO comments on files to fix them
 - Clean code
+- Cleant parameters.ini to only keep the parameters that are used
+- Gather every hardcoded parameter in parameters.ini
 - Put gpl statement in each file
 - verify it works fine
 - separate trining and estimiation files inside kernel
