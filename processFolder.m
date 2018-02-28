@@ -1,15 +1,34 @@
-% *************************************************************************
+function processFolder(varargin)
+% Entry function for QuRVA (see readme.txt)
 % Parameters (optional): If not included it uses the default behaviour
 % varargin{1} = masterFolder (string with folder path) default: config.ini
 % varargin{2} = myFiles (particular file names in a cellarray): default: files in master folder
 % varargin{3} = model (object containint QDA object): default model.mat in current folder
-% varargin{3} = doConsensusImages : default false
+
+% *************************************************************************
+% Copyright (C) 2018 Javier Mazzaferri and Santiago Costantino 
+% <javier.mazzaferri@gmail.com>
+% <santiago.costantino@umontreal.ca>
+% Hopital Maisonneuve-Rosemont, 
+% Centre de Recherche
+% www.biophotonics.ca
+%
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+% 
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% 
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <http://www.gnu.org/licenses/>.
 % *************************************************************************
 
-function processFolder(varargin)
-
 try
-    %% Settings and folders
+    % Settings and folders
     readConfig
     
     if nargin > 0, masterFolder=varargin{1};
@@ -21,52 +40,49 @@ try
     if nargin > 2, model = varargin{3};
     else,          load('model.mat','model'); end
     
-    if nargin > 3, doConsensusImages = varargin{4};
-    else,          doConsensusImages = false; end
+    % Create auxiliary folders
+    warnStruct = warning('Off');
+        mkdir(masterFolder, 'Masks')
+        mkdir(masterFolder, 'TuftImages')
+        mkdir(masterFolder, 'TuftNumbers')
+        mkdir(masterFolder, 'VasculatureImages')
+        mkdir(masterFolder, 'VasculatureNumbers')
+        mkdir(masterFolder, 'ONCenter')
+        mkdir(masterFolder, 'Reports')
+    warning(warnStruct)
     
-    warning('Off')
-    mkdir(masterFolder, 'Masks')
-    mkdir(masterFolder, 'TuftImages')
-    mkdir(masterFolder, 'TuftNumbers')
-    mkdir(masterFolder, 'VasculatureImages')
-    mkdir(masterFolder, 'VasculatureNumbers')
-    mkdir(masterFolder, 'ONCenter')
-    mkdir(masterFolder, 'Reports')
-    warning('On')
-    
-    %% Prepare mask and Center
-    computeMaskAndCenter(masterFolder, myFiles,computeMaskAndCenterAutomatically);
+    % Create retinal mask and center
+    computeMaskAndCenter(masterFolder, myFiles);
     
     myFiles = myFiles(:);
     
+    % Allocate arrays to hold results
     outFlatMountArea     = zeros(size(myFiles));
-    outBranchingPoints   = outFlatMountArea;
-    outAVascularArea     = outFlatMountArea;
-    outVasculatureLength = outFlatMountArea;
-    outTuftArea          = outFlatMountArea;
-    outTuftNumber        = outFlatMountArea;
-    outEndPoints         = outFlatMountArea;
+    outBranchingPoints   = zeros(size(myFiles));
+    outAVascularArea     = zeros(size(myFiles));
+    outVasculatureLength = zeros(size(myFiles));
+    outTuftArea          = zeros(size(myFiles));
+    outTuftNumber        = zeros(size(myFiles));
+    outEndPoints         = zeros(size(myFiles));
     
-    %% Do loop
+    % Process each image file
     for it=1:numel(myFiles)
         try
-            %% Verbose current Image
             disp(['Processing: ' myFiles{it}])
             
-            %% Read image
-            thisImage=imread(fullfile(masterFolder, myFiles{it}));
-            redImage=thisImage(:,:,1);
+            % Read image
+            thisImage = imread(fullfile(masterFolder, myFiles{it}));
+            redImage  = thisImage(:,:,1);
             
-            %% Make 8 bits
-            if strcmp(class(redImage), 'uint16')
-                redImage=uint8(double(redImage)/65535*255);
-            end
+            % Convert to 8bits unsigned integer
+            redImage = im2uint8(redImage);
             
-            %% Load Mask and Center
+            % Load Mask and Center
             load(fullfile(masterFolder, 'Masks',    [myFiles{it} '.mat']), 'thisMask');
             load(fullfile(masterFolder, 'ONCenter', [myFiles{it} '.mat']), 'thisONCenter');
             
-            [maskStats, maskNoCenter] = processMask(thisMask, redImage, thisONCenter);
+            % Adjust retinal region. Trim edges and the center.
+            [maskStats, maskNoCenter] = processMask(thisMask, thisONCenter);
             
             [redImage, scaleFactor] = resetScale(redImage);
             thisMask     = resetScale(thisMask);
@@ -83,7 +99,7 @@ try
                 [vesselSkelMask, brchPts, smoothVessels, endPts] = getVacularNetwork(thisMask, redImage);
                 aVascZone = getAvacularZone(thisMask, vesselSkelMask, retinaDiam, thisONCenter);
                 
-                %% Make a nice image
+                % Make a nice image
                 if doSaveImages
                     
                     leftHalf=cat(3, redImage, redImage, redImage);
@@ -109,14 +125,13 @@ try
                 
             end % doVasculature
             
-            %% Analyze tufts
+            % Analyze tufts
             if doTufts
                 
                 disp('  Computing tufts . . .')
                 
                 tuftsMask = getTufts(redImage, maskNoCenter, thisMask, thisONCenter, retinaDiam, model);
-                %                 tuftsMask = getTufts(overSaturate(redImage), maskNoCenter, thisMask, thisONCenter, retinaDiam, model);
-                
+
                 % *** Save Tuft Images ***
                 if doSaveImages
                     
@@ -133,41 +148,6 @@ try
                     quadNE = imcrop(quadNE, cropRect);
                     
                     resultImage = [quadNW quadNE];
-                    
-                    % Add consensus panel
-                    if doConsensusImages
-                        
-                        % Create Image for all voters
-                        load(fullfile(masterFolder,'TuftConsensusMasks',[myFiles{it} '.mat']),'allMasks')
-                        consensusMask = sum(allMasks, 3) >= consensus.reqVotes;
-                        
-                        votesImageRed   = 0.5 * adjustedImage;
-                        votesImageGreen = 0.5 * adjustedImage;
-                        votesImageBlue  = 0.5 * adjustedImage;
-                        
-                        myColors = prism;
-                        
-                        for ii=1:size(allMasks, 3)
-                            thisMask = resetScale(allMasks(:,:,ii));
-                            thisObserver = bwperim(thisMask);
-                            votesImageRed(  thisObserver~=0) = uint8(myColors(ii,1) * 255);
-                            votesImageGreen(thisObserver~=0) = uint8(myColors(ii,2) * 255);
-                            votesImageBlue( thisObserver~=0) = uint8(myColors(ii,3) * 255);
-                        end
-                        
-                        consensusMask = resetScale(consensusMask);
-                        
-                        % Build image bottom quadrants
-                        quadSW = imoverlay(imoverlay(imoverlay(adjustedImage, uint8(tuftsMask-consensusMask>0)*255, 'm'), uint8(tuftsMask-consensusMask<0)*255, 'y'), uint8(and(consensusMask, tuftsMask))*255, 'g');
-                        quadSE = cat(3, resetScale(votesImageRed), resetScale(votesImageGreen), resetScale(votesImageBlue));
-                        
-                        % Crop bottom quadrants
-                        quadSW = imcrop(quadSW, cropRect);
-                        quadSE = imcrop(quadSE, cropRect);
-                        
-                        resultImage = [resultImage; quadSW quadSE];
-                        
-                    end
                     
                     % Save image
                     imwrite(resultImage, fullfile(masterFolder, 'TuftImages', myFiles{it}), 'JPG')

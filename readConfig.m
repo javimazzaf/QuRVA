@@ -1,11 +1,29 @@
-%% Reads parameters from config.ini
+% Reads parameters from parameters.ini and define variables in the caller 
+% workspace 
+
+% *************************************************************************
+% Copyright (C) 2018 Javier Mazzaferri and Santiago Costantino 
+% <javier.mazzaferri@gmail.com>
+% <santiago.costantino@umontreal.ca>
+% Hopital Maisonneuve-Rosemont, 
+% Centre de Recherche
+% www.biophotonics.ca
+%
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+% 
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% 
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <http://www.gnu.org/licenses/>.
+% *************************************************************************
+
 try
-    fid = fopen('config.ini');
-    while ~feof(fid)
-        evalin('caller', [fgetl(fid) ';']);
-    end
-    fclose(fid);
-    
     fid = fopen('parameters.ini');
     while ~feof(fid)
         evalin('caller', [fgetl(fid) ';']);
@@ -13,26 +31,6 @@ try
     fclose(fid);
     
 catch err
+    fclose(fid);
     disp(err)
 end
-
-% HARDCODED PARAMETERS FOR COMPILED RELEASE
-% doTufts = true;
-% doVasculature = true;
-% doSaveImages = true;
-% 
-% computeMaskAndCenterAutomatically = true;
-% 
-% vascNet.ThreshNeighborSize = [51 51];
-% vascNet.OpeningSize = 500;
-% vascNet.DilatingRadius = 2;
-% 
-% tufts.resampleScale = 0.25; 
-% tufts.denoiseFilterSize = 0.5;
-% tufts.blockSizeFraction = 1 / 180;
-% tufts.blocksInMaskPercentage = 25;
-% tufts.lbpTolPercentage = 5;
-% tufts.classCost.ClassNames = [0 1];
-% tufts.classCost.ClassificationCosts = [0 1;1 0];
-% 
-% consensus.reqVotes = 4;

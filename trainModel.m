@@ -33,7 +33,7 @@ for it = 1:numel(myFiles)
     load(fullfile(masterFolder, 'Masks',    myFiles{it}), 'thisMask');
     load(fullfile(masterFolder, 'ONCenter', myFiles{it}), 'thisONCenter');
     
-    [maskStats, maskNoCenter] = processMask(thisMask, oImage, thisONCenter);
+    [maskStats, maskNoCenter] = processMask(thisMask, thisONCenter);
     
     validMask = maskNoCenter & thisMask;
     
