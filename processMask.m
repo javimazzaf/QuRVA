@@ -25,7 +25,7 @@ function [maskProps, maskNoCenter, thisONCenter] = processMask(myMask, thisONCen
 
 readConfig
 
-maskProps = regionprops(myMask, 'EquivDiameter');
+maskProps = regionprops(myMask, 'EquivDiameter','BoundingBox');
 [~,ix]    = max([maskProps(:).EquivDiameter]);
 maskProps = maskProps(ix);
 

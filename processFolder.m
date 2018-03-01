@@ -90,8 +90,8 @@ try
             thisONCenter = thisONCenter/scaleFactor;
             retinaDiam   = computeRetinaSize(thisMask, thisONCenter);
             
-            % For Results
-            outFlatMountArea(it)     = sum(thisMask(:));
+            % Computes the area of the whole retina
+            outFlatMountArea(it) = sum(thisMask(:));
             
             if doVasculature
                 
@@ -102,28 +102,28 @@ try
                 % Make a nice image
                 if doSaveImages
                     
-                    leftHalf=cat(3, redImage, redImage, redImage);
-                    rightHalf=makeNiceVascularImage(redImage, aVascZone, vesselSkelMask, brchPts);
+                    leftHalf  = cat(3, redImage, redImage, redImage);
+                    rightHalf = makeNiceVascularImage(redImage, aVascZone, vesselSkelMask, brchPts);
                     
-                    leftHalf=imcrop(leftHalf, maskStats.BoundingBox/scaleFactor);
-                    rightHalf=imcrop(rightHalf, maskStats.BoundingBox/scaleFactor);
+                    leftHalf  = imcrop(leftHalf, maskStats.BoundingBox/scaleFactor);
+                    rightHalf = imcrop(rightHalf, maskStats.BoundingBox/scaleFactor);
                     
                     imwrite([leftHalf rightHalf], fullfile(masterFolder, 'VasculatureImages', myFiles{it}), 'JPG')
                     
-                end % doSaveImages
+                end 
                 
                 save(fullfile(masterFolder, 'VasculatureNumbers', [myFiles{it},'.mat']),...
                     'vesselSkelMask', 'brchPts', 'aVascZone', 'endPts','smoothVessels');
                 
                 disp('  Vasculature done.')
                 
-                % For Results
+                % Computes vasculature results
                 outBranchingPoints(it)   = sum(brchPts(:));
                 outAVascularArea(it)     = sum(aVascZone(:));
                 outVasculatureLength(it) = sum(vesselSkelMask(:));
                 outEndPoints(it)         = sum(endPts(:));
                 
-            end % doVasculature
+            end
             
             % Analyze tufts
             if doTufts
@@ -162,7 +162,7 @@ try
                 
                 disp('  Tufts done.')
                 
-            end % doTufts
+            end
             
             disp(['Done: ' myFiles{it}])
             

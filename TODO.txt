@@ -1,17 +1,1 @@
-QuRVA:
------
-
-
-[DONE] - Move files needed for processing to kernel folder
-- Clean code
-- Clean parameters.ini to only keep the parameters that are used
-- Gather every hardcoded parameter in parameters.ini
-- Put gpl statement in each file
-- verify it works fine
-- separate trining and estimiation files inside kernel
-- write a readme with instructions
-- Assign version number (write it in readme)
-- List Matlab version and toolbox dependencies
-
-
- - upload compiled version to biophotonics and link it in this documentation.
+All done
